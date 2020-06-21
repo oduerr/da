@@ -1,3 +1,4 @@
+#https://mc-stan.org/docs/2_21/stan-users-guide/logistic-probit-regression-section.html
 #setwd("~/Documents/workspace/da/stan/logreg_challenger/")
 challenger = read.csv('challenger.txt', header = TRUE)
 Temp = challenger$Temp
@@ -24,6 +25,7 @@ log.samples = sampling(model, list(N=23L,x=challenger$Temp, y=challenger$Failure
 traceplot(log.samples)
 print(log.samples)
 d = extract(log.samples)
+dens(d$alpha, main='alpha')
 
 pdf('res.png')
 plot(Temp, Failure, xlim=c(30,100), main='Challenger', sub='Bayes vs ML') 
