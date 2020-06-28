@@ -20,7 +20,8 @@ lines(xs, dpois(xs, lambda=(mu)), col='red')
 phi=2
 mu = mean(res)
 v = var(res)
-phi = mu^2/(v-mu) #apporx 2
+phi = mu^2/(v-mu) #approx 2
+#phi = 1e8 same as poisson
 points(xs,dnbinom(xs, mu = mu, size=phi), col='green')
 lines(xs,dnbinom(xs, mu = mu, size=phi), col='green')
 legend('topright', legend = c('Poisson', 'NB'), col=c('red', 'green'), lty=c(1,1))
