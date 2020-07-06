@@ -1,0 +1,120 @@
+---
+output: 
+  md_document: 
+    variant: markdown_github
+---
+
+
+## Understanding LOO
+Some Data for linear regression (same as before)
+```{r }
+lsg = TRUE
+N = 4
+x = c(-2.,-0.66666, 0.666, 2.)
+y = c(-6.25027354, -2.50213382, -6.07525495,  7.92081243)
+
+N = 10
+SD = 0.3
+A = 1
+B = 2
+x = seq(-2,2,length.out = N)
+y = rnorm(N,A*x+B, sd=SD)
+plot(x,y)
+```
+
+a) Fit the and check the results
+```{r, eval=lsg, echo=lsg, message=FALSE, warning=FALSE,results='hide'}
+  library(rstan)
+  fit = stan(file = 'lr.stan', data=list(N=length(y),y=y,x=x))
+  fit
+```
+
+
+```{r, eval=FALSE, echo=FALSE}
+  # Numerical Intergration
+  f = function(x) dnorm(x, sd=0.3)*log(dnorm(x, sd=0.3))
+  integrate(f, -1,1)
+  integrate(f, -2,2)
+  integrate(f, -4,4)
+  #integrate(f, -Inf,Inf) not working
+  
+  # Sampling
+  d = rnorm(1e6, mean=0,sd=0.3)
+  mean(log(dnorm(d, mean=0, sd=0.3)))
+```
+
+
+a) Theoretical result
+```{r, eval=lsg, echo=lsg}
+  library(loo)
+  a_sam = A
+  b_sam = B
+  s_sam = SD
+  mean(-log(dnorm(y,a_sam * x + b_sam, s_sam))) #NLL
+```
+
+
+
+```{r, eval=FALSE, echo=FALSE}
+  library(loo)
+  a_sam = rstan::extract(fit, 'a')[[1]]
+  b_sam = rstan::extract(fit, 'b')[[1]]
+  s_sam = rstan::extract(fit, 'sigma')[[1]]
+  mean(dnorm(y,a_sam * x + b_sam, s_sam, log = TRUE))
+  
+  samples = length(a_sam)
+  ps = matrix(NA, nrow = samples, ncol=N)
+  for (i in (1:samples)){
+    for (j in (1:length(x))){
+      ps[i,j] = dnorm(y[j],a_sam[i] * x[j] + b_sam[i], s_sam[i], log=TRUE)
+    }
+  }
+  mean(ps) #NLL
+  
+  res = loo::loo(ps)
+  -res$elpd_loo / N
+```
+  
+```{r, eval=FALSE, echo=FALSE}  
+  pWAIC <- sapply( 1:40, function(i) var(log(ps)[,i]) )
+  mean(pWAIC)
+  
+  
+  print(res)
+  res$elpd_loo/N
+  
+  
+  
+  log_lik <- extract_log_lik(fit)
+  res = loo::loo(log_lik) #-22770.1 bei 60
+  print(res)
+  res$elpd_loo/N
+  
+  sum(res$pointwise[,1])
+  mean(res$pointwise[,1])
+  length(res$pointwise[,1])
+```
+
+```{r, eval=FALSE, echo=FALSE}  
+  pWAIC <- sapply( 1:40, function(i) var(log(ps)[,i]) )
+  mean(pWAIC)
+  
+  
+  print(res)
+  res$elpd_loo/N
+  
+  
+  
+  log_lik <- extract_log_lik(fit)
+  res = loo::loo(log_lik) #-22770.1 bei 60
+  print(res)
+  res$elpd_loo/N
+  
+  sum(res$pointwise[,1])
+  mean(res$pointwise[,1])
+  length(res$pointwise[,1])
+  
+  
+```
+
+
