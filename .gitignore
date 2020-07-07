@@ -39,3 +39,5 @@ vignettes/*.pdf
 .Renviron
 
 *.rds
+
+stan/nll/_site/*
