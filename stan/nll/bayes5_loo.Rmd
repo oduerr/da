@@ -1,11 +1,15 @@
 ---
 output: 
-  md_document: 
-    variant: markdown_github
+  html_document: 
+    toc: true
+    toc_depth: 3
   pdf_document:
     toc: true
     toc_depth: 2
 ---
+
+<!-- md_document:  -->
+<!-- variant: markdown_github -->
 
 **Currently under construction**
 
@@ -66,7 +70,7 @@ $$
 
 ### Taking spread of y into account 
 
-```{r, eval=FALSE, echo=FALSE}
+```{r, eval=TRUE, echo=TRUE}
   vals = rep(NA, 1000)
   set.seed(1)
   for (i in 1:length(vals)) {
@@ -150,7 +154,7 @@ In the book (page 222, R Code 7.19) they use the following example:
   plot(x,y)
 ```
 
-```{r, eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE,results='hide', cache = TRUE}
+```{r, eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE, cache = TRUE}
 library(rstan)
 fit = stan(file = 'lr.stan', data=list(N=length(y),y=y,x=x))
 print(fit, pars = c('a','b','sigma'))

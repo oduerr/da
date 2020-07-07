@@ -41,3 +41,5 @@ vignettes/*.pdf
 *.rds
 
 stan/nll/_site/*
+
+*.dcf
