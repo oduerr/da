@@ -1,12 +1,13 @@
 # Lineare Regression für Correlation ####
 N = 1e4
+set.seed(42)
 a = rnorm(N)
 b = 1.2 - 0.1 * a + rnorm(N,0, 0.1)
 d = data.frame(a=scale(a), b=scale(b))
 plot(a ~ b, d, pch='.')
-coef(lm(a ~ b, d))
-coef(lm(b ~ a, d))
-cor(a,b)
+coef(lm(a ~ b, d)) #b = -7.091218e-01
+coef(lm(b ~ a, d)) #a = -7.091218e-01
+cor(a,b) #-0.7091218
 
 
 ## Simulation #####
