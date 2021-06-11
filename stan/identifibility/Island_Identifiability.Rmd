@@ -1,0 +1,67 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Estimation of Coefficients
+Inspired by example 14.5.1 of statistical rethinking.
+
+## Case 1 (All Gaussians)
+
+### Data Generation
+```{r}
+n = 1000
+a = rnorm(n, mean=1)
+b = rnorm(n, mean=2, sd=2)
+y = rnorm(a * b, sd=1)
+hist(y,30)
+library(car)
+qqPlot(y) 
+```
+
+### Estimatation: Can be Guess the parameters of the Gaussians?
+
+Let's to identify the parameters. See who easy this is with MCMC.
+
+```{r}
+library(rethinking)
+def = alist(
+  y ~ dnorm(a*b, sig),
+  a ~ dnorm(a_mu, a_sig),
+  b ~ dnorm(b_mu, b_sig),
+  c(sig, a_sig, b_sig) ~ dexp( 1 ), #Some non-neg prios
+  c(a_mu, b_mu) ~ dnorm(0, 5)
+)
+
+dat_list <- list(y= y)
+
+mod1 <- ulam(def, data=dat_list , chains=4 , cores=4 , iter=2000 ) #Doing MCMC
+precis( mod1 , depth=3 )
+```
+## Case 2 (A Gaussians and an Exponential)
+
+### Data Generation
+```{r}
+n = 1000
+a = rnorm(n, mean=1)
+b = dexp(n, rate=2)
+y = rnorm(a / b, sd=1)
+qqPlot(y) 
+```
+### Estimatation: Can be Guess the parameters of the Gaussians?
+
+
+```{r}
+def2 = alist(
+  y ~ dnorm(a/b, sig),
+  a ~ dnorm(a_mu, a_sig),
+  b ~ dexp(b_rate),
+  c(sig, a_sig, b_rate) ~ dexp( 1 ),
+  a_mu ~ dnorm(0, 1 )
+)
+
+dat_list <- list(y= y)
+
+mod2 <- ulam(def2, data=dat_list , chains=4 , cores=4 , iter=2000 )
+precis( mod2 , depth=3 )
+```
