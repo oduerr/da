@@ -54,5 +54,7 @@ rownames(Rho) <- colnames(Rho)
 Rho
 
 
+T1 = post$f[,1] * post$a * d$population[1]^post$b/post$g
+hist(T1[T1<100], xlim=c(0,13))
 
 

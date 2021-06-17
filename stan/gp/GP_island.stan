@@ -32,13 +32,12 @@ model {
   
   //Building the Cov Matrix
   for (i in 1:(N - 1)) {
-    K[i, i] = 1 + 0.1;
+    K[i, i] = 1 + 0.01;
     for (j in (i + 1):N) {
       K[i, j] = etasq * exp(-rhosq * Dmat[i,j]);
       K[j, i] = K[i, j];
     }
   }
-  K[N, N] = 1 + 0.01;
   f ~ multi_normal(m, K);
  
  

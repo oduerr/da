@@ -19,3 +19,4 @@ for (i in 1:2) {
   points(xs, f[i,], col=i, type='l')
 }
 
+
