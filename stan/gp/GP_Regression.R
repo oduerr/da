@@ -28,9 +28,13 @@ post = extract(fit_regression)
 means = apply(post$y2, 2, mean)
 sds = apply(post$y2, 2, sd)
 
-plot(x_train, y_train, ylim=c(-1.5,1.5), xlim=c(-6,6), col='blue')
+plot(x_train, y_train, ylim=c(-1.5,1.5), xlim=c(-6,6), col='red', xlab='x', ylab='y',cex=2,pch=16)
 #curve(mu_true, add=TRUE, col='red')
-lines(x_test, means, col='blue')
-lines(x_test, means + sds)
-lines(x_test, means - sds)
+lines(x_test, means, col='blue',lw=5)
+lines(x_test, means + sds,lw=2.5)
+lines(x_test, means - sds,lw=2.5)
+for (i in seq(1,dim(post$y2)[2], length.out=5)){
+  lines(x_test, post$y2[i,],lw=0.5)
+}
+
 
