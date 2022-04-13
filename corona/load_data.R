@@ -36,3 +36,4 @@ allData =
 
 last_date = max(allData$date)
 print(paste0('Data from ', last_date))
+

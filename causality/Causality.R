@@ -9,6 +9,30 @@ coef(lm(a ~ b, d)) #b = -7.091218e-01
 coef(lm(b ~ a, d)) # = -7.091218e-01
 cor(a,b) #-0.7091218
 
+# Conditional Independence #####
+#Conditional Independence and lm
+set.seed(42)
+N = 10000
+Z = rnorm(N, 100, 10)
+X = rnorm(N, Z + 1, 1)
+Y = rnorm(N, Z + 10, 1)
+
+X = scale(X) #Scaling
+Y = scale(Y)
+Z = scale(Z)
+cor(X,Y) #0.9901054 not independent
+coef(lm(Y ~ X)) #4.621838e-16 9.901054e-01 
+coef(lm(Y ~ X + Z))
+#(Intercept)            X            Z 
+#2.153608e-17 1.049788e-02 9.845158e-01 
+#Conditional Independent
+#Better
+confint(lm(Y ~ X))
+confint(lm(Y ~ X + Z))
+
+
+
+
 a = scale(rnorm(N))
 c = sample(c(-0.5,0.5), N, replace = TRUE)
 b = scale(0.5*a + 3*c + rnorm(N))
@@ -21,7 +45,7 @@ cor(a[c==-0.5],b[c==-0.5])
 coef(lm(a ~ b + c ))
 coef(lm(b ~ a + c ))
 
-## Simulation (Kalisch Example) #####
+# Simulation (Kalisch Example) #####
 set.seed(123)
 n <- 1e4
 z <- rnorm(n)

@@ -9,8 +9,14 @@ x_train = c(-4,-2, 0, 1, 4, 4.2)
 #x_train = seq(-5,5,length.out=20)
 N = length(x_train)
 y_train = rnorm(N, mean = mu_true(x_train), sd=0.2)
-x_test = seq(-6,6, length.out = 200)
+x_test = seq(-6,6, length.out = 100)
 N_test = length(x_test)
+
+#install.packages("invgamma")
+library(invgamma)
+library(ggplot2); theme_set(theme_bw())
+x <- seq(0, 1, .01)
+qplot(x, dinvgamma(x, 3, 1), geom = "line") + xlab('rho')
 
 fit_regression = stan(file = '~/Documents/workspace/da/stan/gp/GP_regression.stan', 
                   data=list(
@@ -21,7 +27,7 @@ fit_regression = stan(file = '~/Documents/workspace/da/stan/gp/GP_regression.sta
                     x2 = x_test
                     ),
                   chains = 4,
-                  iter = 10000)
+                  iter = 1000)
 
 fit_regression
 post = extract(fit_regression)

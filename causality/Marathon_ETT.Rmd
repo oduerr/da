@@ -1,0 +1,164 @@
+---
+title: "Alk_in_Marathon_ETT"
+author: "Tensorchiefs"
+date: "22/2/22"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+if (!exists("lsg")){
+  lsg = TRUE
+}
+```
+
+## Artifical Example ETT (Marathon and Drinks)
+The aim of the exercise is to understand how to estimate the Effect of Treatment on the Treated. We idea is that you try to understand the code.
+
+We have the following example of a causal model on the finishing time $Y$ in Marathon. This is strongly positively influenced if people go to a training or not $X=0,1$. Further, we assume that one gets slower the more drinks one has on average per day ($Z=0,1,..$). If on goes to the training or not depends also on $Z$ the number of drinks day. Altogether, we have the following SCM. 
+
+### Definition of the SCM
+```{r, eval=FALSE, show=TRUE}
+    Z <- U$Z, 
+    X <- ifelse(Z > 3, 0 , 1) * U$X, # x = f(z, Ux)
+    Y <- -2*X + 0.1*Z*X + 0.5*Z^2 + U$Y # y = f(x,z, Uy)
+```
+
+Which produces the following graph:
+```{r, eval=TRUE, show=FALSE, fig.height=3, fig.width=3}
+  library(dagitty)
+  d = dagitty('dag{
+    X [pos="1,1"]
+    Ux [pos="1,0.5"]
+    Z [pos="2,0"]
+    Uz [pos="2,-0.5"]
+    Y [pos="3,1"]
+    Uy [pos="3,0.5"]
+    X <- Z -> Y 
+    X -> Y
+    Ux -> X
+    Uz -> Z
+    Uy -> Y
+  }'
+  )
+  plot(d)
+```
+
+
+Starting from the SCM and observational data, we determine by simulation the factual $Y_{X=1}$ and counterfactual $Y_{X=0}$ for individuals who went the training $X=1$ and compute so the treatment effect on the treated:
+$$
+  \text{ETT} = E(Y_{X=1}-Y_{X=0}|X=1)
+$$
+
+### Simulation of the observed data
+
+```{r, eval=TRUE, show=FALSE}
+# Simulating the ETT of Eq. 4.18 see Pearl Primer 106
+#set.seed(41)
+n = 50000
+###########
+
+U = data.frame(
+  Z = rbinom(n = n, size=10, p=0.3), #Number of Drinks  
+  X = sample(c(1, 0), size = n, replace = TRUE, prob = c(0.9, 0.1)), 
+  Y = rnorm(n,0,1)
+)
+
+#Taken from the SCM above
+D = data.frame(
+   Z <- U$Z, 
+   X <- ifelse(Z > 3, 0 , 1) * U$X, # x = f(z, Ux)
+   Y <- -2*X + 0.1*Z*X + 0.5*Z^2 + U$Y # y = f(x,z, Uy)
+)
+names(D) = names(U)
+```
+
+### Step 1 (Abduction) 
+Use the evidence (here $X=1$) to determine the corresponding U. More precisely, we just store the U's and the data from the examples which have $X=1$. 
+```{r}
+#We condition on X==1
+U_X1 = U[D$X == 1,]
+D_X1 = D[D$X == 1,]
+
+dim(D_X1)
+```
+### Step 2 (Action)
+Adapt the SCM to the intervention. 
+
+```{r}
+get_adapted_data = function(U, D, X_inter){
+  ret = data.frame(
+    #Data Generating Process in the adapted model with intervened X
+    Z <- U$Z, 
+    X <- X_inter,
+    #X <- ifelse(Z > 3, 0 , 1) * U$X,
+    #Y <- -2*X + 0.5*Z + U$Y
+    Y <- -2*X + 0.1*Z*X + 0.5*Z^2 + U$Y
+  )
+  names(ret) = names(D)
+  return(ret)
+}
+```
+
+### Step 3 (Prediction)
+Get (counter)factuals outcomes $Y_{X=1}$ and $Y_{X=0}$ under treatment $X=1$ and $X=0$
+```{r}
+Y_1 = get_adapted_data(U_X1, D_X1, X_inter=1)$Y
+sum(Y_1 != D_X1$Y) #0 Consistency 
+Y_0 = get_adapted_data(U_X1, D_X1, X_inter=0)$Y
+```
+
+### Estimation of the ETT
+```{r}
+(ETT = mean(Y_1 - Y_0))
+sd(Y_1 - Y_0)
+```
+
+## Estimatation from Obersvational data only
+With Z being the adjustment set satisfying the backdoor criterion, we can estimate ETT via:
+
+$$
+\text{ETT} = E(Y_{X=1}-Y_{X=0}|X=1) = E(Y | X=1) - \sum_{z'} E(Y | X=0, Z=z') \cdot P(Z=z'|X=1)
+$$
+
+Details of the calculation. 
+
+1. We estimate the probability $P(Z=z'|X=1)$ by counting the number of individuals drinking at level $n_{z'|X=1}$ compared to $n_{x=1} = \sum_{z'} n_{z'|X=1}$. If we do not observe a level $h'$ the respective probability is estimated to 0. 
+
+2. The quantity $E(Y | X=0, H=h') = \sum_{y'} y' \cdot P(y'|X=0, H=h')$ is estimated by the average effect of those being $X=0$ and in level $H=h'$. If there is no individual with $X=0, H=h'$ i.e. $P(y'|X=0, H=h')=0$ with the effect that $E(Y | X=0, H=h')=0$. 
+
+```{r}
+  D_X1 = D[D$X == 1,]
+  dim(D_X1)
+  D_X0 = D[D$X == 0,]
+  dim(D_X0)
+  
+  #First Term
+  (T1 = mean(D_X1$Y))
+  
+  #Second Term
+  z_1 = unique(D_X0$Z) # Ocurring z-levels in (X=0, Z=z)
+  z_2 = unique(D_X1$Z) # Ocurring z-levels in (X=1, Z=z)
+  all_z = sort(union(z_1, z_2))
+  E_X0 = rep(0, length(all_z))
+  P_X1 = rep(0, length(all_z))
+  for (i in 1:length(all_z)){
+    z = all_z[i]
+    if (z %in% z_1) E_X0[i] = mean(D_X0[D_X0$Z == z,]$Y) 
+    if (z %in% z_2) P_X1[i] = sum(D_X1$Z == z) 
+  }
+  P_X1 = P_X1 / sum(P_X1)
+  tibble::tibble(all_z, E_X0, P_X1)
+  T1 - sum(E_X0*P_X1)
+```
+
+
+
+
+
+
+
+
