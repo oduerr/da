@@ -16,9 +16,9 @@ if (!exists("lsg")){
 ```
 
 ## Artifical Example ETT (Marathon and Drinks)
-The aim of the exercise is to understand how to estimate the Effect of Treatment on the Treated. We idea is that you try to understand the code.
+The aim of the exercise is to understand how to estimate the Effect of Treatment on the Treated. Thee idea is that you try to understand the code, if you want to step through the code, it can be found at: https://github.com/oduerr/da/blob/master/causality/Marathon_ETT.Rmd.  
 
-We have the following example of a causal model on the finishing time $Y$ in Marathon. This is strongly positively influenced if people go to a training or not $X=0,1$. Further, we assume that one gets slower the more drinks one has on average per day ($Z=0,1,..$). If on goes to the training or not depends also on $Z$ the number of drinks day. Altogether, we have the following SCM. 
+We have the following example of a causal model on the finishing time $Y$ in Marathon. This is strongly positively influenced if people go to a training or not $X=0,1$. Further, we assume that one gets slower the more drinks one has on average per day ($Z=0,1,..$). If one goes to the training or not also depends on $Z$, the number of drinks day. Altogether, we have the following SCM. 
 
 ### Definition of the SCM
 ```{r, eval=FALSE, show=TRUE}
@@ -48,16 +48,15 @@ Which produces the following graph:
 ```
 
 
+### Simulation of the observed data
 Starting from the SCM and observational data, we determine by simulation the factual $Y_{X=1}$ and counterfactual $Y_{X=0}$ for individuals who went the training $X=1$ and compute so the treatment effect on the treated:
 $$
   \text{ETT} = E(Y_{X=1}-Y_{X=0}|X=1)
 $$
 
-### Simulation of the observed data
 
 ```{r, eval=TRUE, show=FALSE}
 # Simulating the ETT of Eq. 4.18 see Pearl Primer 106
-#set.seed(41)
 n = 50000
 ###########
 
@@ -128,10 +127,10 @@ Details of the calculation.
 
 1. We estimate the probability $P(Z=z'|X=1)$ by counting the number of individuals drinking at level $n_{z'|X=1}$ compared to $n_{x=1} = \sum_{z'} n_{z'|X=1}$. If we do not observe a level $h'$ the respective probability is estimated to 0. 
 
-2. The quantity $E(Y | X=0, H=h') = \sum_{y'} y' \cdot P(y'|X=0, H=h')$ is estimated by the average effect of those being $X=0$ and in level $H=h'$. If there is no individual with $X=0, H=h'$ i.e. $P(y'|X=0, H=h')=0$ with the effect that $E(Y | X=0, H=h')=0$. 
+2. The quantity $E(Y | X=0, Z=z') = \sum_{y'} y' \cdot P(y'|X=0, Z=z')$ is estimated by the average effect of those being $X=0$ and in level $Z=z'$. If there is no individual with $X=0, Z=z'$ i.e. $P(y'|X=0, Z=z')=0$ with the effect that $E(Y | X=0, Z=z')=0$. 
 
 ```{r}
-  D_X1 = D[D$X == 1,]
+  D_X1 = D[D$X == 1,] #The ones with X=1
   dim(D_X1)
   D_X0 = D[D$X == 0,]
   dim(D_X0)
@@ -140,9 +139,10 @@ Details of the calculation.
   (T1 = mean(D_X1$Y))
   
   #Second Term
-  z_1 = unique(D_X0$Z) # Ocurring z-levels in (X=0, Z=z)
-  z_2 = unique(D_X1$Z) # Ocurring z-levels in (X=1, Z=z)
-  all_z = sort(union(z_1, z_2))
+  z_1 = unique(D_X0$Z) # Occurring z-levels in (X=0, Z=z)
+  z_2 = unique(D_X1$Z) # Occurring z-levels in (X=1, Z=z)
+  all_z = sort(union(z_1, z_2)) 
+  
   E_X0 = rep(0, length(all_z))
   P_X1 = rep(0, length(all_z))
   for (i in 1:length(all_z)){
@@ -152,9 +152,9 @@ Details of the calculation.
   }
   P_X1 = P_X1 / sum(P_X1)
   tibble::tibble(all_z, E_X0, P_X1)
-  T1 - sum(E_X0*P_X1)
+  T1 - sum(E_X0*P_X1) #From observational data
+  ETT #With access to the SCM
 ```
-
 
 
 
