@@ -12,6 +12,6 @@ parameters {
 //priors and likelihood
 model {
   p ~ uniform(0.4, 1.0); //Prior for p
-  W ~ binomial(N, p);    //Likelihood
+  W ~ binomial(N, p);    //Likelihood  
 }
 
