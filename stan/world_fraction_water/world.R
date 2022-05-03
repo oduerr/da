@@ -13,10 +13,12 @@ samples_grid = sample(ps, prob=post_a, size=1e3, replace = TRUE)
 #Using RStan
 library(rstan)
 start_time <- Sys.time()
-res = stan('world.stan', data = data.frame(N=9, W=6))
+res = stan('world.stan', data = list(N=9, W=6))
 post_samples = rstan::extract(res)
 samples_stan = post_samples$p
 Sys.time() - start_time #~20 sec
+hist(samples_stan)
+plot(density(samples_stan))
 
 #Using cmdrstan
 library(cmdstanr)
