@@ -4,7 +4,7 @@ data {
 }
 parameters {
   real mu;
-  real<lower=0,upper=50> sigma;
+  real sigma;
 }
 model {
   height ~ normal(mu, sigma);

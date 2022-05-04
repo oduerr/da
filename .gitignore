@@ -43,3 +43,9 @@ vignettes/*.pdf
 stan/nll/_site/*
 
 *.dcf
+
+stan/howell1/unconditional
+
+stan/world_fraction_water/world
+
+stan/howell1/conditional
