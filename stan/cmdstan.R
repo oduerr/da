@@ -11,3 +11,4 @@ mod <- cmdstan_model(stan_file)
 data_file <- file.path(cmdstan_path(), "examples", "bernoulli", "bernoulli.data.json")
 data_file
 fit <- mod$sample(data = data_file, seed=123)
+

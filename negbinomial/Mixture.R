@@ -1,12 +1,10 @@
 N = 100000
 lambda = rgamma(N, shape=2,scale = 4) 
-res = rpois(N, lambda) #Poissonians with rate according to 
-
 #Plot of the Gamma
 mean(lambda)#approx 8
 plot(density(lambda))
 
-
+res = rpois(N, lambda) #Poissonians with rate according to random variable
 #Plot of the resulting mixed distribution
 plot(table(res)/N, xlim = c(0,40))
 mu = mean(res) #approx 8
