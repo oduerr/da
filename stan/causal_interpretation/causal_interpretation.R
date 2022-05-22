@@ -19,9 +19,11 @@ traceplot(model_weight_sex)
 model_weight_sex
 stan_dens(model_weight_sex, 'a')
 post = rstan::extract(model_weight_sex)
-dd = spread_draws(model_weight_sex, a[sex])  
-dd$sex = as.factor(dd$sex)
-ggplot(dd) + geom_density(aes(x=a, color=sex), size = 1) + ggthemes::theme_pander()
+post_a = spread_draws(model_weight_sex, a[sex])  
+post_a$sex = as.factor(post_a$sex)
+ggplot(post_a) + geom_density(aes(x=a, color=sex), size = 1) + ggthemes::theme_pander()
+
+post_a$sim_weight = post$a[,1] 
 
 
 ggplot(data.frame(post$a)) + geom_density(aes(x=X1))
