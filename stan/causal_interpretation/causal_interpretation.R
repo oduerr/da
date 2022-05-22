@@ -23,13 +23,17 @@ post_a = spread_draws(model_weight_sex, a[sex])
 post_a$sex = as.factor(post_a$sex)
 ggplot(post_a) + geom_density(aes(x=a, color=sex), size = 1) + ggthemes::theme_pander()
 
-post_a$sim_weight = post$a[,1] 
+NSim = nrow(post$a)
+sim_weights = data.frame(
+  W = c(rnorm(NSim, post$a[,1], post$sigma),
+        rnorm(NSim, post$a[,2], post$sigma)),
+  sex = c(rep('FEMALE', NSim), rep('MALE', NSim)))
+ggplot(sim_weights) + geom_density(aes(x=W, color=sex), size = 1) + ggthemes::theme_pander()
 
 
-ggplot(data.frame(post$a)) + geom_density(aes(x=X1))
+model_full <- stan(file = 'full_bayes.stan', data = data, iter = 8000) #Need quite high number of iteration
+model_full
 
-plot(density(post$a[,1]), xlim=c(40, 50), main='post densities for a')
-lines(density(post$a[,2]))
 
 
 model <- stan(file = 'categorical.stan', data = data, iter = 8000) #Need quite high number of iteration
