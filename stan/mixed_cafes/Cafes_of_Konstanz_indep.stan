@@ -7,20 +7,16 @@ data{
     int cafe[N];  //Number of cafe for the different visits
 }
 parameters{
-    vector<lower=0>[n_cafes] mu_delta;  //Derivation of the mean time from the cafe
-    real<lower=0> mu_bar;        //The mean time in the cafe (Population)
-    real<lower=0> sigma;         //The parameter sigma 
+    vector<lower=0>[n_cafes] mu;  //Mean time in cafe
+    real<lower=0> sigma;          //The spread
 }
-//In the transformed parameter block
-transformed parameters{ 
-    vector[n_cafes] mu;
-    mu = mu_bar + mu_delta;
-}
+
 model{
     vector[N] mu_i;   
+    for ( i in 1:n_cafes ) {
+      mu[i] ~ uniform(5, 25);
+    }
     sigma ~ cauchy(3, 2); 
-    mu_bar ~ uniform(1, 25);
-    mu_delta ~ normal( 0 , 5 );
     for ( i in 1:N ) {
         mu_i[i] = mu[cafe[i]];
     }

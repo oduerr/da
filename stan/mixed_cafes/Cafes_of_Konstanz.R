@@ -6,8 +6,8 @@
 # coffee golem
 # visit cafes, record waiting time, update posterior
 library(rstan)
+library(cmdstanr)
 # sim data first
-
 #################
 # Single Cafe
 # Use the same data as Mac-Ereath
@@ -84,27 +84,31 @@ set.seed(7)
 n_cafes <- 5
 #w <- rpois(n_cafes,5)
 n_visits <- 20
-cafe <- sample(1:n_cafes,size=n_visits,replace=TRUE)
-y <- rpois(n_visits,w[cafe])
-
+#cafe <- sample(1:n_cafes,size=n_visits,replace=TRUE)
+#y <- rpois(n_visits,w[cafe])
 #blank(bty="n",w=1.7)
 ma <- cmdstan_model('Cafes_of_Konstanz.stan', compile = TRUE )
+multi = TRUE
+#Independend Model
+#ma <- cmdstan_model('Cafes_of_Konstanz_indep.stan', compile = TRUE )
+#multi = FALSE
+
 
 n_cafes <- 5
 w <- c(3,5,3,1,3)
-
 set.seed(3)
 n_visits <- 20
 cafe <- c( rep(1,1) , rep(2,1) , 1 , rep(c(1,3,4,5),times=4) , 2 )
 y <- rpois(n_visits,w[cafe]) + 1
-#y[2] <- 18
+y[2] <- 12
 
 # loop
+library(animation)
 ani.record(reset=TRUE)
 par(mfrow=c(2,3))
 xlims <- c(0,15)
-ylims <- c(0,0.5)
-for ( f in 0:5){#n_visits ) {
+ylims <- c(0,0.4)
+for (f in 0:19){ #n_visits ) {
     post = NULL
     if ( f > 0 ) {
         m <- f
@@ -116,50 +120,58 @@ for ( f in 0:5){#n_visits ) {
         maxx <- rstan::read_stan_csv(max$output_files())
         post <- extract.samples(maxx)
     } else {
-        # post$a_bar <- runif(4000,1,30)
-        # post$z <- rnorm(4000,0,5)
+        # post$mu_bar <- runif(4000,1,30)
+        # post$mu_delta <- rnorm(4000,0,5)
         # post$sigma <- rexp(4000,10)
         
-        post$a_bar <- runif(4000,1,25)
-        post$z <- rnorm(4000,0,5)
+        post$mu_bar <- runif(4000,1,25)
+        post$mu_delta <- rnorm(4000,0,5)
         post$sigma <- rcauchy(4000, 3, 2)
-        post$a <- replicate(n_cafes, post$a_bar)
+        post$mu <- replicate(n_cafes, post$mu_bar)
     }
 
     # population distribution
-    if ( f == 0  )
-        plot( density(post$a_bar), xlim=xlims, lwd=4, col=4 , xlab="waiting time" , ylab="" , ylim=ylims, main="")
-    else {
-        plot( density(post$a_bar), xlim=xlims, lwd=4, col=4 , xlab="waiting time" , ylab="" , ylim=ylims, main="")
-        lines(density(old_post), xlim=xlims, lwd=4, col="#00000080")   
+    if (multi){
+      if ( f == 0  ){
+          #dens(post$mu_bar, xlim=xlims, lwd=4, col=4 , xlab="waiting time" , ylab="" , ylim=ylims, main="")
+          plot( density(post$mu_bar), xlim=xlims, lwd=4, col=4 , xlab="waiting time" , ylab="" , ylim=ylims, main="")
+          #hist(post$mu_bar, 20)
+      }
+      else {
+          plot( density(post$mu_bar), xlim=xlims, lwd=4, col=4 , xlab="waiting time" , ylab="" , ylim=ylims, main="")
+          lines(density(post_old$mu_bar), xlim=xlims, lwd=4, col="#00000080")   
+      }
+    } else{
+      plot.new()
     }
 
-    mtext(paste0("Population ", f))
+    mtext(paste0("mu_bar total visits ", f))
 
     for ( j in 1:n_cafes ) {
         xlwd <- 4
+        sig = sqrt(mean(post$sigma^2))
+        mu = mean(post$mu[,j])
         if ( f==0 )
-            curve( dnorm(x,mean(post$a[,j]),sd(post$a[,j])) , from=0, to=20 , lwd=4, col=2 , xlab="waiting time" , ylab="" , ylim=ylims )
+            curve( dnorm(x,mu,sig) , from=0, to=20 , lwd=4, col=2 , xlab="waiting time" , ylab="" , ylim=ylims )
         else {
             if ( j==cafe[f] ) xlwd <- 8
-            curve( dnorm(x,mean(post$a[,j]),sd(post$a[,j])) , from=0, to=20 , lwd=4, col="white" , xlab="waiting time" , ylab="" , ylim=ylims )
-            curve( dnorm(x,mean(post_old$a[,j]),sd(post_old$a[,j])) , from=0, to=20 , lwd=4, col=grau() , add=TRUE )
-            curve( dnorm(x,mean(post$a[,j]),sd(post$a[,j])) , from=0, to=20 , lwd=8, col="white" , add=TRUE )
-            curve( dnorm(x,mean(post$a[,j]),sd(post$a[,j])) , from=0, to=20 , lwd=4, col=2 , add=TRUE )
+            curve( dnorm(x,mu,sig) , from=0, to=20 , lwd=4, col="white" , xlab="waiting time" , ylab="" , ylim=ylims )
+            curve( dnorm(x,mean(post_old$mu[,j]),sig) , from=0, to=20 , lwd=4, col=grau() , add=TRUE )
+            curve( dnorm(x,mu,sig) , from=0, to=20 , lwd=8, col="white" , add=TRUE )
+            curve( dnorm(x,mu,sig) , from=0, to=20 , lwd=4, col=2 , add=TRUE )
             if ( j==cafe[f] ) lines( c(y[f],y[f]) , c(0,10) , lwd=4 , col=1 )
         }
-        mtext(concat( ifelse(f > 0, sum(cafe[1:f]==j),0) , " visits" ))
+        mtext(paste0( ifelse(f > 0, sum(cafe[1:f]==j),0) , " visits, mu=", round(mu,1) ))
     }
-
     post_old <- post
-
     ani.record()
 }
 
-#oopts = ani.options(interval = 1)
-#ani.replay()
-
-# ani.saveqz(dpi=150)
+oopts = ani.options(interval = 1)
+ani.replay()
+saveGIF(ani.replay(), movie.name = 'cafes.gif', dpi=250)
+saveVideo(ani.replay(), movie.name = 'cafes.mp4', dpi=150)
+#ani.saveqz(dpi=150)
 # convert -alpha remove -background white -delay 8 -loop 0 frame*.png a_out.gif
 # convert -delay 10 a_out.gif a_out.gif
 
