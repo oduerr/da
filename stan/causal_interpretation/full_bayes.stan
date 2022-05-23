@@ -13,15 +13,15 @@ parameters {
 }
 model {
   vector[N] mu_i;   
-  vector[N] mu_H_i;   
+  vector[N] mu_H_i;    #<--- New
   
   //Calculation of the mean for the weights
   a ~ normal(60, 10);
   b ~ lognormal(0,1);
-  a_H ~ normal(160, 10);
+  a_H ~ normal(160, 10); #<--- New
   for ( i in 1:N ) {
     mu_i[i] = a[sex[i]] + b[sex[i]] * H[i];
-    mu_H_i[i] = a_H[sex[i]];
+    mu_H_i[i] = a_H[sex[i]];  #<--- New
   }
   
   //Outcome Distribution(for W)
@@ -29,8 +29,8 @@ model {
   W ~ normal(mu_i, sigma);
   
   //Outcome Distribution(for H)
-  sigma_H ~ uniform(0, 10);
-  H ~ normal(mu_H_i, sigma_H);
+  sigma_H ~ uniform(0, 10);   #<--- New
+  H ~ normal(mu_H_i, sigma_H); #<--- New
 }
 generated quantities{
   real diff_fm;
