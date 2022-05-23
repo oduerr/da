@@ -1,8 +1,5 @@
 ---
-output:
-  pdf_document:
-    highlight: pygments
-    includes:
+  output: rmarkdown::github_document
 ---
 
 ## MCMC with Stan / Simple diagnostics
@@ -134,6 +131,16 @@ Getting the samples can be done as
 
 -   cmdstan `s_rcmdstan$draws()`
 
+Another handy package is tidybayes which can handle the output of `rstan` and `rcmdstan`
+
+```{r}
+library(tidybayes)
+head(spread_draws(s_rcmdstan, c(a,b))) #Non-tidy a and b in one row
+head(gather_draws(s_rstan, c(a,b))) #The ggplot like syntax
+head(gather_draws(s_rstan, a)) #The ggplot like syntax
+#spread_draws(model_weight_sex, a[sex]) for multilevel models
+```
+
 #### Stan functions
 
 ```{r,fig.height=3.5}
@@ -147,14 +154,13 @@ Getting the samples can be done as
 
 We extract samples from the posterior via `extract` (in some installation the wrong extract function is taken in that case use `rstan::extract` to use the right one). Visualize the posterior distribution of $a$ from the samples.
 
-```{r echo=lsg, eval=TRUE}
+```{r}
 # Extract samples
-post = rstan::extract(samples)
+post = rstan::extract(s_rstan)
 T = length(post$a)
-if (lsg){ #Only show plots in the solution
-  hist(post$a,100, freq=F)
-  lines(density(post$a),col='red')  
-}
+hist(post$a,100, freq=F)
+lines(density(post$a),col='red')  
+
 ```
 
 ### Posterior Predictive Plots
@@ -174,7 +180,7 @@ You can either do this part, or use stan to create the posterior predictive samp
 
 Tip: Create two matrices `yix` and `muix` from the posterior samples of $a,b,\sigma$ with dimension (rows = number of posterior samples and cols = number of x positions).
 
-```{r echo=lsg, eval=TRUE}
+```{r}
 xs = -10:15 # The x-range 17 values from -1 to 15
 M = length(xs) 
 yix = matrix(nrow=T, ncol = M) #Matrix from samples (number of posterior draws vs number of xs)
@@ -240,14 +246,14 @@ It's also possible to draw posterior predictive samples. One can use the `genera
       }
     }
 
-```{r, results='hide'}
+```{r, eval=FALSE, results='hide'}
   x2 = -10:15
   N2 = length(x2)
   fit2 = rstan::stan(file = '~/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_03_Bayes_3/Stan_Primer_model_pred.stan',
                          data=list(N=N,x=x, y=y, N2=N2,x2=x2),iter=10000)
 ```
 
-```{r}
+```{r, eval=FALSE}
   d2 = rstan::extract(fit2)
   y_pred = d2$Y_predict
   dim(y_pred)
