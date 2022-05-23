@@ -1,5 +1,6 @@
 ---
-  output: rmarkdown::github_document
+  output:
+    github_document
 ---
 
 ## MCMC with Stan / Simple diagnostics
@@ -104,10 +105,10 @@ For rstan: `sampling(m_rstan, data=data)` For cmdstan: `mod$sample(data = data_f
 
 The package bayesplot can handle both interfaces
 
-```{r}
+```{r trace}
 #traceplot(s_rstan, 'a')
 bayesplot::mcmc_trace(s_rstan)
-bayesplot::mcmc_trace(s_rcmdstan$draws())
+#bayesplot::mcmc_trace(s_rcmdstan$draws()) #similar result
 s_rstan
 # Rhat close to one and n_eff lager than half the number of draws; look fine
 ```
@@ -137,13 +138,12 @@ Another handy package is tidybayes which can handle the output of `rstan` and `r
 library(tidybayes)
 head(spread_draws(s_rcmdstan, c(a,b))) #Non-tidy a and b in one row
 head(gather_draws(s_rstan, c(a,b))) #The ggplot like syntax
-head(gather_draws(s_rstan, a)) #The ggplot like syntax
 #spread_draws(model_weight_sex, a[sex]) for multilevel models
 ```
 
 #### Stan functions
 
-```{r,fig.height=3.5}
+```{r, density, fig.height=3.5}
   #plot(samples)
   #samples = extract(s_rstan)
   stan_dens(s_rstan)
@@ -154,7 +154,7 @@ head(gather_draws(s_rstan, a)) #The ggplot like syntax
 
 We extract samples from the posterior via `extract` (in some installation the wrong extract function is taken in that case use `rstan::extract` to use the right one). Visualize the posterior distribution of $a$ from the samples.
 
-```{r}
+```{r, hist_post_a}
 # Extract samples
 post = rstan::extract(s_rstan)
 T = length(post$a)
@@ -211,7 +211,7 @@ if (FALSE){
 
 After you created the matrices `yix` and `muix` you can use the following function to draw the lines for the quantiles.
 
-```{r}
+```{r, ppd}
 plot(x, y, xlim=c(-10,15), ylim=c(-25,25), ylab='quantiles (y and mu)')
 quant_lines = function(x2, y_pred, col='blue'){
   m = apply(y_pred, 2,quantile, probs=c(0.50))

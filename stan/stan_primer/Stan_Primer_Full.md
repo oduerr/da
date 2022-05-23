@@ -133,6 +133,9 @@ For rstan: `sampling(m_rstan, data=data)` For cmdstan:
   s_rcmdstan = m_rcmdstan$sample(data = data)
 ```
 
+    ## Warning: 2 of 4000 (0.0%) transitions ended with a divergence.
+    ## See https://mc-stan.org/misc/warnings for details.
+
 ``` r
   s_rstan = sampling(m_rstan, data=data)  
 ```
@@ -146,15 +149,10 @@ The package bayesplot can handle both interfaces
 bayesplot::mcmc_trace(s_rstan)
 ```
 
-![](Stan_Primer_Full_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](Stan_Primer_Full_files/figure-gfm/trace-1.png)<!-- -->
 
 ``` r
-bayesplot::mcmc_trace(s_rcmdstan$draws())
-```
-
-![](Stan_Primer_Full_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
-
-``` r
+#bayesplot::mcmc_trace(s_rcmdstan$draws()) #similar result
 s_rstan
 ```
 
@@ -163,12 +161,12 @@ s_rstan
     ## post-warmup draws per chain=1000, total post-warmup draws=4000.
     ## 
     ##        mean se_mean   sd   2.5%   25%   50%   75% 97.5% n_eff Rhat
-    ## a      2.85    0.05 2.33  -2.04  1.60  2.86  4.15  7.33  2190    1
-    ## b     -1.58    0.07 3.54  -8.69 -3.56 -1.62  0.37  5.77  2613    1
-    ## sigma  7.17    0.10 3.39   2.97  4.69  6.39  8.74 15.71  1264    1
-    ## lp__  -7.86    0.05 1.42 -11.40 -8.54 -7.52 -6.79 -6.17   968    1
+    ## a      2.90    0.06 2.55  -2.66  1.56  2.98  4.34  8.06  1895    1
+    ## b     -1.59    0.08 3.56  -8.87 -3.60 -1.61  0.43  6.00  2137    1
+    ## sigma  7.27    0.10 3.48   2.93  4.80  6.38  8.86 16.32  1286    1
+    ## lp__  -7.97    0.05 1.47 -11.71 -8.70 -7.59 -6.87 -6.19  1006    1
     ## 
-    ## Samples were drawn using NUTS(diag_e) at Mon May 23 19:09:51 2022.
+    ## Samples were drawn using NUTS(diag_e) at Mon May 23 22:55:35 2022.
     ## For each parameter, n_eff is a crude measure of effective sample size,
     ## and Rhat is the potential scale reduction factor on split chains (at 
     ## convergence, Rhat=1).
@@ -201,14 +199,14 @@ head(spread_draws(s_rcmdstan, c(a,b))) #Non-tidy a and b in one row
 ```
 
     ## # A tibble: 6 × 5
-    ##   .chain .iteration .draw     a     b
-    ##    <int>      <int> <int> <dbl> <dbl>
-    ## 1      1          1     1  3.11  2.02
-    ## 2      1          2     2  3.87 -5.33
-    ## 3      1          3     3  1.97 -5.11
-    ## 4      1          4     4  3.56  1.41
-    ## 5      1          5     5  4.31 -4.77
-    ## 6      1          6     6  4.56 -3.97
+    ##   .chain .iteration .draw     a      b
+    ##    <int>      <int> <int> <dbl>  <dbl>
+    ## 1      1          1     1 5.98  -3.74 
+    ## 2      1          2     2 1.70   2.59 
+    ## 3      1          3     3 0.707 -1.52 
+    ## 4      1          4     4 2.05   0.906
+    ## 5      1          5     5 2.63   0.292
+    ## 6      1          6     6 1.20  -2.59
 
 ``` r
 head(gather_draws(s_rstan, c(a,b))) #The ggplot like syntax
@@ -218,27 +216,12 @@ head(gather_draws(s_rstan, c(a,b))) #The ggplot like syntax
     ## # Groups:   .variable [1]
     ##   .chain .iteration .draw .variable .value
     ##    <int>      <int> <int> <chr>      <dbl>
-    ## 1      1          1     1 a           2.11
-    ## 2      1          2     2 a           3.98
-    ## 3      1          3     3 a           1.21
-    ## 4      1          4     4 a          -3.88
-    ## 5      1          5     5 a          -2.25
-    ## 6      1          6     6 a           3.07
-
-``` r
-head(gather_draws(s_rstan, a)) #The ggplot like syntax
-```
-
-    ## # A tibble: 6 × 5
-    ## # Groups:   .variable [1]
-    ##   .chain .iteration .draw .variable .value
-    ##    <int>      <int> <int> <chr>      <dbl>
-    ## 1      1          1     1 a           2.11
-    ## 2      1          2     2 a           3.98
-    ## 3      1          3     3 a           1.21
-    ## 4      1          4     4 a          -3.88
-    ## 5      1          5     5 a          -2.25
-    ## 6      1          6     6 a           3.07
+    ## 1      1          1     1 a           5.68
+    ## 2      1          2     2 a           3.81
+    ## 3      1          3     3 a           1.03
+    ## 4      1          4     4 a           5.78
+    ## 5      1          5     5 a           5.03
+    ## 6      1          6     6 a           5.32
 
 ``` r
 #spread_draws(model_weight_sex, a[sex]) for multilevel models
@@ -252,7 +235,7 @@ head(gather_draws(s_rstan, a)) #The ggplot like syntax
   stan_dens(s_rstan)
 ```
 
-![](Stan_Primer_Full_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](Stan_Primer_Full_files/figure-gfm/density-1.png)<!-- -->
 
 ``` r
   #Note that these are marginals!
@@ -273,7 +256,7 @@ hist(post$a,100, freq=F)
 lines(density(post$a),col='red')  
 ```
 
-![](Stan_Primer_Full_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](Stan_Primer_Full_files/figure-gfm/hist_post_a-1.png)<!-- -->
 
 ### Posterior Predictive Plots
 
@@ -344,7 +327,7 @@ quant_lines(xs,yix, col='red')
 quant_lines(xs,muix, col='blue')
 ```
 
-![](Stan_Primer_Full_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](Stan_Primer_Full_files/figure-gfm/ppd-1.png)<!-- -->
 
 #### Creation of the posterior predictive samples with Stan
 
