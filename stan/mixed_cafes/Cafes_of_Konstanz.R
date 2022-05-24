@@ -90,9 +90,9 @@ n_visits <- 20
 ma <- cmdstan_model('Cafes_of_Konstanz.stan', compile = TRUE )
 multi = TRUE
 #Independend Model
-#ma <- cmdstan_model('Cafes_of_Konstanz_indep.stan', compile = TRUE )
-#multi = FALSE
-
+ma <- cmdstan_model('Cafes_of_Konstanz_indep.stan', compile = TRUE )
+multi = FALSE
+ma$code()
 
 n_cafes <- 5
 w <- c(3,5,3,1,3)
@@ -112,13 +112,16 @@ for (f in 0:19){ #n_visits ) {
     post = NULL
     if ( f > 0 ) {
         m <- f
-        dat <- list( N=m , n_cafes=n_cafes , y=y[1:m] , cafe=cafe[1:m] )
+        dat <- list( N=m , n_cafes=n_cafes , y=y[1:m] , cafe=as.integer(cafe[1:m]) )
         max <- ma$sample(data = dat, chains = 4, 
-                    parallel_chains = 4, iter_sampling = 1000, iter_warmup = 1000, 
+                    parallel_chains = 1, iter_sampling = 1000, iter_warmup = 5000, 
                     adapt_delta = 0.9, max_treedepth = 15, 
-                    save_warmup = FALSE , refresh=0 )
+                    save_warmup = FALSE )
         maxx <- rstan::read_stan_csv(max$output_files())
         post <- extract.samples(maxx)
+        if (FALSE){
+          bayesplot::mcmc_trace(max$draws())
+        }
     } else {
         # post$mu_bar <- runif(4000,1,30)
         # post$mu_delta <- rnorm(4000,0,5)
@@ -169,8 +172,8 @@ for (f in 0:19){ #n_visits ) {
 
 oopts = ani.options(interval = 1)
 ani.replay()
-saveGIF(ani.replay(), movie.name = 'cafes.gif', dpi=250)
-saveVideo(ani.replay(), movie.name = 'cafes.mp4', dpi=150)
+saveGIF(ani.replay(), movie.name = 'cafes_pooling.gif', dpi=250)
+saveVideo(ani.replay(), movie.name = 'cafes_pooling.mp4', dpi=150)
 #ani.saveqz(dpi=150)
 # convert -alpha remove -background white -delay 8 -loop 0 frame*.png a_out.gif
 # convert -delay 10 a_out.gif a_out.gif

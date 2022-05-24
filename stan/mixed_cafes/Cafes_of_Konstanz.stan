@@ -4,7 +4,7 @@ data{
     int N;        //Total number of visits to cafes
     int n_cafes;  //Number of different cafe in konstanz
     real y[N];    //Waiting times for the vists
-    int cafe[N];  //Number of cafe for the different visits
+    int<lower=1> cafe[N];  //Number of the cafe for the different visits
 }
 parameters{
     vector<lower=0>[n_cafes] mu_delta;  //Derivation of the mean time from the cafe
