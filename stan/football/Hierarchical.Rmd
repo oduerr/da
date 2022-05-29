@@ -94,7 +94,7 @@ Where home is a constant for the advantage for the team hosting the game att and
 nhfit = stan(file = 'non_hier_model.stan', data = my_data)
 ```
 
-#### Plot the predicted scores of the last 5 matches
+#### Plot the predicted scores of the lastmatches
 
 ```{r, non_hier_pred_scores}
 nhparams = extract(nhfit)
@@ -105,6 +105,33 @@ abline(a=0,  b=1, lty='dashed')
 
 sqrt(mean((pred_scores - true_scores)^2))
 cor(pred_scores, true_scores)
+```
+
+```{r, eval=lsg, show=lsg}
+get_score = function(nhparams, data){
+  s1_pred_score = round(colMeans(nhparams$s1new),0)
+  s2_pred_score = round(colMeans(nhparams$s2new),0)
+  points = 0
+  for (i in 1:length(s1_pred_score)){
+      pred_scorediff = mean(nhparams$s1new[,i] > nhparams$s2new[,i])
+      if (s1_pred_score[i] == data$score1[ngob+i]
+          && s2_pred_score[i] == data$score2[ngob+i]){
+        points = points + 3
+      } else {
+        if (abs(pred_scorediff) < 0.5){ #Call it a draw
+          if (data$score1[ngob+i] == data$score2[ngob+i]) {
+            points = points + 1
+          }
+        } else {#No draw
+           if(sign(pred_scorediff) == sign(data$score1[ngob+i] - data$score2[ngob+i])){
+             points = points + 1
+           }
+        }
+      } 
+  }
+  return (points)
+}
+get_score(nhparams, data)
 ```
 
 #### Defense / Attack Non-Hierachical
@@ -154,6 +181,10 @@ abline(a=0,  b=1, lty='dashed')
 arrows(true_scores, pred_scores+pred_errors, true_scores, pred_scores-pred_errors, length = 0.05, angle = 90, code = 3, rgb(0,0,0,0.3))
 sqrt(mean((pred_scores - true_scores)^2))
 cor(pred_scores, true_scores)
+```
+
+```{r, eval=lsg, show=lsg}
+ get_score(nhparams, data)
 ```
 
 ```{r attack_defense_hier}

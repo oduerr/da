@@ -51,3 +51,9 @@ stan/world_fraction_water/world
 stan/howell1/conditional
 
 stan/mixed_cafes/Cafes_of_Konstanz
+
+*.mov
+
+stan/football/hier_model
+
+stan/football/non_hier_model
