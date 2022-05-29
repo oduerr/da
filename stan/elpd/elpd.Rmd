@@ -1,0 +1,274 @@
+---
+  output:
+    github_document:
+      pandoc_args: "--webtex"
+      toc: TRUE
+---
+
+**Status: generated quantities not working**
+
+## Understanding NLL and LOO
+
+Some notes for the evaluation of the performance of a Bayesian probabilistic prediction. We follow the paper [1] "Practical Bayesian model evaluation using leave-one-out cross-validation and WAIC" from Aki Vehtari, Andrew Gelman, Jonah Gabry <https://arxiv.org/abs/1507.04544> and statistical rethinking. We apply the method first on a syntactical example and then on the `car` example given in statistical rethinking.
+
+### The quantity we like to estimate (elpd)
+
+All valid and applicable measures are variants of the log scoring rule of the posterior predicted distribution.[^1] In the regression setting, the additional question remains at which points $x_i$ this quantity should be evaluated. In [1] the quantity `elpd` the *expected log pointwise predictive density for a new dataset* is therefore defined as:
+
+[^1]: Other proper scoring rules are also possible. In some communities the CPRS is preferred over the NLL.
+
+$$
+  elpd := \sum_{i=1}^{N} E_{y \sim p_t(y)}\left[\log(p(y|x_i,D))\right]  
+$$ This quantity requires integrating over $p_t(y)$ the true data generating process DGP for a given $x_i$. Which we usually of course don't have. Before detailing how to estimate the quantity, we note that different transformations exists.
+
+-   elpd the higher the better
+
+-   Deviance $-2 \cdot elpd$ the lower the better (see AIC and WAIC later)
+
+-   NLL $-elpd/N$ the lower the better and further not depending on the number of data points $N$. Since we are so used to the NLL, we also include it in the comparison, although this name is not 100% correct.
+
+### Estimating elpd
+
+#### Overfitting on the training data (and correcting it)
+
+A biased estimate this is using the training set.
+
+$$
+   \mathit{lppd} := \mathit{lpd} := \sum_{i=1}^{N} \log(p(y_i|x_i,D))  
+$$
+
+This the log pointwise predictive density (lppd) in statistical rethinking and lpd in [1]. This quantity of course underestimates the elpd since it is shows overfitting and depends on the number of parameters of the model. A crude approximation is to subtract number of parameters $p$ (or add it when talking about deviance). This gives rise to the Akaike Information Criteriom AIC criterion:
+
+$$
+AIC = -2\cdot (lppd - p)
+$$
+
+A better approximation is use the widely applicable information criterion WAIC
+
+$$
+WAIC = -2\cdot (lppd - p_{\tt{eff}})
+$$
+
+The quantity $p_{\tt{eff}}$ is the effective number of parameters, which can be calculated based on the variance of the log-probability $log(p(y_i|\theta_s))$ of the $s=1,\ldots S$ posterior samples for the training data.
+
+$$
+p_{\tt{eff}}=\sum_{i=1}^N \frac{1}{S} \sum_{s=1}^S \log(p(y_i|\theta_s)) 
+$$
+
+#### Using a testset
+
+The first approximation which can be done, is to evaluate the expectation at a **test set** at the single points $y_i$.
+
+$$
+  \mathit{elpd_{test}} = \sum_{i=1}^{N} \log(p(y_i|x_i,D)) = -N \cdot \mathit{NLL}
+$$ A special case of such a test set is leave-one-out crossvalidation, loo.
+
+$$
+  \mathit{elpd_{loo}} = \sum_{i=1}^{N} \log(p(y_i|x_i,D_{-i})) 
+$$
+
+The $-i$ in $D_{-i}$ indicates that the training has been done without the data point $i$. For loo effective methods such as Pareto smoothed importance sampling PSIS and are provided in the r-package `loo`.
+
+### Random Data
+
+We simulate some data, so that we know the DGP.
+
+```{r sim_data}
+N = 20
+SD = 0.3
+A = 1
+B = 2
+gen_data = function(){
+  x = seq(-2,2,length.out = N)
+  y = rnorm(N,A*x+B, sd=SD)  
+  return (data.frame(x=x,y=y))
+}
+set.seed(1)
+dat = gen_data()
+x=dat$x
+y=dat$y
+plot(x,y)
+```
+
+### Theoretical value
+
+In principle we know that the data is distributed normally with constant spread SD. In this case the elpd can be evaluated at a single data point and would be
+
+$$
+\mathit{elpd} = \sum_{i=1}^{N} E_{y \sim p(y|x_i)}\left[\log(p(y|x_i,D))\right] = N \cdot \int_{-\infty}^{+\infty} \log(N(y|0,0.3)) \cdot N(y|0, 0.3) \; dy
+$$
+
+```{r, message=FALSE, warning=FALSE}
+  # Numerical Integration
+  f = function(x) dnorm(x, sd=SD)*dnorm(x, sd=SD, log=TRUE)
+  N*integrate(f, -10,10)$value
+  (elpd.theo = N*integrate(f, -Inf,Inf)$value)
+  (nll.theo = -elpd.theo/N)
+  #integrate(f, -Inf,Inf) not working
+```
+
+### Fitting with stan
+
+a\) Fit the and check the results
+
+```{r, message=FALSE, warning=FALSE, results='hide'}
+stan_code = "
+data{
+  int<lower=0> N;
+  vector[N] y;
+  vector[N] x;
+}
+
+parameters{
+  real a; 
+  real b;
+  real<lower=0> sigma;
+}
+
+model{
+  //y ~ normal(mu, sigma);
+  y ~ normal(a * x + b, sigma);
+  a ~ normal(3, 10); 
+  b ~ normal(0, 10);
+  sigma ~ normal(0,10);
+}
+
+generated quantities {
+  vector[N] log_lik;
+  for (n in 1:N){
+    log_lik[n] = normal_lpdf(y[n] | a * x + b, sigma);
+  }
+}
+"
+```
+
+```{r, stan_fitting, eval=TRUE, echo=TRUE, results="hide", cache = TRUE}
+  library(rstan)
+  #fit = stan(file = 'lr.stan', data=list(N=length(y),y=y,x=x))
+  fit = stan(model_code = stan_code, data=list(N=length(y),y=y,x=x))
+```
+
+```{r}
+  print(fit, pars = c('a','b','sigma'))
+```
+
+### Estimating the elpd
+
+The package `loo` provides advances estimates of the `elpd`. For that a matrix of the log-likelihood needs to be provided. The dimensions are: S by N, where S is the size of the posterior sample (with all chains merged) and N is the number of data points. We calculate the log-likelihood `ps` as follows.
+
+```{r}
+  library(loo)
+  calc_ps = function () {
+    a_sam = rstan::extract(fit, 'a')[[1]]
+    b_sam = rstan::extract(fit, 'b')[[1]]
+    s_sam = rstan::extract(fit, 'sigma')[[1]]
+    samples = length(a_sam)
+    ps = matrix(NA, nrow = samples, ncol=N)
+    for (i in (1:samples)){ #Number of MC-Samples
+      for (j in (1:length(x))){ #Number of Parameters
+        ps[i,j] = dnorm(y[j],a_sam[i] * x[j] + b_sam[i], s_sam[i], log=TRUE)
+      }
+    }
+    return (ps)
+  }
+  ps = calc_ps()
+  dim(ps)
+```
+
+Creating of summary statistics.
+
+```{r, comparison}
+  make_df = function(ps, show_theo = FALSE){
+    (elpd.train = N*mean(ps)) 
+    res = loo::loo(ps)
+    (elpd.loo = res$elpd_loo)
+    (p.loo = res$estimates['p_loo',1])
+    res = loo::waic(ps)$estimates
+    (elpd.waic = res['elpd_waic',1])
+    (p.waic = res['p_waic',1])
+    df = data.frame(
+        loo_psis = c(elpd.loo, -elpd.loo/N, p.loo),
+        waic = c(elpd.waic, -elpd.waic/N, p.waic),
+        training = c(elpd.train, -elpd.train/N, NA),
+        theoretical = c(elpd.theo, elpd.theo/N, 3L)
+        )
+    if (show_theo == FALSE) {df$theoretical = NULL}
+    return (df)
+  }
+  df = make_df(ps, show_theo = TRUE)
+  row.names(df) = c('elpd', 'NLL', 'p')
+  print(df)
+  elpd.theo
+  library("kableExtra")
+  kableExtra::kable(round(df,2))
+  round(df,2)
+```
+
+Note that we cannot approach the theoretical value. However, both methods provide us with error estimates.
+
+```{r, std}
+loo::loo(ps)
+loo::waic(ps)
+```
+
+### Comparison with example from statistical rethinking
+
+In the book (page 222, R Code 7.19) they use the following example:
+
+```{r, dataset_car}
+  x = cars$speed
+  y = cars$dist
+  N = length(y)
+  plot(x,y)
+```
+
+```{r, eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE, cache = TRUE, warning=FALSE,results='hide'}
+library(rstan)
+fit = stan(model_code = stan_code, data=list(N=length(y),y=y,x=x))
+```
+
+```{r}
+print(fit, pars = c('a','b','sigma'))
+```
+
+```{r, results_opt}
+  ps = calc_ps()
+  df = make_df(ps)
+  row.names(df) = c('elpd', 'NLL', 'p')
+  library("kableExtra")
+  kableExtra::kable(round(df,4))
+```
+
+### Manual calculation of the WAIC
+
+The elpd estimate can be calculated by summing up the posterior variances of the different MCMC samples.
+
+```{r}
+  (p.waic.manual = sum(apply(ps, 2, var))) #p.waid
+  df[3,2]
+  elpd.train = df['elpd','training']
+  elpd.train -  p.waic.manual #
+  -2*(elpd.train -  p.waic.manual) #423.1854 in book 423.
+```
+
+Discussion: The effective number of parameters, is like in the `loo` routine. However, the lppd is probably calculated slightly different in `loo` compared to the approach in statistical rethinking and done in the manual approach.
+
+### Using generated quantities [currently not working]
+
+As an alternative, it should be possible to use the generated samples.
+
+```{r, gen_kaputt}
+samples = rstan::extract(fit)
+PS2 = extract_log_lik(fit)
+loo::loo(PS2)
+loo::loo(fit)
+loo::waic(PS2)
+dim(PS2)
+```
+
+The problem is that the generated samples have different values.
+
+```{r, gen_kaputt2}
+hist(PS2[,1], main = 'generated samples')
+hist(ps[,1], main = '')
+```
