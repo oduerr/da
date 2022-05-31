@@ -107,6 +107,8 @@ $$
   #integrate(f, -Inf,Inf) not working
 ```
 
+But note that having only a few data points, we cannot estimate the quantity since there is still uncertainty in the parameters. This uncertainty is referred to as epistemic or model uncertainty.
+
 ### Fitting with stan
 
 a\) Fit the and check the results
@@ -264,6 +266,7 @@ loo::loo(PS2)
 loo::loo(fit)
 loo::waic(PS2)
 dim(PS2)
+loo::loo(ps)
 ```
 
 The problem is that the generated samples have different values.
