@@ -20,7 +20,7 @@ Modifications include:
     -   However this seems to require that as in the paper we need to use a sum-to-zero constraint for the defense and offense. This makes sense intuitively, since the teams play against each other and therefore these capabilities are relative to each other. For more information on this see the paper above and the references therein.
 
 ```{r}
-lsg = FALSE #Set to FALSE before submitting
+lsg = TRUE #Set to FALSE before submitting
 require(rstan)
 set.seed(1) #set seed 
 ```

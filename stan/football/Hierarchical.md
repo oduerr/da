@@ -27,7 +27,7 @@ Modifications include:
         therein.
 
 ``` r
-lsg = FALSE #Set to FALSE before submitting
+lsg = TRUE #Set to FALSE before submitting
 require(rstan)
 ```
 
@@ -133,7 +133,7 @@ nhfit = stan(file = 'non_hier_model.stan', data = my_data)
 
     ## Trying to compile a simple C file
 
-#### Plot the predicted scores of the last 5 matches
+#### Plot the predicted scores of the lastmatches
 
 ``` r
 nhparams = extract(nhfit)
@@ -157,6 +157,35 @@ cor(pred_scores, true_scores)
 
     ## [1] 0.3181429
 
+``` r
+get_score = function(nhparams, data){
+  s1_pred_score = round(colMeans(nhparams$s1new),0)
+  s2_pred_score = round(colMeans(nhparams$s2new),0)
+  points = 0
+  for (i in 1:length(s1_pred_score)){
+      pred_scorediff = mean(nhparams$s1new[,i] > nhparams$s2new[,i])
+      if (s1_pred_score[i] == data$score1[ngob+i]
+          && s2_pred_score[i] == data$score2[ngob+i]){
+        points = points + 3
+      } else {
+        if (abs(pred_scorediff) < 0.5){ #Call it a draw
+          if (data$score1[ngob+i] == data$score2[ngob+i]) {
+            points = points + 1
+          }
+        } else {#No draw
+           if(sign(pred_scorediff) == sign(data$score1[ngob+i] - data$score2[ngob+i])){
+             points = points + 1
+           }
+        }
+      } 
+  }
+  return (points)
+}
+get_score(nhparams, data)
+```
+
+    ## [1] 139
+
 #### Defense / Attack Non-Hierachical
 
 We can also look at the attack/defense of the teams:
@@ -179,6 +208,8 @@ home_adv = extract(nhfit)$home
 hist(home_adv, 100, freq = FALSE, main=paste0("Home Adv, mean: ", round(mean(home_adv),2)))
 lines(density(home_adv))
 ```
+
+![](Hierarchical_files/figure-gfm/home_adv_non_hier-1.png)<!-- -->
 
 # Hierarchical model
 
@@ -238,6 +269,12 @@ cor(pred_scores, true_scores)
     ## [1] 0.3396617
 
 ``` r
+ get_score(nhparams, data)
+```
+
+    ## [1] 139
+
+``` r
 attack = colMeans(hparams$att)
 attacksd = sapply(1:nt, function(x) sd(hparams$att[,x]))
 defense = colMeans(hparams$def)
@@ -272,3 +309,5 @@ home_adv = extract(hfit)$home
 hist(home_adv, 100, freq = FALSE, main=paste0("Home Adv, mean: ", round(mean(home_adv),2)))
 lines(density(home_adv))
 ```
+
+![](Hierarchical_files/figure-gfm/home_adv_hier-1.png)<!-- -->
