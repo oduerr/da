@@ -21,7 +21,7 @@ parameters {
   real mu_def;
   real<lower=0> tau_def;
   
-  //
+  //Negtaive Binomonal
   real<lower=0> phi_1;
   real<lower=0> phi_2;
 }

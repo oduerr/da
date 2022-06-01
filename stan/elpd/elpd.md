@@ -196,6 +196,10 @@ and would be
   #integrate(f, -Inf,Inf) not working
 ```
 
+But note that having only a few data points, we cannot estimate the
+quantity since there is still uncertainty in the parameters. This
+uncertainty is referred to as epistemic or model uncertainty.
+
 ### Fitting with stan
 
 a\) Fit the and check the results
@@ -732,6 +736,27 @@ dim(PS2)
 ```
 
     ## [1] 4000   50
+
+``` r
+loo::loo(ps)
+```
+
+    ## Warning: Relative effective sample sizes ('r_eff' argument) not specified.
+    ## For models fit with MCMC, the reported PSIS effective sample sizes and 
+    ## MCSE estimates will be over-optimistic.
+
+    ## 
+    ## Computed from 4000 by 50 log-likelihood matrix
+    ## 
+    ##          Estimate   SE
+    ## elpd_loo   -210.0  6.8
+    ## p_loo         3.2  1.3
+    ## looic       420.0 13.6
+    ## ------
+    ## Monte Carlo SE of elpd_loo is 0.0.
+    ## 
+    ## All Pareto k estimates are good (k < 0.5).
+    ## See help('pareto-k-diagnostic') for details.
 
 The problem is that the generated samples have different values.
 
