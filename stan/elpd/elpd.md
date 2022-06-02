@@ -11,8 +11,9 @@
         rethinking](#comparison-with-example-from-statistical-rethinking)
     -   [Manual calculation of the
         WAIC](#manual-calculation-of-the-waic)
-    -   [Using generated quantities \[currently not
-        working\]](#using-generated-quantities-currently-not-working)
+    -   [Using generated quantities](#using-generated-quantities)
+    -   [Using generated quantities
+        cmdrstan](#using-generated-quantities-cmdrstan)
 
 **Status: generated quantities not working**
 
@@ -229,7 +230,7 @@ model{
 generated quantities {
   vector[N] log_lik;
   for (n in 1:N){
-    log_lik[n] = normal_lpdf(y[n] | a * x + b, sigma);
+    log_lik[n] = normal_lpdf(y[n] | a * x[n] + b, sigma);
   }
 }
 "
@@ -516,23 +517,24 @@ In the book (page 222, R Code 7.19) they use the following example:
 
 ``` r
 library(rstan)
-fit = stan(model_code = stan_code, data=list(N=length(y),y=y,x=x))
+data4stan=list(N=length(y),y=y,x=x)
+fit = stan(model_code = stan_code, data = data4stan)
 ```
 
 ``` r
 print(fit, pars = c('a','b','sigma'))
 ```
 
-    ## Inference for Stan model: 4614cffb6d34f3aa3de29f4967990bc9.
+    ## Inference for Stan model: 70f75151195f189466cb8f5435ba1cb8.
     ## 4 chains, each with iter=2000; warmup=1000; thin=1; 
     ## post-warmup draws per chain=1000, total post-warmup draws=4000.
     ## 
     ##         mean se_mean   sd   2.5%    25%    50%   75% 97.5% n_eff Rhat
-    ## a       3.61    0.01 0.36   2.91   3.37   3.62  3.85  4.29  1502    1
-    ## b     -11.97    0.15 5.67 -22.61 -15.81 -12.13 -8.22 -0.45  1508    1
-    ## sigma  15.41    0.04 1.53  12.76  14.36  15.26 16.38 18.64  1709    1
+    ## a       3.60    0.01 0.36   2.89   3.36   3.60  3.84  4.29  1532    1
+    ## b     -11.80    0.14 5.72 -23.09 -15.73 -11.78 -7.89 -0.67  1590    1
+    ## sigma  15.44    0.04 1.52  12.73  14.37  15.35 16.38 18.74  1859    1
     ## 
-    ## Samples were drawn using NUTS(diag_e) at Sun May 29 13:09:08 2022.
+    ## Samples were drawn using NUTS(diag_e) at Thu Jun  2 18:48:48 2022.
     ## For each parameter, n_eff is a crude measure of effective sample size,
     ## and Rhat is the potential scale reduction factor on split chains (at 
     ## convergence, Rhat=1).
@@ -581,13 +583,13 @@ training
 elpd
 </td>
 <td style="text-align:right;">
--209.9962
+-210.1010
 </td>
 <td style="text-align:right;">
--209.9685
+-210.0384
 </td>
 <td style="text-align:right;">
--208.2370
+-208.2806
 </td>
 </tr>
 <tr>
@@ -595,13 +597,13 @@ elpd
 NLL
 </td>
 <td style="text-align:right;">
-4.1999
+4.2020
 </td>
 <td style="text-align:right;">
-4.1994
+4.2008
 </td>
 <td style="text-align:right;">
-4.1647
+4.1656
 </td>
 </tr>
 <tr>
@@ -609,10 +611,10 @@ NLL
 p
 </td>
 <td style="text-align:right;">
-3.2030
+3.2854
 </td>
 <td style="text-align:right;">
-3.1753
+3.2228
 </td>
 <td style="text-align:right;">
 NA
@@ -630,115 +632,67 @@ variances of the different MCMC samples.
   (p.waic.manual = sum(apply(ps, 2, var))) #p.waid
 ```
 
-    ## [1] 3.175308
+    ## [1] 3.222751
 
 ``` r
   df[3,2]
 ```
 
-    ## [1] 3.175308
+    ## [1] 3.222751
 
 ``` r
   elpd.train = df['elpd','training']
   elpd.train -  p.waic.manual #
 ```
 
-    ## [1] -211.4123
+    ## [1] -211.5033
 
 ``` r
   -2*(elpd.train -  p.waic.manual) #423.1854 in book 423.
 ```
 
-    ## [1] 422.8247
+    ## [1] 423.0066
 
 Discussion: The effective number of parameters, is like in the `loo`
 routine. However, the lppd is probably calculated slightly different in
 `loo` compared to the approach in statistical rethinking and done in the
 manual approach.
 
-### Using generated quantities \[currently not working\]
+### Using generated quantities
 
 As an alternative, it should be possible to use the generated samples.
 
 ``` r
 samples = rstan::extract(fit)
-PS2 = extract_log_lik(fit)
-loo::loo(PS2)
+#PS2 = extract_log_lik(fit)
+#loo::loo(PS2) #elpd_loo    -18879.0
+loo::loo(fit) #elpd_loo  -18910.5   
 ```
 
-    ## Warning: Relative effective sample sizes ('r_eff' argument) not specified.
-    ## For models fit with MCMC, the reported PSIS effective sample sizes and 
-    ## MCSE estimates will be over-optimistic.
-
-    ## Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
+    ## Warning: Some Pareto k diagnostic values are slightly high. See help('pareto-k-diagnostic') for details.
 
     ## 
     ## Computed from 4000 by 50 log-likelihood matrix
     ## 
-    ##          Estimate     SE
-    ## elpd_loo -18889.8 1292.6
-    ## p_loo      6851.4  955.8
-    ## looic     37779.5 2585.2
+    ##          Estimate   SE
+    ## elpd_loo   -210.1  6.8
+    ## p_loo         3.3  1.3
+    ## looic       420.2 13.6
     ## ------
-    ## Monte Carlo SE of elpd_loo is NA.
+    ## Monte Carlo SE of elpd_loo is 0.1.
     ## 
     ## Pareto k diagnostic values:
     ##                          Count Pct.    Min. n_eff
-    ## (-Inf, 0.5]   (good)      0      0.0%  <NA>      
-    ##  (0.5, 0.7]   (ok)        0      0.0%  <NA>      
-    ##    (0.7, 1]   (bad)       0      0.0%  <NA>      
-    ##    (1, Inf)   (very bad) 50    100.0%  1         
+    ## (-Inf, 0.5]   (good)     49    98.0%   948       
+    ##  (0.5, 0.7]   (ok)        1     2.0%   297       
+    ##    (0.7, 1]   (bad)       0     0.0%   <NA>      
+    ##    (1, Inf)   (very bad)  0     0.0%   <NA>      
+    ## 
+    ## All Pareto k estimates are ok (k < 0.7).
     ## See help('pareto-k-diagnostic') for details.
 
 ``` r
-loo::loo(fit)
-```
-
-    ## Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
-
-    ## 
-    ## Computed from 4000 by 50 log-likelihood matrix
-    ## 
-    ##          Estimate     SE
-    ## elpd_loo -18893.0 1294.5
-    ## p_loo      6854.7  957.7
-    ## looic     37786.1 2588.9
-    ## ------
-    ## Monte Carlo SE of elpd_loo is NA.
-    ## 
-    ## Pareto k diagnostic values:
-    ##                          Count Pct.    Min. n_eff
-    ## (-Inf, 0.5]   (good)      0      0.0%  <NA>      
-    ##  (0.5, 0.7]   (ok)        0      0.0%  <NA>      
-    ##    (0.7, 1]   (bad)       0      0.0%  <NA>      
-    ##    (1, Inf)   (very bad) 50    100.0%  0         
-    ## See help('pareto-k-diagnostic') for details.
-
-``` r
-loo::waic(PS2)
-```
-
-    ## Warning: 
-    ## 50 (100.0%) p_waic estimates greater than 0.4. We recommend trying loo instead.
-
-    ## 
-    ## Computed from 4000 by 50 log-likelihood matrix
-    ## 
-    ##           Estimate      SE
-    ## elpd_waic -57941.1 18506.2
-    ## p_waic     45902.7 18194.6
-    ## waic      115882.1 37012.3
-    ## 
-    ## 50 (100.0%) p_waic estimates greater than 0.4. We recommend trying loo instead.
-
-``` r
-dim(PS2)
-```
-
-    ## [1] 4000   50
-
-``` r
-loo::loo(ps)
+loo::loo(ps) #elpd_loo  -210.1  
 ```
 
     ## Warning: Relative effective sample sizes ('r_eff' argument) not specified.
@@ -749,9 +703,9 @@ loo::loo(ps)
     ## Computed from 4000 by 50 log-likelihood matrix
     ## 
     ##          Estimate   SE
-    ## elpd_loo   -210.0  6.8
-    ## p_loo         3.2  1.3
-    ## looic       420.0 13.6
+    ## elpd_loo   -210.1  6.8
+    ## p_loo         3.3  1.3
+    ## looic       420.2 13.6
     ## ------
     ## Monte Carlo SE of elpd_loo is 0.0.
     ## 
@@ -760,17 +714,160 @@ loo::loo(ps)
 
 The problem is that the generated samples have different values.
 
-``` r
-hist(PS2[,1], main = 'generated samples')
-```
-
-![](elpd_files/figure-gfm/gen_kaputt2-1.png)<!-- -->
+### Using generated quantities cmdrstan
 
 ``` r
-hist(ps[,1], main = '')
+  fileConn<-file("temp4cmdstan.stan")
+  writeLines(stan_code, fileConn)
+  close(fileConn)
+  m = cmdstanr::cmdstan_model('temp4cmdstan.stan') 
+  s_s_corr = m$sample(data = data4stan) 
 ```
 
-![](elpd_files/figure-gfm/gen_kaputt2-2.png)<!-- -->
+    ## Running MCMC with 4 sequential chains...
+    ## 
+    ## Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) 
+    ## Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) 
+    ## Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+    ## Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+    ## Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+    ## Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+    ## Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+    ## Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+    ## Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+    ## Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+    ## Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+    ## Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+    ## Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+    ## Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+    ## Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+    ## Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+    ## Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+    ## Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+    ## Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+    ## Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+    ## Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+    ## Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) 
+    ## Chain 1 finished in 0.1 seconds.
+    ## Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) 
+    ## Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) 
+    ## Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+    ## Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+    ## Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+    ## Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+    ## Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+    ## Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+    ## Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+    ## Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+    ## Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+    ## Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+    ## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+    ## Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+    ## Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+    ## Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+    ## Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+    ## Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+    ## Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+    ## Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+    ## Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+    ## Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) 
+    ## Chain 2 finished in 0.1 seconds.
+    ## Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) 
+    ## Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) 
+    ## Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+    ## Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+    ## Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+    ## Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+    ## Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+    ## Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+    ## Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+    ## Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+    ## Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+    ## Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+    ## Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+    ## Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+    ## Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+    ## Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+    ## Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+    ## Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+    ## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+    ## Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+    ## Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+    ## Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) 
+    ## Chain 3 finished in 0.1 seconds.
+    ## Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) 
+    ## Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) 
+    ## Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) 
+    ## Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) 
+    ## Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) 
+    ## Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) 
+    ## Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) 
+    ## Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) 
+    ## Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) 
+    ## Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) 
+    ## Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) 
+    ## Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) 
+    ## Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) 
+    ## Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) 
+    ## Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) 
+    ## Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) 
+    ## Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) 
+    ## Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) 
+    ## Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) 
+    ## Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) 
+    ## Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) 
+    ## Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) 
+    ## Chain 4 finished in 0.1 seconds.
+    ## 
+    ## All 4 chains finished successfully.
+    ## Mean chain execution time: 0.1 seconds.
+    ## Total execution time: 0.6 seconds.
+
+``` r
+  library(tidybayes)
+  library(dplyr)
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following object is masked from 'package:kableExtra':
+    ## 
+    ##     group_rows
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+  d = s_s_corr %>% 
+    spread_draws(log_lik[i]) %>% 
+    select(log_lik) 
+```
+
+    ## Adding missing grouping variables: `i`
+
+``` r
+  dd = matrix(d$log_lik, ncol=ncol(ps))
+  loo::waic(dd)  
+```
+
+    ## Warning: 
+    ## 2 (4.0%) p_waic estimates greater than 0.4. We recommend trying loo instead.
+
+    ## 
+    ## Computed from 4000 by 50 log-likelihood matrix
+    ## 
+    ##           Estimate   SE
+    ## elpd_waic   -210.0  6.7
+    ## p_waic         3.2  1.2
+    ## waic         420.0 13.5
+    ## 
+    ## 2 (4.0%) p_waic estimates greater than 0.4. We recommend trying loo instead.
 
 [^1]: Other proper scoring rules are also possible. In some communities
     the CPRS is preferred over the NLL.

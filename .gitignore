@@ -57,3 +57,7 @@ stan/mixed_cafes/Cafes_of_Konstanz
 stan/football/hier_model
 
 stan/football/non_hier_model
+
+stan/elpd/temp4cmdstan.stan
+
+stan/elpd/temp4cmdstan

@@ -138,7 +138,7 @@ model{
 generated quantities {
   vector[N] log_lik;
   for (n in 1:N){
-    log_lik[n] = normal_lpdf(y[n] | a * x + b, sigma);
+    log_lik[n] = normal_lpdf(y[n] | a * x[n] + b, sigma);
   }
 }
 "
@@ -226,7 +226,8 @@ In the book (page 222, R Code 7.19) they use the following example:
 
 ```{r, eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE, cache = TRUE, warning=FALSE,results='hide'}
 library(rstan)
-fit = stan(model_code = stan_code, data=list(N=length(y),y=y,x=x))
+data4stan=list(N=length(y),y=y,x=x)
+fit = stan(model_code = stan_code, data = data4stan)
 ```
 
 ```{r}
@@ -255,23 +256,35 @@ The elpd estimate can be calculated by summing up the posterior variances of the
 
 Discussion: The effective number of parameters, is like in the `loo` routine. However, the lppd is probably calculated slightly different in `loo` compared to the approach in statistical rethinking and done in the manual approach.
 
-### Using generated quantities [currently not working]
+### Using generated quantities 
 
 As an alternative, it should be possible to use the generated samples.
 
 ```{r, gen_kaputt}
 samples = rstan::extract(fit)
-PS2 = extract_log_lik(fit)
-loo::loo(PS2)
-loo::loo(fit)
-loo::waic(PS2)
-dim(PS2)
-loo::loo(ps)
+#PS2 = extract_log_lik(fit)
+#loo::loo(PS2) 
+loo::loo(fit) 
+loo::loo(ps) #elpd_loo	-210.1	
 ```
 
 The problem is that the generated samples have different values.
 
-```{r, gen_kaputt2}
-hist(PS2[,1], main = 'generated samples')
-hist(ps[,1], main = '')
+### Using generated quantities cmdrstan
+```{r, cmdrstan}
+  fileConn<-file("temp4cmdstan.stan")
+  writeLines(stan_code, fileConn)
+  close(fileConn)
+  m = cmdstanr::cmdstan_model('temp4cmdstan.stan') 
+  s_s_corr = m$sample(data = data4stan) 
+  library(tidybayes)
+  library(dplyr)
+  d = s_s_corr %>% 
+    spread_draws(log_lik[i]) %>% 
+    select(log_lik) 
+  dd = matrix(d$log_lik, ncol=ncol(ps))
+  loo::waic(dd)  
 ```
+
+
+
