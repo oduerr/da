@@ -57,7 +57,7 @@ get_score = function(post_samples, data){
     nll_1 = nll_1 -log(1e-12 + mean(post_samples$s1new[,i] == ts1))
     nll_2 = nll_2 -log(1e-12 + mean(post_samples$s1new[,i] == ts2))
     pred_scorediff = mean(post_samples$s1new[,i] > post_samples$s2new[,i])
-    if (s1_pred_score[i] == ts1 && s2_pred_score[i] == ts2){
+    if (s1_pred_score[i] == ts1 && s2_pred_score[i] == ts2){ #Exact
       points = points + 3
     } else {
       if (abs(pred_scorediff) < 0.5){ #Call it a draw
@@ -90,15 +90,42 @@ get_waics = function(stanfit){
   
 }
 
+####### Baselines ######
+#
+#0:0
+points=0
+for(i in 1:length(data$score1)){
+  if (data$score1[i] == 2 && data$score2[i] == 2){
+    points = points + 3
+  } else if (data$score1[i] == data$score2[i]) {
+    points = points + 1
+  }
+  print(points)
+}
+1.0*points/length(data$score1)
+#0:0 baseline 0.35
+#1:1 baseline 0.48
+#2:2 baseline 0.35
+
 
 ####### Loading the models #####
 nh_mod <- stan_model('non_hier_model.stan')
 h_mod <- stan_model('hier_model.stan')
 h_nb_mod <- stan_model('hier_model_nb.stan')
 
+#Temp testing correlated model
+h_mod_cor <- stan_model('hier_model_cor.stan')
+ntrain = 200
+np = ng - ntrain
+my_data = get_data(np)
+summary(my_data$at)
+samp = sampling(h_mod_cor, data=my_data)
+post_samples = rstan::extract(samp)
+get_score(post_samples, my_data)
 
-models = c(nh_mod, h_mod)#, h_nb_mod)
+models = c(h_mod, h_mod_cor,h_nb_mod, nh_mod)
 ntrains = 10:320
+#ntrains = c(10,20,30,40,50,60)
 
 ####### Runs #####
 res = NULL
@@ -106,20 +133,33 @@ post_res = NULL
 for (ntrain in ntrains){
   np = ng - ntrain
   my_data = get_data(np)
+  cat('---------------------------------------------------\n')
   cat(paste0('Number of trainingsdata ', ntrains))
+  cat('---------------------------------------------------\n')
   for (m in models){
-    samp = sampling(m, data=my_data)
-    #For PSIS one needs to introduce generated quantities
-    #log_lik1 <- loo::extract_log_lik(samp, parameter_name = 'lp__')
-    post_samples = rstan::extract(samp)
-    s = get_score(post_samples, my_data)
-    res = rbind(res, data.frame(name = m@model_name, ntrain, s))  
-    p = get_posteriors(post_samples, my_data)
-    post_res = rbind(post_res, data.frame(name = m@model_name, ntrain, p))
+      try({
+          samp = sampling(m, data=my_data, iter = 4000)
+          #For PSIS one needs to introduce generated quantities
+          #log_lik1 <- loo::extract_log_lik(samp, parameter_name = 'lp__')
+          post_samples = rstan::extract(samp)
+          s = get_score(post_samples, my_data)
+          res = rbind(res, data.frame(name = m@model_name, ntrain, s)) 
+          p = get_posteriors(post_samples, my_data)
+          post_res = rbind(post_res, data.frame(name = m@model_name, ntrain, p))
+        }
+      )
   }
-  #save(res, post_res, file='results_2.rda')
+  save(res, post_res, file='results_4Jun.rda')
+  try({
+    res %>% pivot_longer(cols = 3:7, names_to='meassure') %>%  
+      filter(meassure %in% c('nll_1', 'nll_2', 'cor', 'score')) %>% 
+      ggplot() + 
+      geom_line(aes(x=ntrain, y=value, col=name, linetype=meassure)) + 
+      xlab('Number of Games for Training the Models') +
+      ylim(0, 2.5) 
+    ggsave('performance_w_nll.png')
+  })
 }
-
 ####### Results #####
 library(dplyr)
 library(tidyr)
