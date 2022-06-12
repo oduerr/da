@@ -1,6 +1,6 @@
 //Correlation model, we assume that the attack and defense capability 
 //of each team comes from a multivariate Gaussian, centered around zero. 
-//We don't have to enforce the sun to zero constrain
+//We don't have to enforce the sum to zero constrain in this parametrization
 data {
   int<lower=0> nt; //number of teams
   int<lower=0> ng; //number of games
@@ -40,10 +40,10 @@ transformed parameters {
 
 model {
   //hyper priors
-    L_u ~ lkj_corr_cholesky(1.5);
-    sigma_u ~ exponential(1.0);
+    L_u ~ lkj_corr_cholesky(1.5); //Hyper prior for the correlation (rather weak)
+    sigma_u ~ exponential(1.0);   //Hyper prior for the spread in attack and defense 
   //priors
-    to_vector(A_z) ~ normal(0, 1);
+    to_vector(A_z) ~ normal(0, 1); 
     home ~ normal(0,1);
   //likelihood
     s1 ~ poisson(theta1);
@@ -56,6 +56,7 @@ generated quantities {
   vector[np] theta2new; //score probability of away team
   real s1new[np]; //predicted score
   real s2new[np]; //predicted score
+  vector[ng] log_lik;
   
   for (i in 1:np) {
     theta1new[i] = exp(home + A[1, htnew[i]] - A[2, atnew[i]]);
@@ -63,5 +64,9 @@ generated quantities {
   }
   s1new = poisson_rng(theta1new);
   s2new = poisson_rng(theta2new);
+  
+  for (n in 1:ng){
+    log_lik[n] = poisson_lpmf(s1[n] | theta1) + poisson_lpmf(s2[n] | theta2);
+  }
 }
 

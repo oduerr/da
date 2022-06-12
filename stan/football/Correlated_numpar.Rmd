@@ -1,0 +1,62 @@
+---
+  output:
+    github_document
+---
+
+# Problems with effective number of parameters 
+
+See <https://github.com/oduerr/da/blob/master/stan/football/Hierarchical.md> and references therein for details on the dataset.
+
+```{r}
+lsg = TRUE #Set to FALSE before submitting
+require(rstan)
+set.seed(1) #set seed 
+options(mc.cores = parallel::detectCores())
+data = read.csv('https://raw.githubusercontent.com/MaggieLieu/STAN_tutorials/master/Hierarchical/premiereleague.csv',col.names = c('Home','score1', 'score2', 'Away'), stringsAsFactors = FALSE)
+
+ng = nrow(data)
+cat('we have G =', ng, 'games \n')
+nt = length(unique(data$Home))
+cat('We have T = ', nt, 'teams \n')
+
+teams = unique(data$Home)
+ht = unlist(sapply(1:ng, function(g) which(teams == data$Home[g])))
+at = unlist(sapply(1:ng, function(g) which(teams == data$Away[g])))
+
+np=200
+ngob = ng-np #number of games to fit
+my_data = list(
+  nt = nt, 
+  ng = ngob,
+  ht = ht[1:ngob], 
+  at = at[1:ngob], 
+  s1 = data$score1[1:ngob],
+  s2 = data$score2[1:ngob],
+  np = np,
+  htnew = ht[(ngob+1):ng],
+  atnew = at[(ngob+1):ng]
+)
+cat('We use my_data$np = ', my_data$ng, 'games for training and my_data$np =', my_data$np ,' for testing \n')
+```
+
+```{r, results="hide"}
+cfit = stan(file = 'hier_model_cor.stan', data = my_data)
+```
+
+#### Checking the fit (seem to be OK)
+
+```{r, name='checks'}
+rstan::check_divergences(cfit)
+check_treedepth(cfit)
+bayesplot::mcmc_rhat_hist(bayesplot::rhat(cfit))
+bayesplot::mcmc_neff_hist(bayesplot::neff_ratio(cfit))
+```
+
+### Checking the effective number of parameters
+
+```{r}
+res = loo::loo(cfit)
+res
+(elpd.loo = res$elpd_loo) #All chains a very bad
+(p.loo = res$estimates['p_loo',1]) #11686.85
+```

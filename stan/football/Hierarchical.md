@@ -46,6 +46,7 @@ require(rstan)
 
 ``` r
 set.seed(1) #set seed 
+options(mc.cores = parallel::detectCores())
 ```
 
 ### Reading the data
@@ -94,7 +95,7 @@ at = unlist(sapply(1:ng, function(g) which(teams == data$Away[g])))
 
 ``` r
 # we will save the last np games to predict
-np=200
+np=250
 ngob = ng-np #number of games to fit
 my_data = list(
   nt = nt, 
@@ -109,7 +110,7 @@ my_data = list(
 )
 ```
 
-### **Traditional (non-hierachical) method**
+### Traditional (non-hierachical) method
 
 We will assume that the goals scored come from a poisson distribution
 
@@ -128,6 +129,7 @@ att and def are the attack and defense abilities of the teams where the
 indices at,ht correspond to the t=1-20 teams.
 
 ``` r
+#nhfit = stan(file = 'non_hier_model.stan', data = my_data)
 nhfit = stan(file = 'non_hier_model.stan', data = my_data)
 ```
 
@@ -136,7 +138,7 @@ nhfit = stan(file = 'non_hier_model.stan', data = my_data)
 #### Plot the predicted scores of the lastmatches
 
 ``` r
-nhparams = extract(nhfit)
+nhparams = rstan::extract(nhfit)
 pred_scores = c(colMeans(nhparams$s1new),colMeans(nhparams$s2new))
 true_scores = c(data$score1[(ngob+1):ng],data$score2[(ngob+1):ng] )
 plot(true_scores, pred_scores, xlim=c(0,5), ylim=c(0,5), pch=20, ylab='predicted scores', xlab='true scores')
@@ -149,13 +151,13 @@ abline(a=0,  b=1, lty='dashed')
 sqrt(mean((pred_scores - true_scores)^2))
 ```
 
-    ## [1] 1.203124
+    ## [1] 1.287321
 
 ``` r
 cor(pred_scores, true_scores)
 ```
 
-    ## [1] 0.3181429
+    ## [1] 0.2591476
 
 ``` r
 get_score = function(nhparams, data){
@@ -184,7 +186,7 @@ get_score = function(nhparams, data){
 get_score(nhparams, data)
 ```
 
-    ## [1] 139
+    ## [1] 164
 
 #### Defense / Attack Non-Hierachical
 
@@ -204,7 +206,7 @@ text(attack,defense, labels=teams, cex=0.7, pos=4)
 Home Advantage
 
 ``` r
-home_adv = extract(nhfit)$home
+home_adv = rstan::extract(nhfit)$home
 hist(home_adv, 100, freq = FALSE, main=paste0("Home Adv, mean: ", round(mean(home_adv),2)))
 lines(density(home_adv))
 ```
@@ -228,9 +230,12 @@ hfit = stan(file = 'hier_model.stan', data = my_data)
 
     ## Trying to compile a simple C file
 
-    ## Warning: There were 102 divergent transitions after warmup. See
+    ## Warning: There were 306 divergent transitions after warmup. See
     ## http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
     ## to find out why this is a problem and how to eliminate them.
+
+    ## Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See
+    ## http://mc-stan.org/misc/warnings.html#bfmi-low
 
     ## Warning: Examine the pairs() plot to diagnose sampling problems
 
@@ -245,7 +250,7 @@ hfit = stan(file = 'hier_model.stan', data = my_data)
 ## Prediction of Hierarchical Model
 
 ``` r
-hparams = extract(hfit)
+hparams = rstan::extract(hfit)
 pred_scores = c(colMeans(hparams$s1new),colMeans(hparams$s2new))
 pred_errors = c(sapply(1:np, function(x) sd(hparams$s1new[,x])),sapply(1:np, function(x) sd(hparams$s1new[,x])))
 true_scores = c(data$score1[(ngob+1):ng],data$score2[(ngob+1):ng] )
@@ -260,19 +265,19 @@ arrows(true_scores, pred_scores+pred_errors, true_scores, pred_scores-pred_error
 sqrt(mean((pred_scores - true_scores)^2))
 ```
 
-    ## [1] 1.109485
+    ## [1] 1.145096
 
 ``` r
 cor(pred_scores, true_scores)
 ```
 
-    ## [1] 0.3396617
+    ## [1] 0.2936088
 
 ``` r
  get_score(nhparams, data)
 ```
 
-    ## [1] 139
+    ## [1] 164
 
 ``` r
 attack = colMeans(hparams$att)
@@ -294,18 +299,18 @@ text(attack,defense, labels=teams, cex=0.7, adj=c(-0.05,-0.8) )
 mean(attack)
 ```
 
-    ## [1] 1.626303e-18
+    ## [1] 1.048966e-18
 
 ``` r
 mean(defense)
 ```
 
-    ## [1] 1.072005e-18
+    ## [1] -6.010546e-19
 
 #### Home Advantage h-model
 
 ``` r
-home_adv = extract(hfit)$home
+home_adv = rstan::extract(hfit)$home
 hist(home_adv, 100, freq = FALSE, main=paste0("Home Adv, mean: ", round(mean(home_adv),2)))
 lines(density(home_adv))
 ```

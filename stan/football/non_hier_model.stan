@@ -46,9 +46,15 @@ generated quantities {
   vector[np] theta2new; //score probability of away team
   real s1new[np]; //predicted score
   real s2new[np]; //predicted score
+  vector[ng] log_lik;
 
   theta1new = exp(home + att[htnew] - def[atnew]);
   theta2new = exp(att[atnew] - def[htnew]);
   s1new = poisson_rng(theta1new);
   s2new = poisson_rng(theta2new);
+  
+   for (n in 1:ng){
+    //log_lik[n] = normal_lpdf(y[n] | a * x[n] + b, sigma);
+    log_lik[n] = poisson_lpmf(s1[n] | theta1) + poisson_lpmf(s2[n] | theta2);
+  }
 }
