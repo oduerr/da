@@ -84,9 +84,9 @@ into a training and test set.
 ```
 
 It’s always a good idea to scale your data before regression. For this
-example not doing so will cause divergent transitions. Since we are not
-allowed to know anything about the testdata, we just use the training
-data for scaling and prepare a list for stan.
+example not doing so will cause some divergent transitions. Since we are
+not allowed to know anything about the testdata, we just use the
+training data for scaling and prepare a list for stan.
 
 ``` r
 x_mean = mean(KN_train$livingSpace)
@@ -98,15 +98,15 @@ kn_stan_dat = list(
   N = nrow(KN_train),
   y = (KN_train$baseRent - y_mean)/y_sd,
   x = (KN_train$livingSpace - x_mean)/x_sd,
-  y = KN_train$baseRent,
-  x = KN_train$livingSpace,
+  #y = KN_train$baseRent,
+  #x = KN_train$livingSpace,
   j = KN_train$id,
   
   N_t = nrow(KN_test),
   y_t = (KN_test$baseRent - y_mean)/y_sd,
   x_t = (KN_test$livingSpace - x_mean)/x_sd,
-  y_t = KN_test$baseRent,
-  x_t = KN_test$livingSpace,
+  #y_t = KN_test$baseRent,
+  #x_t = KN_test$livingSpace,
   j_t = KN_test$id,
   J = J,
   
@@ -183,12 +183,6 @@ library(rstan)
 #kn_m = stan_model(file = 'kn_hier.stan')
 kn_s = sampling(kn_m, data=kn_stan_dat) 
 ```
-
-    ## Warning: There were 2 divergent transitions after warmup. See
-    ## http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
-    ## to find out why this is a problem and how to eliminate them.
-
-    ## Warning: Examine the pairs() plot to diagnose sampling problems
 
 ### Base costs
 
@@ -428,4 +422,4 @@ Stockach
 ```
 
     ##       5%      50%      95% 
-    ## 10.90616 11.94331 12.93510
+    ## 10.89416 11.94220 12.99266
