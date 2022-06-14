@@ -137,7 +137,11 @@ model{
 
 generated quantities {
   vector[N] log_lik;
+  //Not working, we have to loop
+  //log_lik = normal_lpdf(y| a * x + b, sigma)
   for (n in 1:N){
+    //Note log_lik[n] = normal_lpdf(y[n] | a * x[n] + b, sigma) is wrong
+    //We have to go over all n data points
     log_lik[n] = normal_lpdf(y[n] | a * x[n] + b, sigma);
   }
 }
@@ -271,7 +275,7 @@ loo::loo(ps) #elpd_loo	-210.1
 The problem is that the generated samples have different values.
 
 ### Using generated quantities cmdrstan
-```{r, cmdrstan}
+```{r, cmdrstan, results="hide", cache = TRUE}
   fileConn<-file("temp4cmdstan.stan")
   writeLines(stan_code, fileConn)
   close(fileConn)
