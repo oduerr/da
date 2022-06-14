@@ -21,6 +21,7 @@ if (FALSE){
   KN_Kreis %>% 
     filter(training) %>% count(regio3) 
   saveRDS(KN_Kreis, 'KN_Kreis.rds')
+  write.csv2(KN_Kreis, 'KN_Kreis.csv')
 } else{
   KN_Kreis = readRDS('KN_Kreis.rds')
 }
