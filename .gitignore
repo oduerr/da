@@ -61,3 +61,7 @@ stan/football/non_hier_model
 stan/elpd/temp4cmdstan.stan
 
 stan/elpd/temp4cmdstan
+
+stan/robustness/robustness_lsg.html
+
+stan/robustness/robustness_no_lsg.html
