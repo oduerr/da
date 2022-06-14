@@ -66,7 +66,6 @@ KN_train = KN_Kreis %>% filter(training)
 KN_test = KN_Kreis %>% filter(!training)
 
 #Possible scaling
-#Hack Attack for no scaling
 x_mean = mean(KN_train$livingSpace)
 x_sd = sd(KN_train$livingSpace)
 y_mean = mean(KN_train$baseRent)
@@ -224,66 +223,69 @@ spread_draws(res, r_j[id, term]) %>%
   theme_ridges()
 
 
-########## Stan Fitting ###########
-file = 'kn_hier.stan'
-title = 'Konstanz County: Hierachical Model Gauss'
-title_short = 'KN_h'
-options(mc.cores = parallel::detectCores())
-library(rstan)
-rm(kn_m);rm(kn_s)
-kn_m = stan_model(file = file)
-kn_s = sampling(kn_m, data=kn_stan_dat) 
-kn_s
-#Error in unserialize(socklist[[n]]) : error reading from connection
-#This seems to happen, when options like max_treedepth are set
 if (FALSE){
-  library(cmdstanr)
-  kn_mc =  cmdstan_model('kn_hier.stan')
-  kn_sc = kn_mc$sample(data = kn_stan_dat)
+  ########## Stan Fitting ###########
+  file = 'kn_hier.stan'
+  title = 'Konstanz County: Hierachical Model Gauss'
+  title_short = 'KN_h'
+  options(mc.cores = parallel::detectCores())
+  library(rstan)
+  rm(kn_m);rm(kn_s)
+  kn_m = stan_model(file = file)
+  kn_s = sampling(kn_m, data=kn_stan_dat) 
+  kn_s
+  #Error in unserialize(socklist[[n]]) : error reading from connection
+  #This seems to happen, when options like max_treedepth are set
+  if (FALSE){
+    library(cmdstanr)
+    kn_mc =  cmdstan_model('kn_hier.stan')
+    kn_sc = kn_mc$sample(data = kn_stan_dat)
+  }
+  ###Diagnostics of the fit
+  stanplot(b0, type = "trace")
+  traceplot(kn_s) #Slow Mixing
+  
+  
+  print(kn_s)
+  loo::loo(kn_s)
+  library(tidybayes)
+  library(bayesplot)
+  library(ggridges)
+  
+  spread_draws(kn_s, u[i,j]) %>%
+    filter(i == 2) %>% 
+    right_join(cities_numbers, by = c("j" = "id")) %>% 
+    ggplot(aes(x=u, y=regio3)) + 
+    geom_density_ridges() +
+    labs(title = title, x = 'Slope Euro/sqm [Scaled]') +
+    theme_ridges()
+  ggsave(paste0(title_short, '_slope_stan.pdf'), width = 28, height = 28, units = 'cm')
+  
+  spread_draws(kn_s, beta[i]) %>%
+    ggplot(aes(x=beta, col=as.factor(i))) + geom_density() + 
+    labs(title = 'Mean of Intercept[1] and slope[2]', x = 'Slope Euro/sqm') 
+  
+  spread_draws(kn_s, pu[i]) %>%
+    ggplot(aes(x=pu, col=as.factor(i))) + geom_density() + 
+    labs(title = 'Spread of Intercept[1] and slope[2]', x = 'Slope Euro/sqm') 
+  
+  spread_draws(kn_s, sigma_e)$sigma_e %>% hist(100)
+  
+  
+  kn_stan_dat$N_t
+  spread_draws(kn_s, y_t_pred[i,j])
+  d = rstan::extract(kn_s)
+  preds = data.frame(
+    #pred_mu = y_mean + y_sd * colMeans(as.matrix(d$y_t_pred, ncol=kn_stan_dat$N_t)),
+    pred_mu = colMeans(as.matrix(d$y_t_pred, ncol=kn_stan_dat$N_t)),
+    y_obs = kn_stan_dat$y_t,
+    city = as.factor(kn_stan_dat$j_t)) 
+  preds %>% ggplot(aes(x=pred_mu, y=y_obs, col=city)) + geom_point()
+  sqrt(mean((preds$pred_mu - preds$y_obs)^2))
+  
+  library(rstan)
 }
-###Diagnostics of the fit
-stanplot(b0, type = "trace")
-traceplot(kn_s) #Slow Mixing
 
-
-print(kn_s)
-loo::loo(kn_s)
-library(tidybayes)
-library(bayesplot)
-library(ggridges)
-
-spread_draws(kn_s, u[i,j]) %>%
-  filter(i == 2) %>% 
-  right_join(cities_numbers, by = c("j" = "id")) %>% 
-  ggplot(aes(x=u, y=regio3)) + 
-  geom_density_ridges() +
-  labs(title = title, x = 'Slope Euro/sqm') +
-  theme_ridges()
-ggsave(paste0(title_short, '_slope_stan.pdf'), width = 28, height = 28, units = 'cm')
-
-spread_draws(kn_s, beta[i]) %>%
-  ggplot(aes(x=beta, col=as.factor(i))) + geom_density() + 
-  labs(title = 'Mean of Intercept[1] and slope[2]', x = 'Slope Euro/sqm') 
-
-spread_draws(kn_s, pu[i]) %>%
-  ggplot(aes(x=pu, col=as.factor(i))) + geom_density() + 
-  labs(title = 'Spread of Intercept[1] and slope[2]', x = 'Slope Euro/sqm') 
-
-spread_draws(kn_s, sigma_e)$sigma_e %>% hist(100)
-
-
-kn_stan_dat$N_t
-spread_draws(kn_s, y_t_pred[i,j])
-d = rstan::extract(kn_s)
-preds = data.frame(
-  #pred_mu = y_mean + y_sd * colMeans(as.matrix(d$y_t_pred, ncol=kn_stan_dat$N_t)),
-  pred_mu = colMeans(as.matrix(d$y_t_pred, ncol=kn_stan_dat$N_t)),
-  y_obs = kn_stan_dat$y_t,
-  city = as.factor(kn_stan_dat$j_t)) 
-preds %>% ggplot(aes(x=pred_mu, y=y_obs, col=city)) + geom_point()
-sqrt(mean((preds$pred_mu - preds$y_obs)^2))
-
-library(rstan)
 
 
 

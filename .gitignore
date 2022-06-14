@@ -65,3 +65,7 @@ stan/elpd/temp4cmdstan
 stan/robustness/robustness_lsg.html
 
 stan/robustness/robustness_no_lsg.html
+
+stan/kn_rent/rent_kn_lsg.html
+
+stan/kn_rent/rent_kn_no_lsg.html
