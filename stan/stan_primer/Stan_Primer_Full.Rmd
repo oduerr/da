@@ -5,6 +5,35 @@
 
 ## MCMC with Stan / Simple diagnostics
 
+A quick summary of commands (for a more details see below).
+
+### Stan
+
+``` r
+library(rstan)
+m_rstan = stan_model(model_code = stan_code) #Compiling from string
+m_rstan stan_model(file='mymodel.stan') #Compiling from file
+s_rstan = sampling(m_rstan, data=data) #Sampling from file
+#No MCMC just evaluating parameters
+sampling(model_1, data=dat, algorithm="Fixed_param", chain=1, iter=1) 
+```
+
+### Cmdstan
+
+``` r
+library(cmdstanr)
+m_rcmdstan <- cmdstan_model(file_stan)
+s_rcmdstan = m_rcmdstan$sample(data = data)
+```
+
+### Tidy Bayes 
+
+``` r
+library(tidybayes)
+spread_draws(s, c(a,b)) #Extracts a and b from s (stan or cmdstan samples)
+spread_draws(s, f[i])  #Extracts vector f and calls components i
+```
+
 In the following some notes on Stan. You might find the following resources sheets helpful.
 
 ### Other Cheat Sheets

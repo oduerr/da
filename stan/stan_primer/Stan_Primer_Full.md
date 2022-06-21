@@ -1,6 +1,35 @@
 
 ## MCMC with Stan / Simple diagnostics
 
+A quick summary of commands (for a more details see below).
+
+### Stan
+
+``` r
+library(rstan)
+m_rstan = stan_model(model_code = stan_code) #Compiling from string
+m_rstan stan_model(file='mymodel.stan') #Compiling from file
+s_rstan = sampling(m_rstan, data=data) #Sampling from file
+#No MCMC just evaluating parameters
+sampling(model_1, data=dat, algorithm="Fixed_param", chain=1, iter=1) 
+```
+
+### Cmdstan
+
+``` r
+library(cmdstanr)
+m_rcmdstan <- cmdstan_model(file_stan)
+s_rcmdstan = m_rcmdstan$sample(data = data)
+```
+
+### Tidy Bayes
+
+``` r
+library(tidybayes)
+spread_draws(s, c(a,b)) #Extracts a and b from s (stan or cmdstan samples)
+spread_draws(s, f[i])  #Extracts vector f and calls components i
+```
+
 In the following some notes on Stan. You might find the following
 resources sheets helpful.
 
@@ -133,12 +162,15 @@ For rstan: `sampling(m_rstan, data=data)` For cmdstan:
   s_rcmdstan = m_rcmdstan$sample(data = data)
 ```
 
-    ## Warning: 2 of 4000 (0.0%) transitions ended with a divergence.
-    ## See https://mc-stan.org/misc/warnings for details.
-
 ``` r
   s_rstan = sampling(m_rstan, data=data)  
 ```
+
+    ## Warning: There were 1 divergent transitions after warmup. See
+    ## http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
+    ## to find out why this is a problem and how to eliminate them.
+
+    ## Warning: Examine the pairs() plot to diagnose sampling problems
 
 #### Diagnostics of the chains
 
@@ -161,12 +193,12 @@ s_rstan
     ## post-warmup draws per chain=1000, total post-warmup draws=4000.
     ## 
     ##        mean se_mean   sd   2.5%   25%   50%   75% 97.5% n_eff Rhat
-    ## a      2.90    0.06 2.55  -2.66  1.56  2.98  4.34  8.06  1895    1
-    ## b     -1.59    0.08 3.56  -8.87 -3.60 -1.61  0.43  6.00  2137    1
-    ## sigma  7.27    0.10 3.48   2.93  4.80  6.38  8.86 16.32  1286    1
-    ## lp__  -7.97    0.05 1.47 -11.71 -8.70 -7.59 -6.87 -6.19  1006    1
+    ## a      2.97    0.05 2.40  -1.97  1.61  2.96  4.38  7.66  2174    1
+    ## b     -1.43    0.07 3.53  -8.53 -3.45 -1.47  0.53  6.06  2290    1
+    ## sigma  7.35    0.09 3.49   3.01  4.81  6.53  8.92 16.28  1500    1
+    ## lp__  -7.90    0.04 1.41 -11.51 -8.56 -7.60 -6.84 -6.18  1106    1
     ## 
-    ## Samples were drawn using NUTS(diag_e) at Mon May 23 22:55:35 2022.
+    ## Samples were drawn using NUTS(diag_e) at Tue Jun 21 20:37:38 2022.
     ## For each parameter, n_eff is a crude measure of effective sample size,
     ## and Rhat is the potential scale reduction factor on split chains (at 
     ## convergence, Rhat=1).
@@ -201,12 +233,12 @@ head(spread_draws(s_rcmdstan, c(a,b))) #Non-tidy a and b in one row
     ## # A tibble: 6 × 5
     ##   .chain .iteration .draw     a      b
     ##    <int>      <int> <int> <dbl>  <dbl>
-    ## 1      1          1     1 5.98  -3.74 
-    ## 2      1          2     2 1.70   2.59 
-    ## 3      1          3     3 0.707 -1.52 
-    ## 4      1          4     4 2.05   0.906
-    ## 5      1          5     5 2.63   0.292
-    ## 6      1          6     6 1.20  -2.59
+    ## 1      1          1     1 3.88   0.500
+    ## 2      1          2     2 1.22  -0.269
+    ## 3      1          3     3 4.91  -2.84 
+    ## 4      1          4     4 5.07  -3.34 
+    ## 5      1          5     5 3.40  -3.37 
+    ## 6      1          6     6 0.509 -4.60
 
 ``` r
 head(gather_draws(s_rstan, c(a,b))) #The ggplot like syntax
@@ -216,12 +248,12 @@ head(gather_draws(s_rstan, c(a,b))) #The ggplot like syntax
     ## # Groups:   .variable [1]
     ##   .chain .iteration .draw .variable .value
     ##    <int>      <int> <int> <chr>      <dbl>
-    ## 1      1          1     1 a           5.68
-    ## 2      1          2     2 a           3.81
-    ## 3      1          3     3 a           1.03
-    ## 4      1          4     4 a           5.78
-    ## 5      1          5     5 a           5.03
-    ## 6      1          6     6 a           5.32
+    ## 1      1          1     1 a          4.77 
+    ## 2      1          2     2 a          1.51 
+    ## 3      1          3     3 a          0.280
+    ## 4      1          4     4 a          2.89 
+    ## 5      1          5     5 a          3.27 
+    ## 6      1          6     6 a          1.76
 
 ``` r
 #spread_draws(model_weight_sex, a[sex]) for multilevel models
