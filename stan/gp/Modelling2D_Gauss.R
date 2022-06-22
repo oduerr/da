@@ -1,6 +1,7 @@
 library(MASS)
 library(ggplot2)
 library(manipulate)
+N = 1000
 manipulate({
   rho = matrix(c(1,cor,cor,1), nrow=2)
   sigma = matrix(c(s1,0,0,s2), nrow=2)
