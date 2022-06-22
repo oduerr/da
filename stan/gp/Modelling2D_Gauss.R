@@ -9,6 +9,12 @@ manipulate({
   
   #Sampling of data from MV-Gaussian
   d = data.frame(mvrnorm(n = N, Sigma = K, mu=c(mu1,mu2)))
+  cat('\n')
+  cat(sd(d$X1))
+  cat(' ')
+  cat(sd(d$X2))
+  cat(' ')
+  cat(cor(d$X1, d$X2))
   #Drawing of the plot
   gg = ggplot(d, aes(x=X1, y=X2)) +
     geom_point(size=0.5, alpha=0.5) +
