@@ -56,8 +56,10 @@ model {
 generated quantities{
   vector[N1] log_lik;
   real TL;
+  //Prediction
   TL = poisson_rng((a*P[11]^b/g)*exp(f[11])); 
   
+  //Log-Like calculation for PSIS
   for (n in 1:N1){
     log_lik[n] = poisson_lpmf(T[n] | (a*P[n]^b/g)*exp(f[n]));
   }

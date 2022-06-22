@@ -28,12 +28,13 @@ fit_island = sampling(m1, dat)
 Sys.time() - s
 
 library(tidybayes)
-post = spread_draws(fit_island, c(etasq,rhosq))
+post = spread_draws(fit_island, c(etasq,rhosq,g,b))
 # plot 50 functions sampled from posterior
 ### The decay of the Covariance function
 plot(NULL, xlim=c(0,10), ylim=c(0,1), ylab='Covariance', xlab='Distance [1000 km]', main='Posterior Covariance Matrix')
 for ( i in 1:50 )
   curve( post$etasq[i]*exp(-post$rhosq[i]*x^2) , add=TRUE , col=col.alpha("black",0.3) )
+post %>% ggplot(aes(x=b)) + geom_density() + labs(title='Scaling with population')
 
 loo::loo(fit_island)
 
