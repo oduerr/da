@@ -34,7 +34,14 @@ spread_draws(s, c(a,b)) #Extracts a and b from s (stan or cmdstan samples)
 spread_draws(s, f[i])  #Extracts vector f and calls components i
 ```
 
-In the following some notes on Stan. You might find the following resources sheets helpful.
+### RStudio
+Sometimes R gets slow when dealing with stan. At least in my case 
+
+``` r
+rstan_options(javascript=FALSE)
+```
+
+In the following some notes on Stan. You might find the following resources helpful.
 
 ### Other Cheat Sheets
 
