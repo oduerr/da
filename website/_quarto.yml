@@ -15,7 +15,11 @@ format:
     theme: cosmo
     css: styles.css
     toc: true
-
+    fig-width: 8
+    fig-height: 4
+    code-fold: true
+    code-tools: true
+    
 editor: visual
 
 
