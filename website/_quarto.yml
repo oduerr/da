@@ -9,6 +9,7 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
+      - Stan_Primer_Full.qmd
 
 format:
   html:

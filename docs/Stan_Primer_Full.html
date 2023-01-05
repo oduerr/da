@@ -151,6 +151,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="nav-link" href="./about.html">
  <span class="menu-text">About</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./Stan_Primer_Full.html" aria-current="page">
+ <span class="menu-text">Stan primer</span></a>
+  </li>  
 </ul>
               <div id="quarto-search" class="" title="Search"></div>
           </div> <!-- /navcollapse -->
@@ -166,19 +170,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#mcmc-with-stan-simple-diagnostics" id="toc-mcmc-with-stan-simple-diagnostics" class="nav-link active" data-scroll-target="#mcmc-with-stan-simple-diagnostics">MCMC with Stan / Simple diagnostics</a>
-  <ul class="collapse">
-  <li><a href="#quick-summary" id="toc-quick-summary" class="nav-link" data-scroll-target="#quick-summary">Quick summary</a>
+  <li><a href="#quick-summary" id="toc-quick-summary" class="nav-link active" data-scroll-target="#quick-summary">Quick summary</a>
   <ul class="collapse">
   <li><a href="#stan" id="toc-stan" class="nav-link" data-scroll-target="#stan">Stan</a></li>
-  <li><a href="#cmdstan" id="toc-cmdstan" class="nav-link" data-scroll-target="#cmdstan">Cmdstan</a></li>
+  <li><a href="#cmdstan" id="toc-cmdstan" class="nav-link" data-scroll-target="#cmdstan">Cmdstan</a>
+  <ul class="collapse">
   <li><a href="#tidy-bayes" id="toc-tidy-bayes" class="nav-link" data-scroll-target="#tidy-bayes">Tidy Bayes</a></li>
+  <li><a href="#bayes-plot" id="toc-bayes-plot" class="nav-link" data-scroll-target="#bayes-plot">Bayes plot</a></li>
   <li><a href="#rstudio" id="toc-rstudio" class="nav-link" data-scroll-target="#rstudio">RStudio</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#in-a-more-detail" id="toc-in-a-more-detail" class="nav-link" data-scroll-target="#in-a-more-detail">In a more detail</a>
+  <ul class="collapse">
   <li><a href="#other-cheat-sheets" id="toc-other-cheat-sheets" class="nav-link" data-scroll-target="#other-cheat-sheets">Other Cheat Sheets</a></li>
-  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
-  <li><a href="#getting-samples-from-the-posterior" id="toc-getting-samples-from-the-posterior" class="nav-link" data-scroll-target="#getting-samples-from-the-posterior">Getting samples from the posterior</a></li>
+  <li><a href="#data-used" id="toc-data-used" class="nav-link" data-scroll-target="#data-used">Data used</a></li>
+  <li><a href="#getting-samples-from-the-posterior" id="toc-getting-samples-from-the-posterior" class="nav-link" data-scroll-target="#getting-samples-from-the-posterior">Getting samples from the posterior</a>
+  <ul class="collapse">
+  <li><a href="#the-technical-steps" id="toc-the-technical-steps" class="nav-link" data-scroll-target="#the-technical-steps">The technical steps</a></li>
+  <li><a href="#definition" id="toc-definition" class="nav-link" data-scroll-target="#definition">Definition</a></li>
+  <li><a href="#compiling" id="toc-compiling" class="nav-link" data-scroll-target="#compiling">Compiling</a></li>
+  <li><a href="#sampling-running-the-chains" id="toc-sampling-running-the-chains" class="nav-link" data-scroll-target="#sampling-running-the-chains">Sampling / running the chains</a></li>
+  <li><a href="#diagnostics-of-the-chains" id="toc-diagnostics-of-the-chains" class="nav-link" data-scroll-target="#diagnostics-of-the-chains">Diagnostics of the chains</a></li>
   <li><a href="#posteriors-of-the-parameters" id="toc-posteriors-of-the-parameters" class="nav-link" data-scroll-target="#posteriors-of-the-parameters">Posteriors (of the parameters)</a></li>
   <li><a href="#posterior-predictive-plots" id="toc-posterior-predictive-plots" class="nav-link" data-scroll-target="#posterior-predictive-plots">Posterior Predictive Plots</a></li>
+  <li><a href="#task-use-the-samples-to-create-the-following-posterior-predictive-plots" id="toc-task-use-the-samples-to-create-the-following-posterior-predictive-plots" class="nav-link" data-scroll-target="#task-use-the-samples-to-create-the-following-posterior-predictive-plots">Task: Use the samples to create the following posterior predictive plots</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -204,13 +219,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<section id="mcmc-with-stan-simple-diagnostics" class="level1">
-<h1>MCMC with Stan / Simple diagnostics</h1>
-<section id="quick-summary" class="level2">
-<h2 class="anchored" data-anchor-id="quick-summary">Quick summary</h2>
+<p>MCMC with Stan / Simple diagnostics</p>
+<section id="quick-summary" class="level1">
+<h1>Quick summary</h1>
 <p>A quick summary of commands (for a more details see below).</p>
-<section id="stan" class="level3">
-<h3 class="anchored" data-anchor-id="stan">Stan</h3>
+<section id="stan" class="level2">
+<h2 class="anchored" data-anchor-id="stan">Stan</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -227,8 +241,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 </div>
 </section>
-<section id="cmdstan" class="level3">
-<h3 class="anchored" data-anchor-id="cmdstan">Cmdstan</h3>
+<section id="cmdstan" class="level2">
+<h2 class="anchored" data-anchor-id="cmdstan">Cmdstan</h2>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -237,9 +251,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>s_rcmdstan <span class="ot">=</span> m_rcmdstan<span class="sc">$</span><span class="fu">sample</span>(<span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-</section>
 <section id="tidy-bayes" class="level3">
 <h3 class="anchored" data-anchor-id="tidy-bayes">Tidy Bayes</h3>
+<p>Works with rstan and cmdstanr</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -249,37 +263,52 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </details>
 </div>
 </section>
+<section id="bayes-plot" class="level3">
+<h3 class="anchored" data-anchor-id="bayes-plot">Bayes plot</h3>
+<p>Works with rstan and cmdstanr</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>  s <span class="ot">=</span> s_rcmdstan<span class="sc">$</span><span class="fu">draws</span>() <span class="co">#We need to call draws() 2023</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  bayesplot<span class="sc">::</span><span class="fu">mcmc_trace</span>(s)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
 <section id="rstudio" class="level3">
 <h3 class="anchored" data-anchor-id="rstudio">RStudio</h3>
 <p>Sometimes R gets slow when dealing with stan. At least in my case</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rstan_options</span>(<span class="at">javascript=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>#In a more detail In the following some notes on Stan. You might find the following resources helpful.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rstan_options</span>(<span class="at">javascript=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="other-cheat-sheets" class="level3">
-<h3 class="anchored" data-anchor-id="other-cheat-sheets">Other Cheat Sheets</h3>
+</section>
+</section>
+<section id="in-a-more-detail" class="level1">
+<h1>In a more detail</h1>
+<p>In the following some notes on Stan. You might find the following resources helpful.</p>
+<section id="other-cheat-sheets" class="level2">
+<h2 class="anchored" data-anchor-id="other-cheat-sheets">Other Cheat Sheets</h2>
 <ul>
 <li><a href="http://www.sumsar.net/files/posts/2017-bayesian-tutorial-exercises/stan_cheat_sheet2.12.pdf" class="uri">http://www.sumsar.net/files/posts/2017-bayesian-tutorial-exercises/stan_cheat_sheet2.12.pdf</a></li>
 <li><a href="https://github.com/sieste/Stan_cheatsheet" class="uri">https://github.com/sieste/Stan_cheatsheet</a></li>
 </ul>
 </section>
-<section id="data" class="level3">
-<h3 class="anchored" data-anchor-id="data">Data</h3>
+<section id="data-used" class="level2">
+<h2 class="anchored" data-anchor-id="data-used">Data used</h2>
 <p>Some Data for linear regression</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">4</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">2.</span>,<span class="sc">-</span><span class="fl">0.66666</span>, <span class="fl">0.666</span>, <span class="fl">2.</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">6.25027354</span>, <span class="sc">-</span><span class="fl">2.50213382</span>, <span class="sc">-</span><span class="fl">6.07525495</span>,  <span class="fl">7.92081243</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">list</span>(<span class="at">N=</span>N, <span class="at">x=</span>x, <span class="at">y=</span>y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">4</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">2.</span>,<span class="sc">-</span><span class="fl">0.66666</span>, <span class="fl">0.666</span>, <span class="fl">2.</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">6.25027354</span>, <span class="sc">-</span><span class="fl">2.50213382</span>, <span class="sc">-</span><span class="fl">6.07525495</span>,  <span class="fl">7.92081243</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">list</span>(<span class="at">N=</span>N, <span class="at">x=</span>x, <span class="at">y=</span>y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
-<section id="getting-samples-from-the-posterior" class="level3">
-<h3 class="anchored" data-anchor-id="getting-samples-from-the-posterior">Getting samples from the posterior</h3>
+<section id="getting-samples-from-the-posterior" class="level2">
+<h2 class="anchored" data-anchor-id="getting-samples-from-the-posterior">Getting samples from the posterior</h2>
 <p>There are currently (2023) two interfaces to stan from R. RStan (<a href="https://mc-stan.org/users/interfaces/rstan" class="uri">https://mc-stan.org/users/interfaces/rstan</a>) which is a bit slower and does not use the latest stan compiler and rcmdstan (<a href="https://mc-stan.org/cmdstanr/articles/cmdstanr.html" class="uri">https://mc-stan.org/cmdstanr/articles/cmdstanr.html</a>).</p>
-<section id="the-technical-steps" class="level4">
-<h4 class="anchored" data-anchor-id="the-technical-steps">The technical steps</h4>
+<section id="the-technical-steps" class="level3">
+<h3 class="anchored" data-anchor-id="the-technical-steps">The technical steps</h3>
 <p>There are 3 steps:</p>
 <ol type="1">
 <li>Defining the model</li>
@@ -288,155 +317,99 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Extracting the samples from the posterior</li>
 </ol>
 </section>
-<section id="definition" class="level4">
-<h4 class="anchored" data-anchor-id="definition">Definition</h4>
+<section id="definition" class="level3">
+<h3 class="anchored" data-anchor-id="definition">Definition</h3>
 <p>To define a model, you can add a string or create a <code>.stan</code> file. Another option is to use a <code>Stan</code> markdown chunk and <code>output.var=my_model</code> to the name of the model. Code completion and highlighting is working for files and code chunks.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>stan_code <span class="ot">=</span> <span class="st">"data{</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; N;</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="st">  vector[N] y;</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="st">  vector[N] x;</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="st">parameters{</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="st">  real a; //Instead of using e.g. half Gaussian</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="st">  real b;</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="st">  real&lt;lower=0&gt; sigma;</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="st">model{</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="st">  //y ~ normal(mu, sigma);</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="st">  y ~ normal(a * x + b, sigma);</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="st">  a ~ normal(3, 10); </span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="st">  b ~ normal(0, 10); </span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="st">  sigma ~ normal(0,10);</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="st">}"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>stan_code <span class="ot">=</span> <span class="st">"data{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; N;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="st">  vector[N] y;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="st">  vector[N] x;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="st">parameters{</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="st">  real a; //Instead of using e.g. half Gaussian</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="st">  real b;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="st">  real&lt;lower=0&gt; sigma;</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="st">model{</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="st">  //y ~ normal(mu, sigma);</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="st">  y ~ normal(a * x + b, sigma);</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="st">  a ~ normal(3, 10); </span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="st">  b ~ normal(0, 10); </span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="st">  sigma ~ normal(0,10);</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="st">}"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
-<section id="compiling" class="level4">
-<h4 class="anchored" data-anchor-id="compiling">Compiling</h4>
+<section id="compiling" class="level3">
+<h3 class="anchored" data-anchor-id="compiling">Compiling</h3>
 <p>Compiling works with:</p>
 <ul>
-<li>Compiling rstan <code>stan_model(model_code = stan_code)</code> or <code>stan_model(file='mymodel.stan')</code></li>
-<li>Compiling cmdstan <code>cmdstan_model(file_stan)</code></li>
+<li><p>Compiling rstan <code>stan_model(model_code = stan_code)</code> or <code>stan_model(file='mymodel.stan')</code></p></li>
+<li><p>Compiling cmdstan <code>cmdstan_model(file_stan)</code></p></li>
 </ul>
-<section id="compiling-with-rstan" class="level5">
-<h5 class="anchored" data-anchor-id="compiling-with-rstan">Compiling with rstan</h5>
-<div class="cell">
+<section id="compiling-with-rstan" class="level4">
+<h4 class="anchored" data-anchor-id="compiling-with-rstan">Compiling with rstan</h4>
+<div class="cell" data-hash="Stan_Primer_Full_cache/html/unnamed-chunk-6_ebff5e8d680b15d6322c5bd6c419f43e">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(rstan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: StanHeaders</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>rstan (Version 2.21.2, GitRev: 2e1f913d3ca3)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>For execution on a local, multicore CPU with excess RAM we recommend calling
-options(mc.cores = parallel::detectCores()).
-To avoid recompilation of unchanged Stan programs, we recommend calling
-rstan_options(auto_write = TRUE)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'rstan'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:tidyr':
-
-    extract</code></pre>
-</div>
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>  m_rstan <span class="ot">=</span> <span class="fu">stan_model</span>(<span class="at">model_code =</span> stan_code)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(rstan)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  m_rstan <span class="ot">=</span> <span class="fu">stan_model</span>(<span class="at">model_code =</span> stan_code)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>Trying to compile a simple C file</code></pre>
 </div>
 </div>
 </section>
-</section>
 <section id="compiling-with-rcmdstan" class="level4">
 <h4 class="anchored" data-anchor-id="compiling-with-rcmdstan">Compiling with rcmdstan</h4>
-<p>There is no possibility to use a string for cmd_stan. There is a convenience function <code>rethinking::cmdstanr_model_write</code>. TODO make oduerr utils and provide the file.</p>
+<p>There is no possibility to use a string for cmd_stan.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(cmdstanr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'cmdstanr' was built under R version 4.3.0</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>This is cmdstanr version 0.5.2</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>- CmdStanR documentation and vignettes: mc-stan.org/cmdstanr</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>- CmdStan path: /Users/oli/.cmdstan/cmdstan-2.29.2</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>- CmdStan version: 2.29.2</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-A newer version of CmdStan is available. See ?install_cmdstan() to install it.
-To disable this check set option or environment variable CMDSTANR_NO_VER_CHECK=TRUE.</code></pre>
-</div>
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>  file_stan <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext=</span><span class="st">".stan"</span>)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  fileConn <span class="ot">&lt;-</span> <span class="fu">file</span>(file_stan)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(stan_code, fileConn)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">close</span>(fileConn)</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  m_rcmdstan <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(file_stan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>  m_rcmdstan <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(<span class="at">stan_file=</span><span class="st">'stan/simple_lr.stan'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
-<section id="sampling-running-the-chains" class="level4">
-<h4 class="anchored" data-anchor-id="sampling-running-the-chains">Sampling / running the chains</h4>
+</section>
+<section id="sampling-running-the-chains" class="level3">
+<h3 class="anchored" data-anchor-id="sampling-running-the-chains">Sampling / running the chains</h3>
 <p>For rstan: <code>sampling(m_rstan, data=data)</code> For cmdstan: <code>mod$sample(data = data_file, seed=123)</code></p>
-<div class="cell" data-hash="Stan_Primer_Full_cache/html/unnamed-chunk-10_9fc752d0fb65e84c444f08eda8c1f819">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>  s_rcmdstan <span class="ot">=</span> m_rcmdstan<span class="sc">$</span><span class="fu">sample</span>(<span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: 1 of 4000 (0.0%) transitions ended with a divergence.
-See https://mc-stan.org/misc/warnings for details.</code></pre>
-</div>
-</div>
-<div class="cell" data-hash="Stan_Primer_Full_cache/html/unnamed-chunk-12_35acd2eeb95c8d01b1f0cb05b89382af">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>  s_rstan <span class="ot">=</span> <span class="fu">sampling</span>(m_rstan, <span class="at">data=</span>data)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</section>
-<section id="diagnostics-of-the-chains" class="level4">
-<h4 class="anchored" data-anchor-id="diagnostics-of-the-chains">Diagnostics of the chains</h4>
-<p>The package bayesplot can handle both interfaces</p>
-<section id="trace" class="level5">
-<h5 class="anchored" data-anchor-id="trace">Trace</h5>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#traceplot(s_rstan, 'a')</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_trace</span>(s_rstan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>  s_rcmdstan <span class="ot">=</span> m_rcmdstan<span class="sc">$</span><span class="fu">sample</span>(<span class="at">data =</span> data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-hash="Stan_Primer_Full_cache/html/unnamed-chunk-12_abb3b1b3a35b8b42d3fc1e286e139dd7">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>  s_rstan <span class="ot">=</span> <span class="fu">sampling</span>(m_rstan)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="diagnostics-of-the-chains" class="level3">
+<h3 class="anchored" data-anchor-id="diagnostics-of-the-chains">Diagnostics of the chains</h3>
+<p>The package bayesplot can handle both interfaces</p>
+<section id="trace" class="level4">
+<h4 class="anchored" data-anchor-id="trace">Trace</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#traceplot(s_rstan, 'a')</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#bayesplot::mcmc_trace(s_rstan)</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_trace</span>(s_rcmdstan<span class="sc">$</span><span class="fu">draws</span>()) <span class="co">#similar result</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="Stan_Primer_Full_files/figure-html/trace-1.png" class="img-fluid" width="768"></p>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#bayesplot::mcmc_trace(s_rcmdstan$draws()) #similar result</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>s_rstan</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>s_rstan</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Inference for Stan model: 4bc92a844d593bcbe180a8a2fc11ffa0.
@@ -444,19 +417,19 @@ See https://mc-stan.org/misc/warnings for details.</code></pre>
 post-warmup draws per chain=1000, total post-warmup draws=4000.
 
        mean se_mean   sd   2.5%   25%   50%   75% 97.5% n_eff Rhat
-a      2.91    0.05 2.51  -2.42  1.51  2.91  4.37  8.11  2147    1
-b     -1.43    0.08 3.64  -8.53 -3.57 -1.50  0.52  6.45  2214    1
-sigma  7.40    0.09 3.54   3.03  4.78  6.61  9.12 16.37  1435    1
-lp__  -7.99    0.04 1.46 -11.52 -8.73 -7.65 -6.91 -6.20  1059    1
+a      2.89    0.07 2.60  -2.88  1.54  2.92  4.35  8.43  1532 1.00
+b     -1.54    0.09 3.78  -9.13 -3.63 -1.60  0.51  6.22  1969 1.00
+sigma  7.44    0.10 3.54   2.98  4.80  6.73  9.19 16.53  1359 1.00
+lp__  -8.01    0.05 1.54 -11.88 -8.74 -7.67 -6.88 -6.17   921 1.01
 
-Samples were drawn using NUTS(diag_e) at Thu Jan  5 09:49:06 2023.
+Samples were drawn using NUTS(diag_e) at Thu Jan  5 10:45:31 2023.
 For each parameter, n_eff is a crude measure of effective sample size,
 and Rhat is the potential scale reduction factor on split chains (at 
 convergence, Rhat=1).</code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Rhat close to one and n_eff lager than half the number of draws; look fine</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Rhat close to one and n_eff lager than half the number of draws; look fine</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Key Numbers</p>
@@ -465,17 +438,16 @@ convergence, Rhat=1).</code></pre>
 <li><code>n_eff</code> number of effective samples taking the autocorrelation into account (in cmd_stan the output is ess_bulk and ess_tail)</li>
 </ul>
 </section>
-<section id="shiny-stan" class="level5">
-<h5 class="anchored" data-anchor-id="shiny-stan">Shiny Stan</h5>
+<section id="shiny-stan" class="level4">
+<h4 class="anchored" data-anchor-id="shiny-stan">Shiny Stan</h4>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Shiny Stan, quite overwhelming</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(shinystan)</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">launch_shinystan</span>(samples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Shiny Stan, quite overwhelming</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(shinystan)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">launch_shinystan</span>(samples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-</section>
 </section>
 </section>
 <section id="posteriors-of-the-parameters" class="level3">
@@ -489,39 +461,39 @@ convergence, Rhat=1).</code></pre>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidybayes)</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">spread_draws</span>(s_rcmdstan, <span class="fu">c</span>(a,b))) <span class="co">#Non-tidy a and b in one row</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidybayes)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">spread_draws</span>(s_rcmdstan, <span class="fu">c</span>(a,b))) <span class="co">#Non-tidy a and b in one row</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
-  .chain .iteration .draw     a     b
-   &lt;int&gt;      &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-1      1          1     1 0.415  1.35
-2      1          2     2 4.44  -3.09
-3      1          3     3 2.56  -1.58
-4      1          4     4 1.54  -4.78
-5      1          5     5 2.89  -2.44
-6      1          6     6 2.68  -5.39</code></pre>
+  .chain .iteration .draw     a      b
+   &lt;int&gt;      &lt;int&gt; &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;
+1      1          1     1  8.40  2.75 
+2      1          2     2  7.80 -2.02 
+3      1          3     3  4.81  1.03 
+4      1          4     4  5.51 -0.776
+5      1          5     5  2.88 -2.62 
+6      1          6     6  2.83 -2.07 </code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">gather_draws</span>(s_rstan, <span class="fu">c</span>(a,b))) <span class="co">#The ggplot like syntax</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">gather_draws</span>(s_rstan, <span class="fu">c</span>(a,b))) <span class="co">#The ggplot like syntax</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 5
 # Groups:   .variable [1]
-  .chain .iteration .draw .variable .value
-   &lt;int&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;
-1      1          1     1 a          8.14 
-2      1          2     2 a          6.76 
-3      1          3     3 a          0.670
-4      1          4     4 a          5.24 
-5      1          5     5 a          1.95 
-6      1          6     6 a         -1.12 </code></pre>
+  .chain .iteration .draw .variable  .value
+   &lt;int&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;       &lt;dbl&gt;
+1      1          1     1 a          0.624 
+2      1          2     2 a          0.951 
+3      1          3     3 a          1.06  
+4      1          4     4 a         -1.16  
+5      1          5     5 a         -0.0412
+6      1          6     6 a          0.121 </code></pre>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#spread_draws(model_weight_sex, a[sex]) for multilevel models</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#spread_draws(model_weight_sex, a[sex]) for multilevel models</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <section id="stan-functions" class="level4">
@@ -529,16 +501,16 @@ convergence, Rhat=1).</code></pre>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#plot(samples)</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#samples = extract(s_rstan)</span></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stan_dens</span>(s_rstan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#plot(samples)</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#samples = extract(s_rstan)</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stan_dens</span>(s_rstan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="Stan_Primer_Full_files/figure-html/density-1.png" class="img-fluid" width="768"></p>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Note that these are marginals!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Note that these are marginals!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -548,24 +520,25 @@ convergence, Rhat=1).</code></pre>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract samples</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>post <span class="ot">=</span> rstan<span class="sc">::</span><span class="fu">extract</span>(s_rstan)</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>T <span class="ot">=</span> <span class="fu">length</span>(post<span class="sc">$</span>a)</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(post<span class="sc">$</span>a,<span class="dv">100</span>, <span class="at">freq=</span>F)</span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(post<span class="sc">$</span>a),<span class="at">col=</span><span class="st">'red'</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract samples</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>post <span class="ot">=</span> rstan<span class="sc">::</span><span class="fu">extract</span>(s_rstan)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>T <span class="ot">=</span> <span class="fu">length</span>(post<span class="sc">$</span>a)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(post<span class="sc">$</span>a,<span class="dv">100</span>, <span class="at">freq=</span>F)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(post<span class="sc">$</span>a),<span class="at">col=</span><span class="st">'red'</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="Stan_Primer_Full_files/figure-html/hist_post_a-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-<section id="pairs-plot" class="level5">
-<h5 class="anchored" data-anchor-id="pairs-plot">Pairs plot</h5>
+</section>
+<section id="pairs-plot" class="level4">
+<h4 class="anchored" data-anchor-id="pairs-plot">Pairs plot</h4>
 <p>Using the pairs plot, correlations in the variables can be found.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>np_cp <span class="ot">=</span> bayesplot<span class="sc">::</span><span class="fu">nuts_params</span>(s_rstan)</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_pairs</span>(s_rstan, <span class="at">np =</span> np_cp,<span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"a"</span>,<span class="st">"b"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>np_cp <span class="ot">=</span> bayesplot<span class="sc">::</span><span class="fu">nuts_params</span>(s_rstan)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_pairs</span>(s_rstan, <span class="at">np =</span> np_cp,<span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"a"</span>,<span class="st">"b"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="Stan_Primer_Full_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="768"></p>
@@ -573,11 +546,11 @@ convergence, Rhat=1).</code></pre>
 </div>
 </section>
 </section>
-</section>
 <section id="posterior-predictive-plots" class="level3">
 <h3 class="anchored" data-anchor-id="posterior-predictive-plots">Posterior Predictive Plots</h3>
-<section id="task-use-the-samples-to-create-the-following-posterior-predictive-plots" class="level4">
-<h4 class="anchored" data-anchor-id="task-use-the-samples-to-create-the-following-posterior-predictive-plots">Task: Use the samples to create the following posterior predictive plots</h4>
+</section>
+<section id="task-use-the-samples-to-create-the-following-posterior-predictive-plots" class="level3">
+<h3 class="anchored" data-anchor-id="task-use-the-samples-to-create-the-following-posterior-predictive-plots">Task: Use the samples to create the following posterior predictive plots</h3>
 <p>Some background first: posterior predictive distribution: <span class="math display">\[
   p(y|x, D) =  \int p(y|x,\theta) p(\theta|D) \; d\theta
 \]</span> Instead of integration, we sample in two turns</p>
@@ -585,7 +558,6 @@ convergence, Rhat=1).</code></pre>
 <li><span class="math inline">\(\theta_i \sim p(\theta|D)\)</span></li>
 <li><span class="math inline">\(y_{ix} \sim p(y|x,\theta_i)\)</span> #We do this for many x in practice</li>
 </ul>
-</section>
 <section id="creation-of-the-posterior-predictive-samples-by-hand" class="level4">
 <h4 class="anchored" data-anchor-id="creation-of-the-posterior-predictive-samples-by-hand">Creation of the posterior predictive samples by hand</h4>
 <p>You can either do this part, or use stan to create the posterior predictive samples <span class="math inline">\(y_{ix}\)</span> from the samples <span class="math inline">\(\theta_i\)</span> by hand.</p>
@@ -593,50 +565,50 @@ convergence, Rhat=1).</code></pre>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>xs <span class="ot">=</span> <span class="sc">-</span><span class="dv">10</span><span class="sc">:</span><span class="dv">15</span> <span class="co"># The x-range 17 values from -1 to 15</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>M <span class="ot">=</span> <span class="fu">length</span>(xs) </span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>yix <span class="ot">=</span> <span class="fu">matrix</span>(<span class="at">nrow=</span>T, <span class="at">ncol =</span> M) <span class="co">#Matrix from samples (number of posterior draws vs number of xs)</span></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>muix <span class="ot">=</span> <span class="fu">matrix</span>(<span class="at">nrow=</span>T, <span class="at">ncol =</span> M) <span class="co">#Matrix from mu (number of posterior draws vs number of xs)</span></span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>T){ <span class="co">#Samples from the posterior</span></span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">=</span> post<span class="sc">$</span>a[i] <span class="co">#Corresponds to samples from theta</span></span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">=</span> post<span class="sc">$</span>b[i]</span>
-<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  sigma <span class="ot">=</span> post<span class="sc">$</span>sigma[i]</span>
-<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>M){ <span class="co">#Different values of X</span></span>
-<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">=</span> a <span class="sc">*</span> xs[j] <span class="sc">+</span> b</span>
-<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>    muix[i,j] <span class="ot">=</span> a <span class="sc">*</span> xs[j] <span class="sc">+</span> b</span>
-<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>    yix[i,j] <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, mu, sigma) <span class="co"># Single number drawn</span></span>
-<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="cn">FALSE</span>){</span>
-<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">15</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">25</span>), <span class="at">ylab=</span><span class="st">'mu=a*x+b'</span>)</span>
-<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>){</span>
-<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(xs, muix[i,],<span class="at">lwd=</span><span class="fl">0.25</span>,<span class="at">col=</span><span class="st">'blue'</span>)</span>
-<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">15</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">25</span>), <span class="at">ylab=</span><span class="st">'ys'</span>)</span>
-<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>){</span>
-<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">points</span>(xs, yix[i,], <span class="at">pch=</span><span class="st">'.'</span>,<span class="at">col=</span><span class="st">'red'</span>)</span>
-<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>xs <span class="ot">=</span> <span class="sc">-</span><span class="dv">10</span><span class="sc">:</span><span class="dv">15</span> <span class="co"># The x-range 17 values from -1 to 15</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>M <span class="ot">=</span> <span class="fu">length</span>(xs) </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>yix <span class="ot">=</span> <span class="fu">matrix</span>(<span class="at">nrow=</span>T, <span class="at">ncol =</span> M) <span class="co">#Matrix from samples (number of posterior draws vs number of xs)</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>muix <span class="ot">=</span> <span class="fu">matrix</span>(<span class="at">nrow=</span>T, <span class="at">ncol =</span> M) <span class="co">#Matrix from mu (number of posterior draws vs number of xs)</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>T){ <span class="co">#Samples from the posterior</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">=</span> post<span class="sc">$</span>a[i] <span class="co">#Corresponds to samples from theta</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">=</span> post<span class="sc">$</span>b[i]</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  sigma <span class="ot">=</span> post<span class="sc">$</span>sigma[i]</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>M){ <span class="co">#Different values of X</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">=</span> a <span class="sc">*</span> xs[j] <span class="sc">+</span> b</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    muix[i,j] <span class="ot">=</span> a <span class="sc">*</span> xs[j] <span class="sc">+</span> b</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    yix[i,j] <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, mu, sigma) <span class="co"># Single number drawn</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="cn">FALSE</span>){</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">15</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">25</span>), <span class="at">ylab=</span><span class="st">'mu=a*x+b'</span>)</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>){</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(xs, muix[i,],<span class="at">lwd=</span><span class="fl">0.25</span>,<span class="at">col=</span><span class="st">'blue'</span>)</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">15</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">25</span>), <span class="at">ylab=</span><span class="st">'ys'</span>)</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>){</span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">points</span>(xs, yix[i,], <span class="at">pch=</span><span class="st">'.'</span>,<span class="at">col=</span><span class="st">'red'</span>)</span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>After you created the matrices <code>yix</code> and <code>muix</code> you can use the following function to draw the lines for the quantiles.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">15</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">25</span>), <span class="at">ylab=</span><span class="st">'quantiles (y and mu)'</span>)</span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>quant_lines <span class="ot">=</span> <span class="cf">function</span>(x2, y_pred, <span class="at">col=</span><span class="st">'blue'</span>){</span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> <span class="fu">apply</span>(y_pred, <span class="dv">2</span>,quantile, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.50</span>))</span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(x2, m,<span class="at">col=</span>col)</span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  q05 <span class="ot">=</span> <span class="fu">apply</span>(y_pred, <span class="dv">2</span>, quantile, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.25</span>))</span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  q95 <span class="ot">=</span> <span class="fu">apply</span>(y_pred, <span class="dv">2</span>, quantile, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.75</span>))</span>
-<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(x2, q05,<span class="at">col=</span>col)</span>
-<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(x2, q95,<span class="at">col=</span>col)  </span>
-<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a><span class="fu">quant_lines</span>(xs,yix, <span class="at">col=</span><span class="st">'red'</span>)</span>
-<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a><span class="fu">quant_lines</span>(xs,muix, <span class="at">col=</span><span class="st">'blue'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">15</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">25</span>), <span class="at">ylab=</span><span class="st">'quantiles (y and mu)'</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>quant_lines <span class="ot">=</span> <span class="cf">function</span>(x2, y_pred, <span class="at">col=</span><span class="st">'blue'</span>){</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> <span class="fu">apply</span>(y_pred, <span class="dv">2</span>,quantile, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.50</span>))</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(x2, m,<span class="at">col=</span>col)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  q05 <span class="ot">=</span> <span class="fu">apply</span>(y_pred, <span class="dv">2</span>, quantile, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.25</span>))</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  q95 <span class="ot">=</span> <span class="fu">apply</span>(y_pred, <span class="dv">2</span>, quantile, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.75</span>))</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(x2, q05,<span class="at">col=</span>col)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(x2, q95,<span class="at">col=</span>col)  </span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="fu">quant_lines</span>(xs,yix, <span class="at">col=</span><span class="st">'red'</span>)</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="fu">quant_lines</span>(xs,muix, <span class="at">col=</span><span class="st">'blue'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <p><img src="Stan_Primer_Full_files/figure-html/ppd-1.png" class="img-fluid" width="768"></p>
@@ -664,20 +636,20 @@ generated quantities {
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>  x2 <span class="ot">=</span> <span class="sc">-</span><span class="dv">10</span><span class="sc">:</span><span class="dv">15</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  N2 <span class="ot">=</span> <span class="fu">length</span>(x2)</span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  fit2 <span class="ot">=</span> rstan<span class="sc">::</span><span class="fu">stan</span>(<span class="at">file =</span> <span class="st">'~/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_03_Bayes_3/Stan_Primer_model_pred.stan'</span>,</span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data=</span><span class="fu">list</span>(<span class="at">N=</span>N,<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">N2=</span>N2,<span class="at">x2=</span>x2),<span class="at">iter=</span><span class="dv">10000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>  x2 <span class="ot">=</span> <span class="sc">-</span><span class="dv">10</span><span class="sc">:</span><span class="dv">15</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  N2 <span class="ot">=</span> <span class="fu">length</span>(x2)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  fit2 <span class="ot">=</span> rstan<span class="sc">::</span><span class="fu">stan</span>(<span class="at">file =</span> <span class="st">'~/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_03_Bayes_3/Stan_Primer_model_pred.stan'</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data=</span><span class="fu">list</span>(<span class="at">N=</span>N,<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">N2=</span>N2,<span class="at">x2=</span>x2),<span class="at">iter=</span><span class="dv">10000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>  d2 <span class="ot">=</span> rstan<span class="sc">::</span><span class="fu">extract</span>(fit2)</span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  y_pred <span class="ot">=</span> d2<span class="sc">$</span>Y_predict</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dim</span>(y_pred)</span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">15</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">25</span>), <span class="at">ylab=</span><span class="st">'quantiles (y and mu)'</span>)</span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quant_lines</span>(x2,y_pred, <span class="at">col=</span><span class="st">'red'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>  d2 <span class="ot">=</span> rstan<span class="sc">::</span><span class="fu">extract</span>(fit2)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  y_pred <span class="ot">=</span> d2<span class="sc">$</span>Y_predict</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dim</span>(y_pred)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">15</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">25</span>), <span class="at">ylab=</span><span class="st">'quantiles (y and mu)'</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quant_lines</span>(x2,y_pred, <span class="at">col=</span><span class="st">'red'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 
@@ -874,324 +846,334 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb45" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="co">  title: "Stan primer"</span></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE}</span></span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="fu"># MCMC with Stan / Simple diagnostics</span></span>
-<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="fu">## Quick summary</span></span>
-<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>A quick summary of commands (for a more details see below).</span>
-<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a><span class="fu">### Stan</span></span>
-<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a><span class="in">```{r rstan_minimal, eval=FALSE}</span></span>
-<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
-<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">mc.cores =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
-<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a><span class="fu">rstan_options</span>(<span class="at">javascript=</span><span class="cn">FALSE</span>) <span class="co">#Prevents freezes of RStudio (Jan 2023) </span></span>
-<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a>m_rstan <span class="ot">=</span> <span class="fu">stan_model</span>(<span class="at">model_code =</span> stan_code) <span class="co">#Compiling from string</span></span>
-<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a>m_rstan <span class="ot">=</span> <span class="fu">stan_model</span>(<span class="at">file=</span><span class="st">'mymodel.stan'</span>) <span class="co">#Compiling from file</span></span>
-<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a>s_rstan <span class="ot">=</span> <span class="fu">sampling</span>(m_rstan, <span class="at">data=</span>data) <span class="co">#Sampling from file</span></span>
-<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a><span class="co">#No MCMC just evaluating parameters</span></span>
-<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a><span class="fu">sampling</span>(model_1, <span class="at">data=</span>dat, <span class="at">algorithm=</span><span class="st">"Fixed_param"</span>, <span class="at">chain=</span><span class="dv">1</span>, <span class="at">iter=</span><span class="dv">1</span>) </span>
-<span id="cb45-27"><a href="#cb45-27" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-28"><a href="#cb45-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-29"><a href="#cb45-29" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cmdstan</span></span>
-<span id="cb45-30"><a href="#cb45-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-31"><a href="#cb45-31" aria-hidden="true" tabindex="-1"></a><span class="in">```{r cmdstan minimal, eval=FALSE}</span></span>
-<span id="cb45-32"><a href="#cb45-32" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cmdstanr)</span>
-<span id="cb45-33"><a href="#cb45-33" aria-hidden="true" tabindex="-1"></a>m_rcmdstan <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(file_stan)</span>
-<span id="cb45-34"><a href="#cb45-34" aria-hidden="true" tabindex="-1"></a>s_rcmdstan <span class="ot">=</span> m_rcmdstan<span class="sc">$</span><span class="fu">sample</span>(<span class="at">data =</span> data)</span>
-<span id="cb45-35"><a href="#cb45-35" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-36"><a href="#cb45-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-37"><a href="#cb45-37" aria-hidden="true" tabindex="-1"></a><span class="fu">### Tidy Bayes</span></span>
-<span id="cb45-38"><a href="#cb45-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-39"><a href="#cb45-39" aria-hidden="true" tabindex="-1"></a><span class="in">```{r tidy_bayes minimal, eval=FALSE}</span></span>
-<span id="cb45-40"><a href="#cb45-40" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidybayes)</span>
-<span id="cb45-41"><a href="#cb45-41" aria-hidden="true" tabindex="-1"></a><span class="fu">spread_draws</span>(s, <span class="fu">c</span>(a,b)) <span class="co">#Extracts a and b from s (stan or cmdstan samples)</span></span>
-<span id="cb45-42"><a href="#cb45-42" aria-hidden="true" tabindex="-1"></a><span class="fu">spread_draws</span>(s, f[i])  <span class="co">#Extracts vector f and calls components i</span></span>
-<span id="cb45-43"><a href="#cb45-43" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-44"><a href="#cb45-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-45"><a href="#cb45-45" aria-hidden="true" tabindex="-1"></a><span class="fu">### RStudio</span></span>
-<span id="cb45-46"><a href="#cb45-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-47"><a href="#cb45-47" aria-hidden="true" tabindex="-1"></a>Sometimes R gets slow when dealing with stan. At least in my case</span>
-<span id="cb45-48"><a href="#cb45-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-49"><a href="#cb45-49" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
-<span id="cb45-50"><a href="#cb45-50" aria-hidden="true" tabindex="-1"></a><span class="fu">rstan_options</span>(<span class="at">javascript=</span><span class="cn">FALSE</span>)</span>
-<span id="cb45-51"><a href="#cb45-51" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-52"><a href="#cb45-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-53"><a href="#cb45-53" aria-hidden="true" tabindex="-1"></a>#In a more detail</span>
-<span id="cb45-54"><a href="#cb45-54" aria-hidden="true" tabindex="-1"></a>In the following some notes on Stan. You might find the following resources helpful.</span>
-<span id="cb45-55"><a href="#cb45-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-56"><a href="#cb45-56" aria-hidden="true" tabindex="-1"></a><span class="fu">### Other Cheat Sheets</span></span>
-<span id="cb45-57"><a href="#cb45-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-58"><a href="#cb45-58" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="ot">&lt;http://www.sumsar.net/files/posts/2017-bayesian-tutorial-exercises/stan_cheat_sheet2.12.pdf&gt;</span></span>
-<span id="cb45-59"><a href="#cb45-59" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="ot">&lt;https://github.com/sieste/Stan_cheatsheet&gt;</span></span>
-<span id="cb45-60"><a href="#cb45-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-61"><a href="#cb45-61" aria-hidden="true" tabindex="-1"></a><span class="fu">### Data</span></span>
-<span id="cb45-62"><a href="#cb45-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-63"><a href="#cb45-63" aria-hidden="true" tabindex="-1"></a>Some Data for linear regression</span>
-<span id="cb45-64"><a href="#cb45-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-65"><a href="#cb45-65" aria-hidden="true" tabindex="-1"></a><span class="in">```{r }</span></span>
-<span id="cb45-66"><a href="#cb45-66" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">4</span></span>
-<span id="cb45-67"><a href="#cb45-67" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">2.</span>,<span class="sc">-</span><span class="fl">0.66666</span>, <span class="fl">0.666</span>, <span class="fl">2.</span>)</span>
-<span id="cb45-68"><a href="#cb45-68" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">6.25027354</span>, <span class="sc">-</span><span class="fl">2.50213382</span>, <span class="sc">-</span><span class="fl">6.07525495</span>,  <span class="fl">7.92081243</span>)</span>
-<span id="cb45-69"><a href="#cb45-69" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">list</span>(<span class="at">N=</span>N, <span class="at">x=</span>x, <span class="at">y=</span>y)</span>
-<span id="cb45-70"><a href="#cb45-70" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-71"><a href="#cb45-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-72"><a href="#cb45-72" aria-hidden="true" tabindex="-1"></a><span class="fu">### Getting samples from the posterior</span></span>
-<span id="cb45-73"><a href="#cb45-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-74"><a href="#cb45-74" aria-hidden="true" tabindex="-1"></a>There are currently (2023) two interfaces to stan from R. RStan (<span class="ot">&lt;https://mc-stan.org/users/interfaces/rstan&gt;</span>) which is a bit slower and does not use the latest stan compiler and rcmdstan (<span class="ot">&lt;https://mc-stan.org/cmdstanr/articles/cmdstanr.html&gt;</span>).</span>
-<span id="cb45-75"><a href="#cb45-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-76"><a href="#cb45-76" aria-hidden="true" tabindex="-1"></a><span class="fu">#### The technical steps</span></span>
-<span id="cb45-77"><a href="#cb45-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-78"><a href="#cb45-78" aria-hidden="true" tabindex="-1"></a>There are 3 steps:</span>
-<span id="cb45-79"><a href="#cb45-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-80"><a href="#cb45-80" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Defining the model</span>
-<span id="cb45-81"><a href="#cb45-81" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Compiling the model. In this step C code is generated.</span>
-<span id="cb45-82"><a href="#cb45-82" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Running the simulation / sampling from the posterior</span>
-<span id="cb45-83"><a href="#cb45-83" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>Extracting the samples from the posterior</span>
-<span id="cb45-84"><a href="#cb45-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-85"><a href="#cb45-85" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Definition</span></span>
-<span id="cb45-86"><a href="#cb45-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-87"><a href="#cb45-87" aria-hidden="true" tabindex="-1"></a>To define a model, you can add a string or create a <span class="in">`.stan`</span> file. Another option is to use a <span class="in">`Stan`</span> markdown chunk and <span class="in">`output.var=my_model`</span> to the name of the model. Code completion and highlighting is working for files and code chunks.</span>
-<span id="cb45-88"><a href="#cb45-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-89"><a href="#cb45-89" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, warning=FALSE,message=FALSE, eval=TRUE,echo=TRUE}</span></span>
-<span id="cb45-90"><a href="#cb45-90" aria-hidden="true" tabindex="-1"></a>stan_code <span class="ot">=</span> <span class="st">"data{</span></span>
-<span id="cb45-91"><a href="#cb45-91" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; N;</span></span>
-<span id="cb45-92"><a href="#cb45-92" aria-hidden="true" tabindex="-1"></a><span class="st">  vector[N] y;</span></span>
-<span id="cb45-93"><a href="#cb45-93" aria-hidden="true" tabindex="-1"></a><span class="st">  vector[N] x;</span></span>
-<span id="cb45-94"><a href="#cb45-94" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb45-95"><a href="#cb45-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-96"><a href="#cb45-96" aria-hidden="true" tabindex="-1"></a><span class="st">parameters{</span></span>
-<span id="cb45-97"><a href="#cb45-97" aria-hidden="true" tabindex="-1"></a><span class="st">  real a; //Instead of using e.g. half Gaussian</span></span>
-<span id="cb45-98"><a href="#cb45-98" aria-hidden="true" tabindex="-1"></a><span class="st">  real b;</span></span>
-<span id="cb45-99"><a href="#cb45-99" aria-hidden="true" tabindex="-1"></a><span class="st">  real&lt;lower=0&gt; sigma;</span></span>
-<span id="cb45-100"><a href="#cb45-100" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
-<span id="cb45-101"><a href="#cb45-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-102"><a href="#cb45-102" aria-hidden="true" tabindex="-1"></a><span class="st">model{</span></span>
-<span id="cb45-103"><a href="#cb45-103" aria-hidden="true" tabindex="-1"></a><span class="st">  //y ~ normal(mu, sigma);</span></span>
-<span id="cb45-104"><a href="#cb45-104" aria-hidden="true" tabindex="-1"></a><span class="st">  y ~ normal(a * x + b, sigma);</span></span>
-<span id="cb45-105"><a href="#cb45-105" aria-hidden="true" tabindex="-1"></a><span class="st">  a ~ normal(3, 10); </span></span>
-<span id="cb45-106"><a href="#cb45-106" aria-hidden="true" tabindex="-1"></a><span class="st">  b ~ normal(0, 10); </span></span>
-<span id="cb45-107"><a href="#cb45-107" aria-hidden="true" tabindex="-1"></a><span class="st">  sigma ~ normal(0,10);</span></span>
-<span id="cb45-108"><a href="#cb45-108" aria-hidden="true" tabindex="-1"></a><span class="st">}"</span></span>
-<span id="cb45-109"><a href="#cb45-109" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-110"><a href="#cb45-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-111"><a href="#cb45-111" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Compiling</span></span>
-<span id="cb45-112"><a href="#cb45-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-113"><a href="#cb45-113" aria-hidden="true" tabindex="-1"></a>Compiling works with:</span>
-<span id="cb45-114"><a href="#cb45-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-115"><a href="#cb45-115" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Compiling rstan <span class="in">`stan_model(model_code = stan_code)`</span> or <span class="in">`stan_model(file='mymodel.stan')`</span></span>
-<span id="cb45-116"><a href="#cb45-116" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Compiling cmdstan <span class="in">`cmdstan_model(file_stan)`</span></span>
-<span id="cb45-117"><a href="#cb45-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-118"><a href="#cb45-118" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Compiling with rstan</span></span>
-<span id="cb45-119"><a href="#cb45-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-120"><a href="#cb45-120" aria-hidden="true" tabindex="-1"></a><span class="in">```{r results="hide"}</span></span>
-<span id="cb45-121"><a href="#cb45-121" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(rstan)</span>
-<span id="cb45-122"><a href="#cb45-122" aria-hidden="true" tabindex="-1"></a>  m_rstan <span class="ot">=</span> <span class="fu">stan_model</span>(<span class="at">model_code =</span> stan_code)</span>
-<span id="cb45-123"><a href="#cb45-123" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-124"><a href="#cb45-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-125"><a href="#cb45-125" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Compiling with rcmdstan</span></span>
-<span id="cb45-126"><a href="#cb45-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-127"><a href="#cb45-127" aria-hidden="true" tabindex="-1"></a>There is no possibility to use a string for cmd_stan. There is a convenience function <span class="in">`rethinking::cmdstanr_model_write`</span>. TODO make oduerr utils and provide the file.</span>
-<span id="cb45-128"><a href="#cb45-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-129"><a href="#cb45-129" aria-hidden="true" tabindex="-1"></a><span class="in">```{r results="hide"}</span></span>
-<span id="cb45-130"><a href="#cb45-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(cmdstanr)</span>
-<span id="cb45-131"><a href="#cb45-131" aria-hidden="true" tabindex="-1"></a>  file_stan <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext=</span><span class="st">".stan"</span>)</span>
-<span id="cb45-132"><a href="#cb45-132" aria-hidden="true" tabindex="-1"></a>  fileConn <span class="ot">&lt;-</span> <span class="fu">file</span>(file_stan)</span>
-<span id="cb45-133"><a href="#cb45-133" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(stan_code, fileConn)</span>
-<span id="cb45-134"><a href="#cb45-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">close</span>(fileConn)</span>
-<span id="cb45-135"><a href="#cb45-135" aria-hidden="true" tabindex="-1"></a>  m_rcmdstan <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(file_stan)</span>
-<span id="cb45-136"><a href="#cb45-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-137"><a href="#cb45-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-138"><a href="#cb45-138" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Sampling / running the chains</span></span>
-<span id="cb45-139"><a href="#cb45-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-140"><a href="#cb45-140" aria-hidden="true" tabindex="-1"></a>For rstan: <span class="in">`sampling(m_rstan, data=data)`</span> For cmdstan: <span class="in">`mod$sample(data = data_file, seed=123)`</span></span>
-<span id="cb45-141"><a href="#cb45-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-142"><a href="#cb45-142" aria-hidden="true" tabindex="-1"></a><span class="in">```{r results="hide", cache=TRUE}</span></span>
-<span id="cb45-143"><a href="#cb45-143" aria-hidden="true" tabindex="-1"></a>  s_rcmdstan <span class="ot">=</span> m_rcmdstan<span class="sc">$</span><span class="fu">sample</span>(<span class="at">data =</span> data)</span>
-<span id="cb45-144"><a href="#cb45-144" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-145"><a href="#cb45-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-146"><a href="#cb45-146" aria-hidden="true" tabindex="-1"></a><span class="in">```{r results="hide", cache=TRUE}</span></span>
-<span id="cb45-147"><a href="#cb45-147" aria-hidden="true" tabindex="-1"></a>  s_rstan <span class="ot">=</span> <span class="fu">sampling</span>(m_rstan, <span class="at">data=</span>data)  </span>
-<span id="cb45-148"><a href="#cb45-148" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-149"><a href="#cb45-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-150"><a href="#cb45-150" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Diagnostics of the chains</span></span>
-<span id="cb45-151"><a href="#cb45-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-152"><a href="#cb45-152" aria-hidden="true" tabindex="-1"></a>The package bayesplot can handle both interfaces</span>
-<span id="cb45-153"><a href="#cb45-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-154"><a href="#cb45-154" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Trace</span></span>
-<span id="cb45-155"><a href="#cb45-155" aria-hidden="true" tabindex="-1"></a><span class="in">```{r trace}</span></span>
-<span id="cb45-156"><a href="#cb45-156" aria-hidden="true" tabindex="-1"></a><span class="co">#traceplot(s_rstan, 'a')</span></span>
-<span id="cb45-157"><a href="#cb45-157" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_trace</span>(s_rstan)</span>
-<span id="cb45-158"><a href="#cb45-158" aria-hidden="true" tabindex="-1"></a><span class="co">#bayesplot::mcmc_trace(s_rcmdstan$draws()) #similar result</span></span>
-<span id="cb45-159"><a href="#cb45-159" aria-hidden="true" tabindex="-1"></a>s_rstan</span>
-<span id="cb45-160"><a href="#cb45-160" aria-hidden="true" tabindex="-1"></a><span class="co"># Rhat close to one and n_eff lager than half the number of draws; look fine</span></span>
-<span id="cb45-161"><a href="#cb45-161" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-162"><a href="#cb45-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-163"><a href="#cb45-163" aria-hidden="true" tabindex="-1"></a>Key Numbers</span>
-<span id="cb45-164"><a href="#cb45-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-165"><a href="#cb45-165" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`Rhat`</span> is something like the ratio of variation between the chains to withing the chains</span>
-<span id="cb45-166"><a href="#cb45-166" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`n_eff`</span> number of effective samples taking the autocorrelation into account (in cmd_stan the output is ess_bulk and ess_tail)</span>
-<span id="cb45-167"><a href="#cb45-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-168"><a href="#cb45-168" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Shiny Stan</span></span>
-<span id="cb45-169"><a href="#cb45-169" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE, echo=TRUE}</span></span>
-<span id="cb45-170"><a href="#cb45-170" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Shiny Stan, quite overwhelming</span></span>
-<span id="cb45-171"><a href="#cb45-171" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(shinystan)</span>
-<span id="cb45-172"><a href="#cb45-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">launch_shinystan</span>(samples)</span>
-<span id="cb45-173"><a href="#cb45-173" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-174"><a href="#cb45-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-175"><a href="#cb45-175" aria-hidden="true" tabindex="-1"></a><span class="fu">### Posteriors (of the parameters)</span></span>
-<span id="cb45-176"><a href="#cb45-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-177"><a href="#cb45-177" aria-hidden="true" tabindex="-1"></a>Getting the samples can be done as</span>
-<span id="cb45-178"><a href="#cb45-178" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-179"><a href="#cb45-179" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Rstan <span class="in">`extract(s_rstan)`</span></span>
-<span id="cb45-180"><a href="#cb45-180" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-181"><a href="#cb45-181" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>cmdstan <span class="in">`s_rcmdstan$draws()`</span></span>
-<span id="cb45-182"><a href="#cb45-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-183"><a href="#cb45-183" aria-hidden="true" tabindex="-1"></a>Another handy package is tidybayes which can handle the output of <span class="in">`rstan`</span> and <span class="in">`rcmdstan`</span></span>
-<span id="cb45-184"><a href="#cb45-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-187"><a href="#cb45-187" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb45-188"><a href="#cb45-188" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidybayes)</span>
-<span id="cb45-189"><a href="#cb45-189" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">spread_draws</span>(s_rcmdstan, <span class="fu">c</span>(a,b))) <span class="co">#Non-tidy a and b in one row</span></span>
-<span id="cb45-190"><a href="#cb45-190" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">gather_draws</span>(s_rstan, <span class="fu">c</span>(a,b))) <span class="co">#The ggplot like syntax</span></span>
-<span id="cb45-191"><a href="#cb45-191" aria-hidden="true" tabindex="-1"></a><span class="co">#spread_draws(model_weight_sex, a[sex]) for multilevel models</span></span>
-<span id="cb45-192"><a href="#cb45-192" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-193"><a href="#cb45-193" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-194"><a href="#cb45-194" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Stan functions</span></span>
-<span id="cb45-195"><a href="#cb45-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-196"><a href="#cb45-196" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, density, fig.height=3.5}</span></span>
-<span id="cb45-197"><a href="#cb45-197" aria-hidden="true" tabindex="-1"></a>  <span class="co">#plot(samples)</span></span>
-<span id="cb45-198"><a href="#cb45-198" aria-hidden="true" tabindex="-1"></a>  <span class="co">#samples = extract(s_rstan)</span></span>
-<span id="cb45-199"><a href="#cb45-199" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stan_dens</span>(s_rstan)</span>
-<span id="cb45-200"><a href="#cb45-200" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Note that these are marginals!</span></span>
-<span id="cb45-201"><a href="#cb45-201" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-202"><a href="#cb45-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-203"><a href="#cb45-203" aria-hidden="true" tabindex="-1"></a><span class="fu">#### "Manually" visualize the posterior</span></span>
-<span id="cb45-204"><a href="#cb45-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-205"><a href="#cb45-205" aria-hidden="true" tabindex="-1"></a>We extract samples from the posterior via <span class="in">`extract`</span> (in some installation the wrong extract function is taken in that case use <span class="in">`rstan::extract`</span> to use the right one). Visualize the posterior distribution of $a$ from the samples.</span>
-<span id="cb45-206"><a href="#cb45-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-207"><a href="#cb45-207" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, hist_post_a}</span></span>
-<span id="cb45-208"><a href="#cb45-208" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract samples</span></span>
-<span id="cb45-209"><a href="#cb45-209" aria-hidden="true" tabindex="-1"></a>post <span class="ot">=</span> rstan<span class="sc">::</span><span class="fu">extract</span>(s_rstan)</span>
-<span id="cb45-210"><a href="#cb45-210" aria-hidden="true" tabindex="-1"></a>T <span class="ot">=</span> <span class="fu">length</span>(post<span class="sc">$</span>a)</span>
-<span id="cb45-211"><a href="#cb45-211" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(post<span class="sc">$</span>a,<span class="dv">100</span>, <span class="at">freq=</span>F)</span>
-<span id="cb45-212"><a href="#cb45-212" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(post<span class="sc">$</span>a),<span class="at">col=</span><span class="st">'red'</span>)  </span>
-<span id="cb45-213"><a href="#cb45-213" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-214"><a href="#cb45-214" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-215"><a href="#cb45-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-216"><a href="#cb45-216" aria-hidden="true" tabindex="-1"></a><span class="fu">##### Pairs plot</span></span>
-<span id="cb45-217"><a href="#cb45-217" aria-hidden="true" tabindex="-1"></a>Using the pairs plot, correlations in the variables can be found.</span>
-<span id="cb45-220"><a href="#cb45-220" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb45-221"><a href="#cb45-221" aria-hidden="true" tabindex="-1"></a>np_cp <span class="ot">=</span> bayesplot<span class="sc">::</span><span class="fu">nuts_params</span>(s_rstan)</span>
-<span id="cb45-222"><a href="#cb45-222" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_pairs</span>(s_rstan, <span class="at">np =</span> np_cp,<span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"a"</span>,<span class="st">"b"</span>))</span>
-<span id="cb45-223"><a href="#cb45-223" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-224"><a href="#cb45-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-225"><a href="#cb45-225" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-226"><a href="#cb45-226" aria-hidden="true" tabindex="-1"></a><span class="fu">### Posterior Predictive Plots</span></span>
-<span id="cb45-227"><a href="#cb45-227" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-228"><a href="#cb45-228" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Task: Use the samples to create the following posterior predictive plots</span></span>
-<span id="cb45-229"><a href="#cb45-229" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-230"><a href="#cb45-230" aria-hidden="true" tabindex="-1"></a>Some background first: posterior predictive distribution: $$</span>
-<span id="cb45-231"><a href="#cb45-231" aria-hidden="true" tabindex="-1"></a>  p(y|x, D) =  \int p(y|x,\theta) p(\theta|D) \; d\theta</span>
-<span id="cb45-232"><a href="#cb45-232" aria-hidden="true" tabindex="-1"></a>$$ Instead of integration, we sample in two turns</span>
-<span id="cb45-233"><a href="#cb45-233" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-234"><a href="#cb45-234" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$\theta_i \sim p(\theta|D)$</span>
-<span id="cb45-235"><a href="#cb45-235" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$y_{ix} \sim p(y|x,\theta_i)$ #We do this for many x in practice</span>
-<span id="cb45-236"><a href="#cb45-236" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-237"><a href="#cb45-237" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Creation of the posterior predictive samples by hand</span></span>
-<span id="cb45-238"><a href="#cb45-238" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-239"><a href="#cb45-239" aria-hidden="true" tabindex="-1"></a>You can either do this part, or use stan to create the posterior predictive samples $y_{ix}$ from the samples $\theta_i$ by hand.</span>
-<span id="cb45-240"><a href="#cb45-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-241"><a href="#cb45-241" aria-hidden="true" tabindex="-1"></a>Tip: Create two matrices <span class="in">`yix`</span> and <span class="in">`muix`</span> from the posterior samples of $a,b,\sigma$ with dimension (rows = number of posterior samples and cols = number of x positions).</span>
-<span id="cb45-242"><a href="#cb45-242" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-245"><a href="#cb45-245" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb45-246"><a href="#cb45-246" aria-hidden="true" tabindex="-1"></a>xs <span class="ot">=</span> <span class="sc">-</span><span class="dv">10</span><span class="sc">:</span><span class="dv">15</span> <span class="co"># The x-range 17 values from -1 to 15</span></span>
-<span id="cb45-247"><a href="#cb45-247" aria-hidden="true" tabindex="-1"></a>M <span class="ot">=</span> <span class="fu">length</span>(xs) </span>
-<span id="cb45-248"><a href="#cb45-248" aria-hidden="true" tabindex="-1"></a>yix <span class="ot">=</span> <span class="fu">matrix</span>(<span class="at">nrow=</span>T, <span class="at">ncol =</span> M) <span class="co">#Matrix from samples (number of posterior draws vs number of xs)</span></span>
-<span id="cb45-249"><a href="#cb45-249" aria-hidden="true" tabindex="-1"></a>muix <span class="ot">=</span> <span class="fu">matrix</span>(<span class="at">nrow=</span>T, <span class="at">ncol =</span> M) <span class="co">#Matrix from mu (number of posterior draws vs number of xs)</span></span>
-<span id="cb45-250"><a href="#cb45-250" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>T){ <span class="co">#Samples from the posterior</span></span>
-<span id="cb45-251"><a href="#cb45-251" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">=</span> post<span class="sc">$</span>a[i] <span class="co">#Corresponds to samples from theta</span></span>
-<span id="cb45-252"><a href="#cb45-252" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">=</span> post<span class="sc">$</span>b[i]</span>
-<span id="cb45-253"><a href="#cb45-253" aria-hidden="true" tabindex="-1"></a>  sigma <span class="ot">=</span> post<span class="sc">$</span>sigma[i]</span>
-<span id="cb45-254"><a href="#cb45-254" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>M){ <span class="co">#Different values of X</span></span>
-<span id="cb45-255"><a href="#cb45-255" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">=</span> a <span class="sc">*</span> xs[j] <span class="sc">+</span> b</span>
-<span id="cb45-256"><a href="#cb45-256" aria-hidden="true" tabindex="-1"></a>    muix[i,j] <span class="ot">=</span> a <span class="sc">*</span> xs[j] <span class="sc">+</span> b</span>
-<span id="cb45-257"><a href="#cb45-257" aria-hidden="true" tabindex="-1"></a>    yix[i,j] <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, mu, sigma) <span class="co"># Single number drawn</span></span>
-<span id="cb45-258"><a href="#cb45-258" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb45-259"><a href="#cb45-259" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb45-260"><a href="#cb45-260" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-261"><a href="#cb45-261" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="cn">FALSE</span>){</span>
-<span id="cb45-262"><a href="#cb45-262" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">15</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">25</span>), <span class="at">ylab=</span><span class="st">'mu=a*x+b'</span>)</span>
-<span id="cb45-263"><a href="#cb45-263" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>){</span>
-<span id="cb45-264"><a href="#cb45-264" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(xs, muix[i,],<span class="at">lwd=</span><span class="fl">0.25</span>,<span class="at">col=</span><span class="st">'blue'</span>)</span>
-<span id="cb45-265"><a href="#cb45-265" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb45-266"><a href="#cb45-266" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb45-267"><a href="#cb45-267" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">15</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">25</span>), <span class="at">ylab=</span><span class="st">'ys'</span>)</span>
-<span id="cb45-268"><a href="#cb45-268" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>){</span>
-<span id="cb45-269"><a href="#cb45-269" aria-hidden="true" tabindex="-1"></a>    <span class="fu">points</span>(xs, yix[i,], <span class="at">pch=</span><span class="st">'.'</span>,<span class="at">col=</span><span class="st">'red'</span>)</span>
-<span id="cb45-270"><a href="#cb45-270" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb45-271"><a href="#cb45-271" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb45-272"><a href="#cb45-272" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-273"><a href="#cb45-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-274"><a href="#cb45-274" aria-hidden="true" tabindex="-1"></a>After you created the matrices <span class="in">`yix`</span> and <span class="in">`muix`</span> you can use the following function to draw the lines for the quantiles.</span>
-<span id="cb45-275"><a href="#cb45-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-276"><a href="#cb45-276" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, ppd}</span></span>
-<span id="cb45-277"><a href="#cb45-277" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">15</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">25</span>), <span class="at">ylab=</span><span class="st">'quantiles (y and mu)'</span>)</span>
-<span id="cb45-278"><a href="#cb45-278" aria-hidden="true" tabindex="-1"></a>quant_lines <span class="ot">=</span> <span class="cf">function</span>(x2, y_pred, <span class="at">col=</span><span class="st">'blue'</span>){</span>
-<span id="cb45-279"><a href="#cb45-279" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> <span class="fu">apply</span>(y_pred, <span class="dv">2</span>,quantile, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.50</span>))</span>
-<span id="cb45-280"><a href="#cb45-280" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(x2, m,<span class="at">col=</span>col)</span>
-<span id="cb45-281"><a href="#cb45-281" aria-hidden="true" tabindex="-1"></a>  q05 <span class="ot">=</span> <span class="fu">apply</span>(y_pred, <span class="dv">2</span>, quantile, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.25</span>))</span>
-<span id="cb45-282"><a href="#cb45-282" aria-hidden="true" tabindex="-1"></a>  q95 <span class="ot">=</span> <span class="fu">apply</span>(y_pred, <span class="dv">2</span>, quantile, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.75</span>))</span>
-<span id="cb45-283"><a href="#cb45-283" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(x2, q05,<span class="at">col=</span>col)</span>
-<span id="cb45-284"><a href="#cb45-284" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(x2, q95,<span class="at">col=</span>col)  </span>
-<span id="cb45-285"><a href="#cb45-285" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb45-286"><a href="#cb45-286" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-287"><a href="#cb45-287" aria-hidden="true" tabindex="-1"></a><span class="fu">quant_lines</span>(xs,yix, <span class="at">col=</span><span class="st">'red'</span>)</span>
-<span id="cb45-288"><a href="#cb45-288" aria-hidden="true" tabindex="-1"></a><span class="fu">quant_lines</span>(xs,muix, <span class="at">col=</span><span class="st">'blue'</span>)</span>
-<span id="cb45-289"><a href="#cb45-289" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-290"><a href="#cb45-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-291"><a href="#cb45-291" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Creation of the posterior predictive samples with Stan</span></span>
-<span id="cb45-292"><a href="#cb45-292" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-293"><a href="#cb45-293" aria-hidden="true" tabindex="-1"></a>It's also possible to draw posterior predictive samples. One can use the <span class="in">`generated quantities`</span> code block for that.</span>
-<span id="cb45-294"><a href="#cb45-294" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-295"><a href="#cb45-295" aria-hidden="true" tabindex="-1"></a><span class="in">    data{</span></span>
-<span id="cb45-296"><a href="#cb45-296" aria-hidden="true" tabindex="-1"></a><span class="in">      int&lt;lower=0&gt; N;</span></span>
-<span id="cb45-297"><a href="#cb45-297" aria-hidden="true" tabindex="-1"></a><span class="in">      vector[N] y;</span></span>
-<span id="cb45-298"><a href="#cb45-298" aria-hidden="true" tabindex="-1"></a><span class="in">      vector[N] x;</span></span>
-<span id="cb45-299"><a href="#cb45-299" aria-hidden="true" tabindex="-1"></a><span class="in">      //For the prediced distribution (new)</span></span>
-<span id="cb45-300"><a href="#cb45-300" aria-hidden="true" tabindex="-1"></a><span class="in">      int&lt;lower=0&gt; N2;</span></span>
-<span id="cb45-301"><a href="#cb45-301" aria-hidden="true" tabindex="-1"></a><span class="in">      vector[N2] x2;</span></span>
-<span id="cb45-302"><a href="#cb45-302" aria-hidden="true" tabindex="-1"></a><span class="in">    }</span></span>
-<span id="cb45-303"><a href="#cb45-303" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-304"><a href="#cb45-304" aria-hidden="true" tabindex="-1"></a><span class="in">    generated quantities {</span></span>
-<span id="cb45-305"><a href="#cb45-305" aria-hidden="true" tabindex="-1"></a><span class="in">      real Y_predict[N2]; </span></span>
-<span id="cb45-306"><a href="#cb45-306" aria-hidden="true" tabindex="-1"></a><span class="in">      for (i in 1:N2){</span></span>
-<span id="cb45-307"><a href="#cb45-307" aria-hidden="true" tabindex="-1"></a><span class="in">        Y_predict = normal_rng(a * x2 + b, sigma);</span></span>
-<span id="cb45-308"><a href="#cb45-308" aria-hidden="true" tabindex="-1"></a><span class="in">      }</span></span>
-<span id="cb45-309"><a href="#cb45-309" aria-hidden="true" tabindex="-1"></a><span class="in">    }</span></span>
-<span id="cb45-310"><a href="#cb45-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-311"><a href="#cb45-311" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE, results='hide'}</span></span>
-<span id="cb45-312"><a href="#cb45-312" aria-hidden="true" tabindex="-1"></a>  x2 <span class="ot">=</span> <span class="sc">-</span><span class="dv">10</span><span class="sc">:</span><span class="dv">15</span></span>
-<span id="cb45-313"><a href="#cb45-313" aria-hidden="true" tabindex="-1"></a>  N2 <span class="ot">=</span> <span class="fu">length</span>(x2)</span>
-<span id="cb45-314"><a href="#cb45-314" aria-hidden="true" tabindex="-1"></a>  fit2 <span class="ot">=</span> rstan<span class="sc">::</span><span class="fu">stan</span>(<span class="at">file =</span> <span class="st">'~/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_03_Bayes_3/Stan_Primer_model_pred.stan'</span>,</span>
-<span id="cb45-315"><a href="#cb45-315" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data=</span><span class="fu">list</span>(<span class="at">N=</span>N,<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">N2=</span>N2,<span class="at">x2=</span>x2),<span class="at">iter=</span><span class="dv">10000</span>)</span>
-<span id="cb45-316"><a href="#cb45-316" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb45-317"><a href="#cb45-317" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-318"><a href="#cb45-318" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
-<span id="cb45-319"><a href="#cb45-319" aria-hidden="true" tabindex="-1"></a>  d2 <span class="ot">=</span> rstan<span class="sc">::</span><span class="fu">extract</span>(fit2)</span>
-<span id="cb45-320"><a href="#cb45-320" aria-hidden="true" tabindex="-1"></a>  y_pred <span class="ot">=</span> d2<span class="sc">$</span>Y_predict</span>
-<span id="cb45-321"><a href="#cb45-321" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dim</span>(y_pred)</span>
-<span id="cb45-322"><a href="#cb45-322" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">15</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">25</span>), <span class="at">ylab=</span><span class="st">'quantiles (y and mu)'</span>)</span>
-<span id="cb45-323"><a href="#cb45-323" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quant_lines</span>(x2,y_pred, <span class="at">col=</span><span class="st">'red'</span>)</span>
-<span id="cb45-324"><a href="#cb45-324" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb32" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co">  title: "Stan primer"</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE}</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(tidyverse)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(cmdstanr)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(rstan)</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>MCMC with Stan / Simple diagnostics</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="fu"># Quick summary</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>A quick summary of commands (for a more details see below).</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stan</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a><span class="in">```{r rstan_minimal, eval=FALSE}</span></span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">mc.cores =</span> parallel<span class="sc">::</span><span class="fu">detectCores</span>())</span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a><span class="fu">rstan_options</span>(<span class="at">javascript=</span><span class="cn">FALSE</span>) <span class="co">#Prevents freezes of RStudio (Jan 2023) </span></span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>m_rstan <span class="ot">=</span> <span class="fu">stan_model</span>(<span class="at">model_code =</span> stan_code) <span class="co">#Compiling from string</span></span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>m_rstan <span class="ot">=</span> <span class="fu">stan_model</span>(<span class="at">file=</span><span class="st">'mymodel.stan'</span>) <span class="co">#Compiling from file</span></span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>s_rstan <span class="ot">=</span> <span class="fu">sampling</span>(m_rstan, <span class="at">data=</span>data) <span class="co">#Sampling from file</span></span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a><span class="co">#No MCMC just evaluating parameters</span></span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a><span class="fu">sampling</span>(model_1, <span class="at">data=</span>dat, <span class="at">algorithm=</span><span class="st">"Fixed_param"</span>, <span class="at">chain=</span><span class="dv">1</span>, <span class="at">iter=</span><span class="dv">1</span>) </span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cmdstan</span></span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a><span class="in">```{r cmdstan minimal, eval=FALSE}</span></span>
+<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cmdstanr)</span>
+<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a>m_rcmdstan <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(file_stan)</span>
+<span id="cb32-37"><a href="#cb32-37" aria-hidden="true" tabindex="-1"></a>s_rcmdstan <span class="ot">=</span> m_rcmdstan<span class="sc">$</span><span class="fu">sample</span>(<span class="at">data =</span> data)</span>
+<span id="cb32-38"><a href="#cb32-38" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-39"><a href="#cb32-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-40"><a href="#cb32-40" aria-hidden="true" tabindex="-1"></a><span class="fu">### Tidy Bayes</span></span>
+<span id="cb32-41"><a href="#cb32-41" aria-hidden="true" tabindex="-1"></a>Works with rstan and cmdstanr</span>
+<span id="cb32-42"><a href="#cb32-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-43"><a href="#cb32-43" aria-hidden="true" tabindex="-1"></a><span class="in">```{r tidy_bayes_minimal, eval=FALSE}</span></span>
+<span id="cb32-44"><a href="#cb32-44" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidybayes)</span>
+<span id="cb32-45"><a href="#cb32-45" aria-hidden="true" tabindex="-1"></a><span class="fu">spread_draws</span>(s, <span class="fu">c</span>(a,b)) <span class="co">#Extracts a and b from s (stan or cmdstan samples)</span></span>
+<span id="cb32-46"><a href="#cb32-46" aria-hidden="true" tabindex="-1"></a><span class="fu">spread_draws</span>(s, f[i])  <span class="co">#Extracts vector f and calls components i</span></span>
+<span id="cb32-47"><a href="#cb32-47" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-48"><a href="#cb32-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-49"><a href="#cb32-49" aria-hidden="true" tabindex="-1"></a><span class="fu">### Bayes  plot</span></span>
+<span id="cb32-50"><a href="#cb32-50" aria-hidden="true" tabindex="-1"></a>Works with rstan and cmdstanr</span>
+<span id="cb32-51"><a href="#cb32-51" aria-hidden="true" tabindex="-1"></a><span class="in">```{r tidy_bayes minimal, eval=FALSE}</span></span>
+<span id="cb32-52"><a href="#cb32-52" aria-hidden="true" tabindex="-1"></a>  s <span class="ot">=</span> s_rcmdstan<span class="sc">$</span><span class="fu">draws</span>() <span class="co">#We need to call draws() 2023</span></span>
+<span id="cb32-53"><a href="#cb32-53" aria-hidden="true" tabindex="-1"></a>  bayesplot<span class="sc">::</span><span class="fu">mcmc_trace</span>(s)</span>
+<span id="cb32-54"><a href="#cb32-54" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-55"><a href="#cb32-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-56"><a href="#cb32-56" aria-hidden="true" tabindex="-1"></a><span class="fu">### RStudio</span></span>
+<span id="cb32-57"><a href="#cb32-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-58"><a href="#cb32-58" aria-hidden="true" tabindex="-1"></a>Sometimes R gets slow when dealing with stan. At least in my case</span>
+<span id="cb32-59"><a href="#cb32-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-60"><a href="#cb32-60" aria-hidden="true" tabindex="-1"></a><span class="in">``` r</span></span>
+<span id="cb32-61"><a href="#cb32-61" aria-hidden="true" tabindex="-1"></a><span class="fu">rstan_options</span>(<span class="at">javascript=</span><span class="cn">FALSE</span>)</span>
+<span id="cb32-62"><a href="#cb32-62" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-63"><a href="#cb32-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-64"><a href="#cb32-64" aria-hidden="true" tabindex="-1"></a><span class="fu"># In a more detail </span></span>
+<span id="cb32-65"><a href="#cb32-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-66"><a href="#cb32-66" aria-hidden="true" tabindex="-1"></a>In the following some notes on Stan. You might find the following resources helpful.</span>
+<span id="cb32-67"><a href="#cb32-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-68"><a href="#cb32-68" aria-hidden="true" tabindex="-1"></a><span class="fu">## Other Cheat Sheets</span></span>
+<span id="cb32-69"><a href="#cb32-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-70"><a href="#cb32-70" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="ot">&lt;http://www.sumsar.net/files/posts/2017-bayesian-tutorial-exercises/stan_cheat_sheet2.12.pdf&gt;</span></span>
+<span id="cb32-71"><a href="#cb32-71" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="ot">&lt;https://github.com/sieste/Stan_cheatsheet&gt;</span></span>
+<span id="cb32-72"><a href="#cb32-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-73"><a href="#cb32-73" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data used</span></span>
+<span id="cb32-74"><a href="#cb32-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-75"><a href="#cb32-75" aria-hidden="true" tabindex="-1"></a>Some Data for linear regression</span>
+<span id="cb32-76"><a href="#cb32-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-79"><a href="#cb32-79" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb32-80"><a href="#cb32-80" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">4</span></span>
+<span id="cb32-81"><a href="#cb32-81" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">2.</span>,<span class="sc">-</span><span class="fl">0.66666</span>, <span class="fl">0.666</span>, <span class="fl">2.</span>)</span>
+<span id="cb32-82"><a href="#cb32-82" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">6.25027354</span>, <span class="sc">-</span><span class="fl">2.50213382</span>, <span class="sc">-</span><span class="fl">6.07525495</span>,  <span class="fl">7.92081243</span>)</span>
+<span id="cb32-83"><a href="#cb32-83" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">list</span>(<span class="at">N=</span>N, <span class="at">x=</span>x, <span class="at">y=</span>y)</span>
+<span id="cb32-84"><a href="#cb32-84" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-85"><a href="#cb32-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-86"><a href="#cb32-86" aria-hidden="true" tabindex="-1"></a><span class="fu">## Getting samples from the posterior</span></span>
+<span id="cb32-87"><a href="#cb32-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-88"><a href="#cb32-88" aria-hidden="true" tabindex="-1"></a>There are currently (2023) two interfaces to stan from R. RStan (<span class="ot">&lt;https://mc-stan.org/users/interfaces/rstan&gt;</span>) which is a bit slower and does not use the latest stan compiler and rcmdstan (<span class="ot">&lt;https://mc-stan.org/cmdstanr/articles/cmdstanr.html&gt;</span>).</span>
+<span id="cb32-89"><a href="#cb32-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-90"><a href="#cb32-90" aria-hidden="true" tabindex="-1"></a><span class="fu">### The technical steps</span></span>
+<span id="cb32-91"><a href="#cb32-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-92"><a href="#cb32-92" aria-hidden="true" tabindex="-1"></a>There are 3 steps:</span>
+<span id="cb32-93"><a href="#cb32-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-94"><a href="#cb32-94" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Defining the model</span>
+<span id="cb32-95"><a href="#cb32-95" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Compiling the model. In this step C code is generated.</span>
+<span id="cb32-96"><a href="#cb32-96" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Running the simulation / sampling from the posterior</span>
+<span id="cb32-97"><a href="#cb32-97" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>Extracting the samples from the posterior</span>
+<span id="cb32-98"><a href="#cb32-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-99"><a href="#cb32-99" aria-hidden="true" tabindex="-1"></a><span class="fu">### Definition</span></span>
+<span id="cb32-100"><a href="#cb32-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-101"><a href="#cb32-101" aria-hidden="true" tabindex="-1"></a>To define a model, you can add a string or create a <span class="in">`.stan`</span> file. Another option is to use a <span class="in">`Stan`</span> markdown chunk and <span class="in">`output.var=my_model`</span> to the name of the model. Code completion and highlighting is working for files and code chunks.</span>
+<span id="cb32-102"><a href="#cb32-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-103"><a href="#cb32-103" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, warning=FALSE,message=FALSE, eval=TRUE,echo=TRUE}</span></span>
+<span id="cb32-104"><a href="#cb32-104" aria-hidden="true" tabindex="-1"></a>stan_code <span class="ot">=</span> <span class="st">"data{</span></span>
+<span id="cb32-105"><a href="#cb32-105" aria-hidden="true" tabindex="-1"></a><span class="st">  int&lt;lower=0&gt; N;</span></span>
+<span id="cb32-106"><a href="#cb32-106" aria-hidden="true" tabindex="-1"></a><span class="st">  vector[N] y;</span></span>
+<span id="cb32-107"><a href="#cb32-107" aria-hidden="true" tabindex="-1"></a><span class="st">  vector[N] x;</span></span>
+<span id="cb32-108"><a href="#cb32-108" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb32-109"><a href="#cb32-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-110"><a href="#cb32-110" aria-hidden="true" tabindex="-1"></a><span class="st">parameters{</span></span>
+<span id="cb32-111"><a href="#cb32-111" aria-hidden="true" tabindex="-1"></a><span class="st">  real a; //Instead of using e.g. half Gaussian</span></span>
+<span id="cb32-112"><a href="#cb32-112" aria-hidden="true" tabindex="-1"></a><span class="st">  real b;</span></span>
+<span id="cb32-113"><a href="#cb32-113" aria-hidden="true" tabindex="-1"></a><span class="st">  real&lt;lower=0&gt; sigma;</span></span>
+<span id="cb32-114"><a href="#cb32-114" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb32-115"><a href="#cb32-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-116"><a href="#cb32-116" aria-hidden="true" tabindex="-1"></a><span class="st">model{</span></span>
+<span id="cb32-117"><a href="#cb32-117" aria-hidden="true" tabindex="-1"></a><span class="st">  //y ~ normal(mu, sigma);</span></span>
+<span id="cb32-118"><a href="#cb32-118" aria-hidden="true" tabindex="-1"></a><span class="st">  y ~ normal(a * x + b, sigma);</span></span>
+<span id="cb32-119"><a href="#cb32-119" aria-hidden="true" tabindex="-1"></a><span class="st">  a ~ normal(3, 10); </span></span>
+<span id="cb32-120"><a href="#cb32-120" aria-hidden="true" tabindex="-1"></a><span class="st">  b ~ normal(0, 10); </span></span>
+<span id="cb32-121"><a href="#cb32-121" aria-hidden="true" tabindex="-1"></a><span class="st">  sigma ~ normal(0,10);</span></span>
+<span id="cb32-122"><a href="#cb32-122" aria-hidden="true" tabindex="-1"></a><span class="st">}"</span></span>
+<span id="cb32-123"><a href="#cb32-123" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-124"><a href="#cb32-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-125"><a href="#cb32-125" aria-hidden="true" tabindex="-1"></a><span class="fu">### Compiling</span></span>
+<span id="cb32-126"><a href="#cb32-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-127"><a href="#cb32-127" aria-hidden="true" tabindex="-1"></a>Compiling works with:</span>
+<span id="cb32-128"><a href="#cb32-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-129"><a href="#cb32-129" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Compiling rstan <span class="in">`stan_model(model_code = stan_code)`</span> or <span class="in">`stan_model(file='mymodel.stan')`</span></span>
+<span id="cb32-130"><a href="#cb32-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-131"><a href="#cb32-131" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Compiling cmdstan <span class="in">`cmdstan_model(file_stan)`</span></span>
+<span id="cb32-132"><a href="#cb32-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-133"><a href="#cb32-133" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Compiling with rstan</span></span>
+<span id="cb32-134"><a href="#cb32-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-135"><a href="#cb32-135" aria-hidden="true" tabindex="-1"></a><span class="in">```{r results="hide", cache=TRUE}</span></span>
+<span id="cb32-136"><a href="#cb32-136" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(rstan)</span>
+<span id="cb32-137"><a href="#cb32-137" aria-hidden="true" tabindex="-1"></a>  m_rstan <span class="ot">=</span> <span class="fu">stan_model</span>(<span class="at">model_code =</span> stan_code)</span>
+<span id="cb32-138"><a href="#cb32-138" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-139"><a href="#cb32-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-140"><a href="#cb32-140" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Compiling with rcmdstan</span></span>
+<span id="cb32-141"><a href="#cb32-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-142"><a href="#cb32-142" aria-hidden="true" tabindex="-1"></a>There is no possibility to use a string for cmd_stan.</span>
+<span id="cb32-143"><a href="#cb32-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-144"><a href="#cb32-144" aria-hidden="true" tabindex="-1"></a><span class="in">```{r results="hide"}</span></span>
+<span id="cb32-145"><a href="#cb32-145" aria-hidden="true" tabindex="-1"></a>  m_rcmdstan <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(<span class="at">stan_file=</span><span class="st">'stan/simple_lr.stan'</span>)</span>
+<span id="cb32-146"><a href="#cb32-146" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-147"><a href="#cb32-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-148"><a href="#cb32-148" aria-hidden="true" tabindex="-1"></a><span class="fu">### Sampling / running the chains</span></span>
+<span id="cb32-149"><a href="#cb32-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-150"><a href="#cb32-150" aria-hidden="true" tabindex="-1"></a>For rstan: <span class="in">`sampling(m_rstan, data=data)`</span> For cmdstan: <span class="in">`mod$sample(data = data_file, seed=123)`</span></span>
+<span id="cb32-151"><a href="#cb32-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-152"><a href="#cb32-152" aria-hidden="true" tabindex="-1"></a><span class="in">```{r results="hide"}</span></span>
+<span id="cb32-153"><a href="#cb32-153" aria-hidden="true" tabindex="-1"></a>  s_rcmdstan <span class="ot">=</span> m_rcmdstan<span class="sc">$</span><span class="fu">sample</span>(<span class="at">data =</span> data)</span>
+<span id="cb32-154"><a href="#cb32-154" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-155"><a href="#cb32-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-156"><a href="#cb32-156" aria-hidden="true" tabindex="-1"></a><span class="in">```{r results="hide", cache=TRUE}</span></span>
+<span id="cb32-157"><a href="#cb32-157" aria-hidden="true" tabindex="-1"></a>  s_rstan <span class="ot">=</span> <span class="fu">sampling</span>(m_rstan)  </span>
+<span id="cb32-158"><a href="#cb32-158" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-159"><a href="#cb32-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-160"><a href="#cb32-160" aria-hidden="true" tabindex="-1"></a><span class="fu">### Diagnostics of the chains</span></span>
+<span id="cb32-161"><a href="#cb32-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-162"><a href="#cb32-162" aria-hidden="true" tabindex="-1"></a>The package bayesplot can handle both interfaces</span>
+<span id="cb32-163"><a href="#cb32-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-164"><a href="#cb32-164" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Trace</span></span>
+<span id="cb32-165"><a href="#cb32-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-166"><a href="#cb32-166" aria-hidden="true" tabindex="-1"></a><span class="in">```{r trace}</span></span>
+<span id="cb32-167"><a href="#cb32-167" aria-hidden="true" tabindex="-1"></a><span class="co">#traceplot(s_rstan, 'a')</span></span>
+<span id="cb32-168"><a href="#cb32-168" aria-hidden="true" tabindex="-1"></a><span class="co">#bayesplot::mcmc_trace(s_rstan)</span></span>
+<span id="cb32-169"><a href="#cb32-169" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_trace</span>(s_rcmdstan<span class="sc">$</span><span class="fu">draws</span>()) <span class="co">#similar result</span></span>
+<span id="cb32-170"><a href="#cb32-170" aria-hidden="true" tabindex="-1"></a>s_rstan</span>
+<span id="cb32-171"><a href="#cb32-171" aria-hidden="true" tabindex="-1"></a><span class="co"># Rhat close to one and n_eff lager than half the number of draws; look fine</span></span>
+<span id="cb32-172"><a href="#cb32-172" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-173"><a href="#cb32-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-174"><a href="#cb32-174" aria-hidden="true" tabindex="-1"></a>Key Numbers</span>
+<span id="cb32-175"><a href="#cb32-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-176"><a href="#cb32-176" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`Rhat`</span> is something like the ratio of variation between the chains to withing the chains</span>
+<span id="cb32-177"><a href="#cb32-177" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`n_eff`</span> number of effective samples taking the autocorrelation into account (in cmd_stan the output is ess_bulk and ess_tail)</span>
+<span id="cb32-178"><a href="#cb32-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-179"><a href="#cb32-179" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Shiny Stan</span></span>
+<span id="cb32-180"><a href="#cb32-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-181"><a href="#cb32-181" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE, echo=TRUE}</span></span>
+<span id="cb32-182"><a href="#cb32-182" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Shiny Stan, quite overwhelming</span></span>
+<span id="cb32-183"><a href="#cb32-183" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(shinystan)</span>
+<span id="cb32-184"><a href="#cb32-184" aria-hidden="true" tabindex="-1"></a>  <span class="fu">launch_shinystan</span>(samples)</span>
+<span id="cb32-185"><a href="#cb32-185" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-186"><a href="#cb32-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-187"><a href="#cb32-187" aria-hidden="true" tabindex="-1"></a><span class="fu">### Posteriors (of the parameters)</span></span>
+<span id="cb32-188"><a href="#cb32-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-189"><a href="#cb32-189" aria-hidden="true" tabindex="-1"></a>Getting the samples can be done as</span>
+<span id="cb32-190"><a href="#cb32-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-191"><a href="#cb32-191" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Rstan <span class="in">`extract(s_rstan)`</span></span>
+<span id="cb32-192"><a href="#cb32-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-193"><a href="#cb32-193" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>cmdstan <span class="in">`s_rcmdstan$draws()`</span></span>
+<span id="cb32-194"><a href="#cb32-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-195"><a href="#cb32-195" aria-hidden="true" tabindex="-1"></a>Another handy package is tidybayes which can handle the output of <span class="in">`rstan`</span> and <span class="in">`rcmdstan`</span></span>
+<span id="cb32-196"><a href="#cb32-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-199"><a href="#cb32-199" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb32-200"><a href="#cb32-200" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidybayes)</span>
+<span id="cb32-201"><a href="#cb32-201" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">spread_draws</span>(s_rcmdstan, <span class="fu">c</span>(a,b))) <span class="co">#Non-tidy a and b in one row</span></span>
+<span id="cb32-202"><a href="#cb32-202" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">gather_draws</span>(s_rstan, <span class="fu">c</span>(a,b))) <span class="co">#The ggplot like syntax</span></span>
+<span id="cb32-203"><a href="#cb32-203" aria-hidden="true" tabindex="-1"></a><span class="co">#spread_draws(model_weight_sex, a[sex]) for multilevel models</span></span>
+<span id="cb32-204"><a href="#cb32-204" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-205"><a href="#cb32-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-206"><a href="#cb32-206" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Stan functions</span></span>
+<span id="cb32-207"><a href="#cb32-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-208"><a href="#cb32-208" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, density, fig.height=3.5}</span></span>
+<span id="cb32-209"><a href="#cb32-209" aria-hidden="true" tabindex="-1"></a>  <span class="co">#plot(samples)</span></span>
+<span id="cb32-210"><a href="#cb32-210" aria-hidden="true" tabindex="-1"></a>  <span class="co">#samples = extract(s_rstan)</span></span>
+<span id="cb32-211"><a href="#cb32-211" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stan_dens</span>(s_rstan)</span>
+<span id="cb32-212"><a href="#cb32-212" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Note that these are marginals!</span></span>
+<span id="cb32-213"><a href="#cb32-213" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-214"><a href="#cb32-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-215"><a href="#cb32-215" aria-hidden="true" tabindex="-1"></a><span class="fu">#### "Manually" visualize the posterior</span></span>
+<span id="cb32-216"><a href="#cb32-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-217"><a href="#cb32-217" aria-hidden="true" tabindex="-1"></a>We extract samples from the posterior via <span class="in">`extract`</span> (in some installation the wrong extract function is taken in that case use <span class="in">`rstan::extract`</span> to use the right one). Visualize the posterior distribution of $a$ from the samples.</span>
+<span id="cb32-218"><a href="#cb32-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-219"><a href="#cb32-219" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, hist_post_a}</span></span>
+<span id="cb32-220"><a href="#cb32-220" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract samples</span></span>
+<span id="cb32-221"><a href="#cb32-221" aria-hidden="true" tabindex="-1"></a>post <span class="ot">=</span> rstan<span class="sc">::</span><span class="fu">extract</span>(s_rstan)</span>
+<span id="cb32-222"><a href="#cb32-222" aria-hidden="true" tabindex="-1"></a>T <span class="ot">=</span> <span class="fu">length</span>(post<span class="sc">$</span>a)</span>
+<span id="cb32-223"><a href="#cb32-223" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(post<span class="sc">$</span>a,<span class="dv">100</span>, <span class="at">freq=</span>F)</span>
+<span id="cb32-224"><a href="#cb32-224" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(post<span class="sc">$</span>a),<span class="at">col=</span><span class="st">'red'</span>)  </span>
+<span id="cb32-225"><a href="#cb32-225" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-226"><a href="#cb32-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-227"><a href="#cb32-227" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Pairs plot</span></span>
+<span id="cb32-228"><a href="#cb32-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-229"><a href="#cb32-229" aria-hidden="true" tabindex="-1"></a>Using the pairs plot, correlations in the variables can be found.</span>
+<span id="cb32-230"><a href="#cb32-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-233"><a href="#cb32-233" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb32-234"><a href="#cb32-234" aria-hidden="true" tabindex="-1"></a>np_cp <span class="ot">=</span> bayesplot<span class="sc">::</span><span class="fu">nuts_params</span>(s_rstan)</span>
+<span id="cb32-235"><a href="#cb32-235" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_pairs</span>(s_rstan, <span class="at">np =</span> np_cp,<span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"a"</span>,<span class="st">"b"</span>))</span>
+<span id="cb32-236"><a href="#cb32-236" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-237"><a href="#cb32-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-238"><a href="#cb32-238" aria-hidden="true" tabindex="-1"></a><span class="fu">### Posterior Predictive Plots</span></span>
+<span id="cb32-239"><a href="#cb32-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-240"><a href="#cb32-240" aria-hidden="true" tabindex="-1"></a><span class="fu">### Task: Use the samples to create the following posterior predictive plots</span></span>
+<span id="cb32-241"><a href="#cb32-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-242"><a href="#cb32-242" aria-hidden="true" tabindex="-1"></a>Some background first: posterior predictive distribution: $$</span>
+<span id="cb32-243"><a href="#cb32-243" aria-hidden="true" tabindex="-1"></a>  p(y|x, D) =  \int p(y|x,\theta) p(\theta|D) \; d\theta</span>
+<span id="cb32-244"><a href="#cb32-244" aria-hidden="true" tabindex="-1"></a>$$ Instead of integration, we sample in two turns</span>
+<span id="cb32-245"><a href="#cb32-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-246"><a href="#cb32-246" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$\theta_i \sim p(\theta|D)$</span>
+<span id="cb32-247"><a href="#cb32-247" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$y_{ix} \sim p(y|x,\theta_i)$ #We do this for many x in practice</span>
+<span id="cb32-248"><a href="#cb32-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-249"><a href="#cb32-249" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Creation of the posterior predictive samples by hand</span></span>
+<span id="cb32-250"><a href="#cb32-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-251"><a href="#cb32-251" aria-hidden="true" tabindex="-1"></a>You can either do this part, or use stan to create the posterior predictive samples $y_{ix}$ from the samples $\theta_i$ by hand.</span>
+<span id="cb32-252"><a href="#cb32-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-253"><a href="#cb32-253" aria-hidden="true" tabindex="-1"></a>Tip: Create two matrices <span class="in">`yix`</span> and <span class="in">`muix`</span> from the posterior samples of $a,b,\sigma$ with dimension (rows = number of posterior samples and cols = number of x positions).</span>
+<span id="cb32-254"><a href="#cb32-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-257"><a href="#cb32-257" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb32-258"><a href="#cb32-258" aria-hidden="true" tabindex="-1"></a>xs <span class="ot">=</span> <span class="sc">-</span><span class="dv">10</span><span class="sc">:</span><span class="dv">15</span> <span class="co"># The x-range 17 values from -1 to 15</span></span>
+<span id="cb32-259"><a href="#cb32-259" aria-hidden="true" tabindex="-1"></a>M <span class="ot">=</span> <span class="fu">length</span>(xs) </span>
+<span id="cb32-260"><a href="#cb32-260" aria-hidden="true" tabindex="-1"></a>yix <span class="ot">=</span> <span class="fu">matrix</span>(<span class="at">nrow=</span>T, <span class="at">ncol =</span> M) <span class="co">#Matrix from samples (number of posterior draws vs number of xs)</span></span>
+<span id="cb32-261"><a href="#cb32-261" aria-hidden="true" tabindex="-1"></a>muix <span class="ot">=</span> <span class="fu">matrix</span>(<span class="at">nrow=</span>T, <span class="at">ncol =</span> M) <span class="co">#Matrix from mu (number of posterior draws vs number of xs)</span></span>
+<span id="cb32-262"><a href="#cb32-262" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>T){ <span class="co">#Samples from the posterior</span></span>
+<span id="cb32-263"><a href="#cb32-263" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">=</span> post<span class="sc">$</span>a[i] <span class="co">#Corresponds to samples from theta</span></span>
+<span id="cb32-264"><a href="#cb32-264" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">=</span> post<span class="sc">$</span>b[i]</span>
+<span id="cb32-265"><a href="#cb32-265" aria-hidden="true" tabindex="-1"></a>  sigma <span class="ot">=</span> post<span class="sc">$</span>sigma[i]</span>
+<span id="cb32-266"><a href="#cb32-266" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>M){ <span class="co">#Different values of X</span></span>
+<span id="cb32-267"><a href="#cb32-267" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">=</span> a <span class="sc">*</span> xs[j] <span class="sc">+</span> b</span>
+<span id="cb32-268"><a href="#cb32-268" aria-hidden="true" tabindex="-1"></a>    muix[i,j] <span class="ot">=</span> a <span class="sc">*</span> xs[j] <span class="sc">+</span> b</span>
+<span id="cb32-269"><a href="#cb32-269" aria-hidden="true" tabindex="-1"></a>    yix[i,j] <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, mu, sigma) <span class="co"># Single number drawn</span></span>
+<span id="cb32-270"><a href="#cb32-270" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb32-271"><a href="#cb32-271" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-272"><a href="#cb32-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-273"><a href="#cb32-273" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="cn">FALSE</span>){</span>
+<span id="cb32-274"><a href="#cb32-274" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">15</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">25</span>), <span class="at">ylab=</span><span class="st">'mu=a*x+b'</span>)</span>
+<span id="cb32-275"><a href="#cb32-275" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>){</span>
+<span id="cb32-276"><a href="#cb32-276" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(xs, muix[i,],<span class="at">lwd=</span><span class="fl">0.25</span>,<span class="at">col=</span><span class="st">'blue'</span>)</span>
+<span id="cb32-277"><a href="#cb32-277" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb32-278"><a href="#cb32-278" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb32-279"><a href="#cb32-279" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">15</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">25</span>), <span class="at">ylab=</span><span class="st">'ys'</span>)</span>
+<span id="cb32-280"><a href="#cb32-280" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>){</span>
+<span id="cb32-281"><a href="#cb32-281" aria-hidden="true" tabindex="-1"></a>    <span class="fu">points</span>(xs, yix[i,], <span class="at">pch=</span><span class="st">'.'</span>,<span class="at">col=</span><span class="st">'red'</span>)</span>
+<span id="cb32-282"><a href="#cb32-282" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb32-283"><a href="#cb32-283" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-284"><a href="#cb32-284" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-285"><a href="#cb32-285" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-286"><a href="#cb32-286" aria-hidden="true" tabindex="-1"></a>After you created the matrices <span class="in">`yix`</span> and <span class="in">`muix`</span> you can use the following function to draw the lines for the quantiles.</span>
+<span id="cb32-287"><a href="#cb32-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-288"><a href="#cb32-288" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, ppd}</span></span>
+<span id="cb32-289"><a href="#cb32-289" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">15</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">25</span>), <span class="at">ylab=</span><span class="st">'quantiles (y and mu)'</span>)</span>
+<span id="cb32-290"><a href="#cb32-290" aria-hidden="true" tabindex="-1"></a>quant_lines <span class="ot">=</span> <span class="cf">function</span>(x2, y_pred, <span class="at">col=</span><span class="st">'blue'</span>){</span>
+<span id="cb32-291"><a href="#cb32-291" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">=</span> <span class="fu">apply</span>(y_pred, <span class="dv">2</span>,quantile, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.50</span>))</span>
+<span id="cb32-292"><a href="#cb32-292" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(x2, m,<span class="at">col=</span>col)</span>
+<span id="cb32-293"><a href="#cb32-293" aria-hidden="true" tabindex="-1"></a>  q05 <span class="ot">=</span> <span class="fu">apply</span>(y_pred, <span class="dv">2</span>, quantile, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.25</span>))</span>
+<span id="cb32-294"><a href="#cb32-294" aria-hidden="true" tabindex="-1"></a>  q95 <span class="ot">=</span> <span class="fu">apply</span>(y_pred, <span class="dv">2</span>, quantile, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.75</span>))</span>
+<span id="cb32-295"><a href="#cb32-295" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(x2, q05,<span class="at">col=</span>col)</span>
+<span id="cb32-296"><a href="#cb32-296" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(x2, q95,<span class="at">col=</span>col)  </span>
+<span id="cb32-297"><a href="#cb32-297" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-298"><a href="#cb32-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-299"><a href="#cb32-299" aria-hidden="true" tabindex="-1"></a><span class="fu">quant_lines</span>(xs,yix, <span class="at">col=</span><span class="st">'red'</span>)</span>
+<span id="cb32-300"><a href="#cb32-300" aria-hidden="true" tabindex="-1"></a><span class="fu">quant_lines</span>(xs,muix, <span class="at">col=</span><span class="st">'blue'</span>)</span>
+<span id="cb32-301"><a href="#cb32-301" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-302"><a href="#cb32-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-303"><a href="#cb32-303" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Creation of the posterior predictive samples with Stan</span></span>
+<span id="cb32-304"><a href="#cb32-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-305"><a href="#cb32-305" aria-hidden="true" tabindex="-1"></a>It's also possible to draw posterior predictive samples. One can use the <span class="in">`generated quantities`</span> code block for that.</span>
+<span id="cb32-306"><a href="#cb32-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-307"><a href="#cb32-307" aria-hidden="true" tabindex="-1"></a><span class="in">    data{</span></span>
+<span id="cb32-308"><a href="#cb32-308" aria-hidden="true" tabindex="-1"></a><span class="in">      int&lt;lower=0&gt; N;</span></span>
+<span id="cb32-309"><a href="#cb32-309" aria-hidden="true" tabindex="-1"></a><span class="in">      vector[N] y;</span></span>
+<span id="cb32-310"><a href="#cb32-310" aria-hidden="true" tabindex="-1"></a><span class="in">      vector[N] x;</span></span>
+<span id="cb32-311"><a href="#cb32-311" aria-hidden="true" tabindex="-1"></a><span class="in">      //For the prediced distribution (new)</span></span>
+<span id="cb32-312"><a href="#cb32-312" aria-hidden="true" tabindex="-1"></a><span class="in">      int&lt;lower=0&gt; N2;</span></span>
+<span id="cb32-313"><a href="#cb32-313" aria-hidden="true" tabindex="-1"></a><span class="in">      vector[N2] x2;</span></span>
+<span id="cb32-314"><a href="#cb32-314" aria-hidden="true" tabindex="-1"></a><span class="in">    }</span></span>
+<span id="cb32-315"><a href="#cb32-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-316"><a href="#cb32-316" aria-hidden="true" tabindex="-1"></a><span class="in">    generated quantities {</span></span>
+<span id="cb32-317"><a href="#cb32-317" aria-hidden="true" tabindex="-1"></a><span class="in">      real Y_predict[N2]; </span></span>
+<span id="cb32-318"><a href="#cb32-318" aria-hidden="true" tabindex="-1"></a><span class="in">      for (i in 1:N2){</span></span>
+<span id="cb32-319"><a href="#cb32-319" aria-hidden="true" tabindex="-1"></a><span class="in">        Y_predict = normal_rng(a * x2 + b, sigma);</span></span>
+<span id="cb32-320"><a href="#cb32-320" aria-hidden="true" tabindex="-1"></a><span class="in">      }</span></span>
+<span id="cb32-321"><a href="#cb32-321" aria-hidden="true" tabindex="-1"></a><span class="in">    }</span></span>
+<span id="cb32-322"><a href="#cb32-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-323"><a href="#cb32-323" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE, results='hide'}</span></span>
+<span id="cb32-324"><a href="#cb32-324" aria-hidden="true" tabindex="-1"></a>  x2 <span class="ot">=</span> <span class="sc">-</span><span class="dv">10</span><span class="sc">:</span><span class="dv">15</span></span>
+<span id="cb32-325"><a href="#cb32-325" aria-hidden="true" tabindex="-1"></a>  N2 <span class="ot">=</span> <span class="fu">length</span>(x2)</span>
+<span id="cb32-326"><a href="#cb32-326" aria-hidden="true" tabindex="-1"></a>  fit2 <span class="ot">=</span> rstan<span class="sc">::</span><span class="fu">stan</span>(<span class="at">file =</span> <span class="st">'~/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_03_Bayes_3/Stan_Primer_model_pred.stan'</span>,</span>
+<span id="cb32-327"><a href="#cb32-327" aria-hidden="true" tabindex="-1"></a>                         <span class="at">data=</span><span class="fu">list</span>(<span class="at">N=</span>N,<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">N2=</span>N2,<span class="at">x2=</span>x2),<span class="at">iter=</span><span class="dv">10000</span>)</span>
+<span id="cb32-328"><a href="#cb32-328" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb32-329"><a href="#cb32-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-330"><a href="#cb32-330" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, eval=FALSE}</span></span>
+<span id="cb32-331"><a href="#cb32-331" aria-hidden="true" tabindex="-1"></a>  d2 <span class="ot">=</span> rstan<span class="sc">::</span><span class="fu">extract</span>(fit2)</span>
+<span id="cb32-332"><a href="#cb32-332" aria-hidden="true" tabindex="-1"></a>  y_pred <span class="ot">=</span> d2<span class="sc">$</span>Y_predict</span>
+<span id="cb32-333"><a href="#cb32-333" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dim</span>(y_pred)</span>
+<span id="cb32-334"><a href="#cb32-334" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">10</span>,<span class="dv">15</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">25</span>), <span class="at">ylab=</span><span class="st">'quantiles (y and mu)'</span>)</span>
+<span id="cb32-335"><a href="#cb32-335" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quant_lines</span>(x2,y_pred, <span class="at">col=</span><span class="st">'red'</span>)</span>
+<span id="cb32-336"><a href="#cb32-336" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -4,14 +4,17 @@
 
 ```{r setup, include=FALSE}
   library(tidyverse)
+  library(cmdstanr)
+  library(rstan)
 ```
 
-# MCMC with Stan / Simple diagnostics
+MCMC with Stan / Simple diagnostics
 
-## Quick summary
+# Quick summary
+
 A quick summary of commands (for a more details see below).
 
-### Stan
+## Stan
 
 ```{r rstan_minimal, eval=FALSE}
 library(rstan)
@@ -26,7 +29,7 @@ s_rstan = sampling(m_rstan, data=data) #Sampling from file
 sampling(model_1, data=dat, algorithm="Fixed_param", chain=1, iter=1) 
 ```
 
-### Cmdstan
+## Cmdstan
 
 ```{r cmdstan minimal, eval=FALSE}
 library(cmdstanr)
@@ -35,11 +38,19 @@ s_rcmdstan = m_rcmdstan$sample(data = data)
 ```
 
 ### Tidy Bayes
+Works with rstan and cmdstanr
 
-```{r tidy_bayes minimal, eval=FALSE}
+```{r tidy_bayes_minimal, eval=FALSE}
 library(tidybayes)
 spread_draws(s, c(a,b)) #Extracts a and b from s (stan or cmdstan samples)
 spread_draws(s, f[i])  #Extracts vector f and calls components i
+```
+
+### Bayes  plot
+Works with rstan and cmdstanr
+```{r tidy_bayes minimal, eval=FALSE}
+  s = s_rcmdstan$draws() #We need to call draws() 2023
+  bayesplot::mcmc_trace(s)
 ```
 
 ### RStudio
@@ -50,30 +61,31 @@ Sometimes R gets slow when dealing with stan. At least in my case
 rstan_options(javascript=FALSE)
 ```
 
-#In a more detail
+# In a more detail 
+
 In the following some notes on Stan. You might find the following resources helpful.
 
-### Other Cheat Sheets
+## Other Cheat Sheets
 
 -   <http://www.sumsar.net/files/posts/2017-bayesian-tutorial-exercises/stan_cheat_sheet2.12.pdf>
 -   <https://github.com/sieste/Stan_cheatsheet>
 
-### Data
+## Data used
 
 Some Data for linear regression
 
-```{r }
+```{r}
 N = 4
 x = c(-2.,-0.66666, 0.666, 2.)
 y = c(-6.25027354, -2.50213382, -6.07525495,  7.92081243)
 data = list(N=N, x=x, y=y)
 ```
 
-### Getting samples from the posterior
+## Getting samples from the posterior
 
 There are currently (2023) two interfaces to stan from R. RStan (<https://mc-stan.org/users/interfaces/rstan>) which is a bit slower and does not use the latest stan compiler and rcmdstan (<https://mc-stan.org/cmdstanr/articles/cmdstanr.html>).
 
-#### The technical steps
+### The technical steps
 
 There are 3 steps:
 
@@ -82,7 +94,7 @@ There are 3 steps:
 3.  Running the simulation / sampling from the posterior
 4.  Extracting the samples from the posterior
 
-#### Definition
+### Definition
 
 To define a model, you can add a string or create a `.stan` file. Another option is to use a `Stan` markdown chunk and `output.var=my_model` to the name of the model. Code completion and highlighting is working for files and code chunks.
 
@@ -108,54 +120,51 @@ model{
 }"
 ```
 
-#### Compiling
+### Compiling
 
 Compiling works with:
 
 -   Compiling rstan `stan_model(model_code = stan_code)` or `stan_model(file='mymodel.stan')`
+
 -   Compiling cmdstan `cmdstan_model(file_stan)`
 
-##### Compiling with rstan
+#### Compiling with rstan
 
-```{r results="hide"}
+```{r results="hide", cache=TRUE}
   library(rstan)
   m_rstan = stan_model(model_code = stan_code)
 ```
 
 #### Compiling with rcmdstan
 
-There is no possibility to use a string for cmd_stan. There is a convenience function `rethinking::cmdstanr_model_write`. TODO make oduerr utils and provide the file.
+There is no possibility to use a string for cmd_stan.
 
 ```{r results="hide"}
-  library(cmdstanr)
-  file_stan <- tempfile(fileext=".stan")
-  fileConn <- file(file_stan)
-  writeLines(stan_code, fileConn)
-  close(fileConn)
-  m_rcmdstan <- cmdstan_model(file_stan)
+  m_rcmdstan <- cmdstan_model(stan_file='stan/simple_lr.stan')
 ```
 
-#### Sampling / running the chains
+### Sampling / running the chains
 
 For rstan: `sampling(m_rstan, data=data)` For cmdstan: `mod$sample(data = data_file, seed=123)`
 
-```{r results="hide", cache=TRUE}
+```{r results="hide"}
   s_rcmdstan = m_rcmdstan$sample(data = data)
 ```
 
 ```{r results="hide", cache=TRUE}
-  s_rstan = sampling(m_rstan, data=data)  
+  s_rstan = sampling(m_rstan)  
 ```
 
-#### Diagnostics of the chains
+### Diagnostics of the chains
 
 The package bayesplot can handle both interfaces
 
-##### Trace
+#### Trace
+
 ```{r trace}
 #traceplot(s_rstan, 'a')
-bayesplot::mcmc_trace(s_rstan)
-#bayesplot::mcmc_trace(s_rcmdstan$draws()) #similar result
+#bayesplot::mcmc_trace(s_rstan)
+bayesplot::mcmc_trace(s_rcmdstan$draws()) #similar result
 s_rstan
 # Rhat close to one and n_eff lager than half the number of draws; look fine
 ```
@@ -165,7 +174,8 @@ Key Numbers
 -   `Rhat` is something like the ratio of variation between the chains to withing the chains
 -   `n_eff` number of effective samples taking the autocorrelation into account (in cmd_stan the output is ess_bulk and ess_tail)
 
-##### Shiny Stan
+#### Shiny Stan
+
 ```{r, eval=FALSE, echo=TRUE}
   #Shiny Stan, quite overwhelming
   library(shinystan)
@@ -208,20 +218,20 @@ post = rstan::extract(s_rstan)
 T = length(post$a)
 hist(post$a,100, freq=F)
 lines(density(post$a),col='red')  
-
 ```
 
-##### Pairs plot
+#### Pairs plot
+
 Using the pairs plot, correlations in the variables can be found.
+
 ```{r}
 np_cp = bayesplot::nuts_params(s_rstan)
 bayesplot::mcmc_pairs(s_rstan, np = np_cp,pars = c("a","b"))
 ```
 
-
 ### Posterior Predictive Plots
 
-#### Task: Use the samples to create the following posterior predictive plots
+### Task: Use the samples to create the following posterior predictive plots
 
 Some background first: posterior predictive distribution: $$
   p(y|x, D) =  \int p(y|x,\theta) p(\theta|D) \; d\theta
