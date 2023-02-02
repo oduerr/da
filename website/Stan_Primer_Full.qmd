@@ -141,6 +141,7 @@ There is no possibility to use a string for cmd_stan.
 
 ```{r results="hide"}
   m_rcmdstan <- cmdstan_model(stan_file='stan/simple_lr.stan')
+  m_rcmdstan$print() #Displays the used model
 ```
 
 ### Sampling / running the chains
@@ -179,7 +180,12 @@ Key Numbers
 ```{r, eval=FALSE, echo=TRUE}
   #Shiny Stan, quite overwhelming
   library(shinystan)
-  launch_shinystan(samples)
+  launch_shinystan(s_rcmdstan)
+  
+  #If not working
+  #See https://discourse.mc-stan.org/t/will-launch-shinystan-work-soon-for-cmdstanr/17269
+  stanfit = rstan::read_stan_csv(s_rcmdstan$output_files())
+  launch_shinystan(stanfit)
 ```
 
 ### Posteriors (of the parameters)
@@ -192,12 +198,22 @@ Getting the samples can be done as
 
 Another handy package is tidybayes which can handle the output of `rstan` and `rcmdstan`
 
+#### Tidybayes
 ```{r}
 library(tidybayes)
 head(spread_draws(s_rcmdstan, c(a,b))) #Non-tidy a and b in one row
-head(gather_draws(s_rstan, c(a,b))) #The ggplot like syntax
+head(gather_draws(s_rcmdstan, c(a,b))) #The ggplot like syntax
 #spread_draws(model_weight_sex, a[sex]) for multilevel models
 ```
+
+#### Command Stan Functions
+For more see: https://mc-stan.org/cmdstanr/articles/cmdstanr.html 
+
+```{r}
+df <- s_rcmdstan$draws(format = "df")
+df %>% select(-c(.chain, .iteration, .draw)) %>% cor()
+```
+
 
 #### Stan functions
 
