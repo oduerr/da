@@ -33,8 +33,9 @@ sampling(model_1, data=dat, algorithm="Fixed_param", chain=1, iter=1)
 
 ```{r cmdstan minimal, eval=FALSE}
 library(cmdstanr)
-m_rcmdstan <- cmdstan_model(file_stan)
-s_rcmdstan = m_rcmdstan$sample(data = data)
+m_rcmdstan <- cmdstan_model(file_stan) #Compiling
+s_rcmdstan = m_rcmdstan$sample(data = data) #Sampling
+df = s_rcmdstan$draws(format = "df") #Extracting Samples as data.frame
 ```
 
 ### Tidy Bayes

@@ -1,0 +1,179 @@
+---
+output:
+  pdf_document:
+    highlight: pygments
+    includes:
+      in_header: header_lsg.tex
+---
+```{r, echo=FALSE, eval=TRUE, message=FALSE}
+  if (exists("lsg") == FALSE){ #Nur falls von RStudio aufgerufen
+    lsg <- TRUE   #Wenn man die lsg ausgeben will dann lsg <- TRUE sonst 
+  }
+  if (exists("baseDir") == FALSE){ #Nur falls von RStudio aufgerufen
+    baseDir = getwd()
+  }
+  ig <- function(name, scale = 1) {
+     return (paste0("\\includegraphics[ scale =", scale,"]{", baseDir,"/", name, "}"))
+  }
+```
+
+
+## Linear Regression
+In this excercise, we compare the MaxLike solution with a Bayesian Solution for linear regression. 
+
+a) Use the same data generating process as in `Maximum Likelihood Principle (linear regression)`.
+Simulate 50 data points $(x,y)$ under the assumptions from linear regression $y \sim Norm(\mu=2.0 \cdot x + 1.0, \sigma=1)$. Let $x$ be in the range from -2 to 2. Hint: use the function $rnorm$. 
+
+```{r, echo=lsg, eval=lsg}
+  set.seed(1)
+  N = 5
+  x = seq(-2,2, length.out = N)
+  y = rnorm(N, mean = 2 * x + 1, sd = 1)
+```
+
+b) Fit the maximum likelihood solution with the R command `lm`. Plot the Data and $\mu_{ML} = E(y|x)$
+
+```{r, echo=lsg, eval=lsg, warning=FALSE}
+  maxl = lm(y ~ x)
+  d = coef(maxl)
+  a = d[2]
+  b = d[1]
+  curve(a*x+b, from = -5, to=5)
+  points(x,y)
+  a
+  b
+```
+
+c) Do a Bayesian analysis with a extremely flat prio, e.g. $a,b \sim unif(-100,100)$ and $\sigma \sim uniform(0,100)$. Extract samples of $a,b$ from the posterior and plot them.
+
+In case you cannot install `stan` or let it run on Kaggle the file https://github.com/oduerr/da/raw/master/data/bayes2_LR_post.rda 
+contains samples of the posterior in an object called `post` and the data.
+
+Compare the mean of the Bayesian Analysis with the Maximum Likelihood Solution. 
+
+```{r, echo=lsg, eval=lsg}
+library(cmdstanr)
+m_rcmdstan <- cmdstan_model('~/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_02_Bayes_2/lr.stan')
+m_rcmdstan$code()
+```
+
+```{r, echo=lsg, eval=lsg, results="hide",warning=FALSE}
+library(cmdstanr)
+m_rcmdstan <- cmdstan_model('~/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_02_Bayes_2/lr.stan')
+
+#model = stan_model(model_code = model_code)
+#post = stan(model_code = model_code, data=list(N=N,x=x, y=y))
+post = m_rcmdstan$sample(data=list(N=N,x=x, y=y))
+#samples = extract(post)
+samples = post$draws(format = "df")
+#data=d
+#save(post, data, file='~/Documents/workspace/da/data/bayes2_LR_post.rda')
+#load('~/Documents/workspace/da/data/bayes2_LR_post.rda') #We use the samples drawn before
+#d=data
+#In nice
+library(ggplot2)
+ggplot(samples,aes(x=a,y=b)) + 
+  geom_point(size=0.1, alpha=0.2) + 
+  geom_density2d() 
+
+#Also ok
+# plot(samples$a,samples$b, pch='.')
+a
+mean(samples$a) 
+hist(samples$a)
+
+b
+mean(samples$b)
+lm(y ~ x)
+```
+
+d) At $x=1$ calculate $\mu_|x = a+bx$ from the posterior samples and plot it. Extract the mean and the $0.05$ and $0.95$ quantiles
+
+```{r, echo=lsg, eval=lsg}
+  x1 = 1
+  mu = samples$a + samples$b*(x1)
+  plot(density(mu))
+  mean(mu)
+  quantile(mu,c(0.05, 0.95))
+```
+
+e) Repeat d) (without plots) at 40 positions from $x=-10$ to $x=10$. Extract the mean and the 0.05 and 0.95 quantiles. Plot it against the data together with the maximum likelihood solution. 
+```{r, echo=lsg, eval=lsg}
+  xs = seq(-10,10,length.out = 40)
+  draw_lines = function(xs, samples){
+   df = NULL
+    for (x1 in xs){
+      mu=(samples$b + samples$a*x1)
+      df1 = data.frame(mean = mean(mu))
+      q = quantile(mu,c(0.05, 0.95))
+      df1$q5 = q[1]
+      df1$q95 = q[2]
+      df = rbind(df,df1)
+      df  
+    }
+    lines(xs, df$mean, col='green', lty=2)
+    lines(xs, df$q5, col='green', lty=2)
+    lines(xs, df$q95, col='green', lty=2)
+  }
+  curve(a*x+b, from = -10, to=10, main=paste0('Number of Datapoints ', N)) #ML
+  points(x,y) #Data
+  draw_lines(xs, samples)
+```
+
+f) Repeat the Bayesian analysis but now only choose 5 data points. What happens with the uncertainty.
+
+```{r, echo=lsg, eval=lsg,results="hide"}
+  set.seed(6)
+  N = 5 ## <-- The only change, rest is copy and paste
+  x = seq(-2,2, length.out = N)
+  y = rnorm(N, mean = 2 * x + 1, sd = 1)
+  d = data.frame(x=x,y=y) 
+  
+  #post = sampling(model, data=list(N=N,x=x, y=y))
+  #samples = extract(post)
+  #samples = as.data.frame(post)
+  
+  post = m_rcmdstan$sample(data=list(N=N,x=x, y=y))
+  draws = post$draws(format = 'df')
+  curve(a*x+b, from = -10, to=10, main=paste0('Number of Datapoints ', N)) #ML
+  points(x,y) #Data
+  draw_lines(xs, draws)
+```
+
+<!-- g) Posterior Predictive Distribution: The solutions in e-f only describe how the distribution of the mean value $\mu|x$ changes, when you change $x$, they do not describe how the posterior predictive distribution $p(y|D)$ looks like. To simulate from that distribution sample $y_i$ from many posterior samples from $a_i$, $b_i$ which create $\mu_i|x$  (as above) and then sample from $y ~ Normal(\mu_i, \sigma_i)$. We restrict ourself to the point $x=1$ As in plot d) the density of $\mu$ and $y$ at $x=1$. -->
+
+```{r, echo=FALSE, eval=FALSE}
+  x1 = 1
+  mu = samples$b + samples$a*(x1)
+  y1 = rnorm(mean=mu, samples$sigma)
+  plot(density(y1), col='red')
+  lines(density(mu))
+```
+
+<!-- h) [Optional] Posterior Predictive for all x. This is not needed, in exercise of week 3 you will do this. -->
+
+```{r, echo=FALSE, eval=FALSE}
+  draw_lines_ppd = function(xs, samples){
+   df = NULL
+    for (x1 in xs){
+      mu=(samples$b + samples$a*x1)
+      #mu = samples$a + samples$b*(x1)
+      y1 = rnorm(mean=mu, samples$sigma)
+      df1 = data.frame(mean = mean(y1))
+      q = quantile(y1,c(0.05, 0.95))
+      df1$q5 = q[1]
+      df1$q95 = q[2]
+      df = rbind(df,df1)
+      df  
+    }
+    lines(xs, df$mean, col='red', lty=2)
+    lines(xs, df$q5, col='red', lty=2)
+    lines(xs, df$q95, col='red', lty=2)
+  }
+  #samples = as.data.frame(post)
+  curve(a*x+b, from = -10, to=10, main=paste0('Number of Datapoints ', N)) #ML
+  points(x,y) #Data
+  draw_lines(xs,  draws)
+  draw_lines_ppd(xs, draws)
+```
+
