@@ -5,6 +5,7 @@ output:
     includes:
       in_header: header_lsg.tex
 ---
+
 ```{r, echo=FALSE, eval=TRUE, message=FALSE}
   if (exists("lsg") == FALSE){ #Nur falls von RStudio aufgerufen
     lsg <- TRUE   #Wenn man die lsg ausgeben will dann lsg <- TRUE sonst 
@@ -17,12 +18,11 @@ output:
   }
 ```
 
-
 ## Linear Regression
-In this excercise, we compare the MaxLike solution with a Bayesian Solution for linear regression. 
 
-a) Use the same data generating process as in `Maximum Likelihood Principle (linear regression)`.
-Simulate 50 data points $(x,y)$ under the assumptions from linear regression $y \sim Norm(\mu=2.0 \cdot x + 1.0, \sigma=1)$. Let $x$ be in the range from -2 to 2. Hint: use the function $rnorm$. 
+In this excercise, we compare the MaxLike solution with a Bayesian Solution for linear regression.
+
+a)  Use the same data generating process as in `Maximum Likelihood Principle (linear regression)`. Simulate 50 data points $(x,y)$ under the assumptions from linear regression $y \sim Norm(\mu=2.0 \cdot x + 1.0, \sigma=1)$. Let $x$ be in the range from -2 to 2. Hint: use the function $rnorm$.
 
 ```{r, echo=lsg, eval=lsg}
   set.seed(1)
@@ -31,7 +31,7 @@ Simulate 50 data points $(x,y)$ under the assumptions from linear regression $y 
   y = rnorm(N, mean = 2 * x + 1, sd = 1)
 ```
 
-b) Fit the maximum likelihood solution with the R command `lm`. Plot the Data and $\mu_{ML} = E(y|x)$
+b)  Fit the maximum likelihood solution with the R command `lm`. Plot the Data and $\mu_{ML} = E(y|x)$
 
 ```{r, echo=lsg, eval=lsg, warning=FALSE}
   maxl = lm(y ~ x)
@@ -44,22 +44,15 @@ b) Fit the maximum likelihood solution with the R command `lm`. Plot the Data an
   b
 ```
 
-c) Do a Bayesian analysis with a extremely flat prio, e.g. $a,b \sim unif(-100,100)$ and $\sigma \sim uniform(0,100)$. Extract samples of $a,b$ from the posterior and plot them.
+c)  Do a Bayesian analysis with a extremely flat prio, e.g. $a,b \sim unif(-100,100)$ and $\sigma \sim uniform(0,100)$. Extract samples of $a,b$ from the posterior and plot them. Compare the mean of the Bayesian Analysis with the Maximum Likelihood Solution.
 
-In case you cannot install `stan` or let it run on Kaggle the file https://github.com/oduerr/da/raw/master/data/bayes2_LR_post.rda 
-contains samples of the posterior in an object called `post` and the data.
+In case you cannot install `stan` or let it run on Kaggle the file <https://github.com/oduerr/da/raw/master/data/bayes2_LR_post.rda> contains samples of the posterior in an object called `post` and the data.
 
-Compare the mean of the Bayesian Analysis with the Maximum Likelihood Solution. 
+In case you are stuck, the stan-file can be found at <https://github.com/oduerr/da/blob/master/lab/lr_1/lr.stan>
 
-```{r, echo=lsg, eval=lsg}
+```{r, echo=lsg, eval=lsg, results="hide", warning=FALSE}
 library(cmdstanr)
-m_rcmdstan <- cmdstan_model('~/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_02_Bayes_2/lr.stan')
-m_rcmdstan$code()
-```
-
-```{r, echo=lsg, eval=lsg, results="hide",warning=FALSE}
-library(cmdstanr)
-m_rcmdstan <- cmdstan_model('~/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_02_Bayes_2/lr.stan')
+m_rcmdstan <- cmdstan_model('~/Documents/GitHub/da/lab/lr_1/lr.stan')
 
 #model = stan_model(model_code = model_code)
 #post = stan(model_code = model_code, data=list(N=N,x=x, y=y))
@@ -87,7 +80,7 @@ mean(samples$b)
 lm(y ~ x)
 ```
 
-d) At $x=1$ calculate $\mu_|x = a+bx$ from the posterior samples and plot it. Extract the mean and the $0.05$ and $0.95$ quantiles
+d)  At $x=1$ calculate $\mu_|x = a+bx$ from the posterior samples and plot it. Extract the mean and the $0.05$ and $0.95$ quantiles
 
 ```{r, echo=lsg, eval=lsg}
   x1 = 1
@@ -97,7 +90,8 @@ d) At $x=1$ calculate $\mu_|x = a+bx$ from the posterior samples and plot it. Ex
   quantile(mu,c(0.05, 0.95))
 ```
 
-e) Repeat d) (without plots) at 40 positions from $x=-10$ to $x=10$. Extract the mean and the 0.05 and 0.95 quantiles. Plot it against the data together with the maximum likelihood solution. 
+e)  Repeat d) (without plots) at 40 positions from $x=-10$ to $x=10$. Extract the mean and the 0.05 and 0.95 quantiles. Plot it against the data together with the maximum likelihood solution.
+
 ```{r, echo=lsg, eval=lsg}
   xs = seq(-10,10,length.out = 40)
   draw_lines = function(xs, samples){
@@ -120,7 +114,7 @@ e) Repeat d) (without plots) at 40 positions from $x=-10$ to $x=10$. Extract the
   draw_lines(xs, samples)
 ```
 
-f) Repeat the Bayesian analysis but now only choose 5 data points. What happens with the uncertainty.
+f)  Repeat the Bayesian analysis but now only choose 5 data points. What happens with the uncertainty.
 
 ```{r, echo=lsg, eval=lsg,results="hide"}
   set.seed(6)
@@ -176,4 +170,3 @@ f) Repeat the Bayesian analysis but now only choose 5 data points. What happens 
   draw_lines(xs,  draws)
   draw_lines_ppd(xs, draws)
 ```
-
