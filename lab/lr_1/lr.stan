@@ -8,7 +8,7 @@ data{
 parameters{
     real a; 
     real b;
-    real sigma;
+    real<lower=0> sigma;
 }
 
 model{

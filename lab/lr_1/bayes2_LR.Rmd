@@ -82,7 +82,7 @@ lm(y ~ x)
 
 d)  At $x=1$ calculate $\mu_|x = a+bx$ from the posterior samples and plot it. Extract the mean and the $0.05$ and $0.95$ quantiles
 
-```{r, echo=lsg, eval=lsg}
+```{r, echo=lsg, eval=lsg, results="hide", warning=FALSE}
   x1 = 1
   mu = samples$a + samples$b*(x1)
   plot(density(mu))
@@ -92,7 +92,7 @@ d)  At $x=1$ calculate $\mu_|x = a+bx$ from the posterior samples and plot it. E
 
 e)  Repeat d) (without plots) at 40 positions from $x=-10$ to $x=10$. Extract the mean and the 0.05 and 0.95 quantiles. Plot it against the data together with the maximum likelihood solution.
 
-```{r, echo=lsg, eval=lsg}
+```{r, echo=lsg, eval=lsg, results="hide", warning=FALSE}
   xs = seq(-10,10,length.out = 40)
   draw_lines = function(xs, samples){
    df = NULL
@@ -116,7 +116,7 @@ e)  Repeat d) (without plots) at 40 positions from $x=-10$ to $x=10$. Extract th
 
 f)  Repeat the Bayesian analysis but now only choose 5 data points. What happens with the uncertainty.
 
-```{r, echo=lsg, eval=lsg,results="hide"}
+```{r, echo=lsg, eval=lsg,results="hide", warning=FALSE}
   set.seed(6)
   N = 5 ## <-- The only change, rest is copy and paste
   x = seq(-2,2, length.out = N)

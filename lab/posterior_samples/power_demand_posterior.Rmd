@@ -1,0 +1,75 @@
+---
+output:
+  pdf_document:
+    highlight: pygments
+    includes:
+      in_header: header_lsg.tex
+---
+```{r, echo=FALSE, eval=TRUE, message=FALSE}
+  if (exists("lsg") == FALSE){ #Nur falls von RStudio aufgerufen
+    lsg <- TRUE   #Wenn man die lsg ausgeben will dann lsg <- TRUE sonst 
+  }
+  if (exists("baseDir") == FALSE){ #Nur falls von RStudio aufgerufen
+    baseDir = getwd()
+  }
+  ig <- function(name, scale = 1) {
+     return (paste0("\\includegraphics[ scale =", scale,"]{", baseDir,"/", name, "}"))
+  }
+```
+
+
+## Working with posterior samples
+
+Suppose you manage a company with has a high electric energy consumption for production. You also have you own inhouse energy resources (e.g. solar power). Such energy sources usually have high fluctuations in the energy production. You can also buy energy at the market a day ahead (at 300 Euro / megawatt hour). If you use more power than you ordered, you have to pay 1000 Euro / MWh as a fine. If you use less you have to pay the the amount you ordered, but no extra cost apply.
+
+Tomorrow at 13:00, you have scheduled a job which requires 2 MWh. You consult your Bayesian predictive model. Samples from the posterior for this own energy resources are given in the file `power_post`, in units of MWh. You can read this file via
+
+```{r, echo=FALSE, eval=FALSE}
+  set.seed(42)
+  samples = data.frame(samples = rgamma(1000, shape=10, scale = 1) / 10)
+  write.table(samples, file='power_post.csv')
+```
+
+```{r, echo=TRUE, eval=TRUE}
+samples = read.table('http://www-home.htwg-konstanz.de/~oduerr/data/power_post.csv')
+samples = samples$samples
+```
+
+
+a) Plot the density or histogram of the posterior draws and estimate the expected value for you own power production.
+
+```{r, echo=lsg, eval=lsg}
+   plot(density(samples), xlab='Energy Production [MWh]', ylab='Posterior Density', main='Inhouse Power Production Forcast')
+ mean(samples)
+```
+
+b) What are the expected costs, if you order 1 MWh. 
+```{r, echo=lsg, eval=lsg}
+  ordered = 1
+  extra_energie = 2 - ordered - samples 
+  extra_energie = ifelse(extra_energie < 0, 0, extra_energie)
+  costs = 300*ordered + #The price you pay for the ordered energy
+          1000 * extra_energie 
+  mean(costs)
+```
+
+c) [optional] Would it be cheaper to just order less or more? Find the minimum expected cost. Note that this analysis is probably not allowed in the German Energy market.
+```{r, echo=lsg, eval=lsg}
+  est_cost = function(ordered = 1){
+    extra_energie = 2 - ordered - samples 
+    extra_energie = ifelse(extra_energie < 0, 0, extra_energie)
+    costs = 300*ordered + #The price you pay for the ordered energy
+            1000 * extra_energie 
+    return(mean(costs))
+  }
+  ordered = seq(0.5,1.5,0.05)
+  costs = rep(NA, length(ordered))
+  for (i in 1:length(ordered)){
+    costs[i] = est_cost(ordered[i])
+  }
+  plot(ordered, costs, xlab='Amount of Energy ordered', ylab='expected costs')
+```
+
+
+
+
