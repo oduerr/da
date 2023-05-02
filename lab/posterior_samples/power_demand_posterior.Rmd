@@ -31,7 +31,7 @@ Tomorrow at 13:00, you have scheduled a job which requires 2 MWh. You consult yo
 ```
 
 ```{r, echo=TRUE, eval=TRUE}
-samples = read.table('http://www-home.htwg-konstanz.de/~oduerr/data/power_post.csv')
+samples = read.table('https://raw.githubusercontent.com/oduerr/da/master/lab/posterior_samples/power_post.csv')
 samples = samples$samples
 ```
 
