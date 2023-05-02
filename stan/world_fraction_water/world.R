@@ -21,11 +21,9 @@ Sys.time() - start_time #~10 sec
 
 #Comparison with the grid approximation
 hist(samples_grid, freq = FALSE, xlim=c(0,1))
-lines(density(samples_stan), col='red')
 lines(density(samples_cmd), col='green')
 
-
-#Using RStan
+#Using RStan 
 library(rstan)
 start_time <- Sys.time()
 res = stan('stan/world_fraction_water/world.stan', data = list(N=N, W=W))
