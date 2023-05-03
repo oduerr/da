@@ -20,7 +20,7 @@ output:
 
 ## Working with posterior samples
 
-Suppose you manage a company with has a high electric energy consumption for production. You also have you own inhouse energy resources (e.g. solar power). Such energy sources usually have high fluctuations in the energy production. You can also buy energy at the market a day ahead (at 300 Euro / megawatt hour). If you use more power than you ordered, you have to pay 1000 Euro / MWh as a fine. If you use less you have to pay the the amount you ordered, but no extra cost apply.
+Suppose you manage a company with has a high electric energy consumption for production. You also have you own inhouse energy resources (e.g. solar power). Such energy sources usually have high fluctuations in the energy production. You can also buy energy at the market a day ahead (at 300 Euro / megawatt hour). If you use more power than you ordered, you have to pay in total 1000 Euro / MWh as a fine. If you use less you have to pay the the amount you ordered, but no extra cost apply.
 
 Tomorrow at 13:00, you have scheduled a job which requires 2 MWh. You consult your Bayesian predictive model. Samples from the posterior for this own energy resources are given in the file `power_post`, in units of MWh. You can read this file via
 
