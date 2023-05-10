@@ -27,7 +27,7 @@ You might find the following resources sheets helpful.
 
 -   <http://www.sumsar.net/files/posts/2017-bayesian-tutorial-exercises/stan_cheat_sheet2.12.pdf>
 -   <https://github.com/sieste/Stan_cheatsheet>
--   <https://github.com/https://oduerr.github.io/da/Stan_Primer_Full.html>
+-   <https://oduerr.github.io/da/Stan_Primer_Full.html>
 
 
 ### Data
@@ -86,12 +86,12 @@ Once the model is compiled the sampling is done. You can also compile and sample
 
 Inspect the traceplot, do they look good?
 
-```{r}
+```{r bayesplot}
 bayesplot::mcmc_trace(samples$draws())
 ```
 
 ```{r, eval=lsg, echo=lsg}
-# They rapidly jump over all values. All chains are similar.
+# They rapidly jump over all values. All chains are similar. The Hairy Capatiller
 ```
 
 #### Key Numbers
@@ -118,12 +118,13 @@ bayesplot::mcmc_trace(samples$draws())
 
 #### Task: "Manually" visualize the posterior
 
-We extract samples from the posterior via `extract` (in some installation the wrong extract function is taken in that case use `rstan::extract` to use the right one). Visualize the posterior distribution of $a$ from the samples.
+Visualize the posterior distribution of $a,b$ and $a$ from the samples. Note that this are the marginals.
 
 ```{r echo=lsg, eval=TRUE}
 # Extract samples
 post = samples$draws(format = 'df') #Sampling
 if (lsg){ #Only show plots in the solution
+  ggplot(post, aes(x=a, y=b)) + geom_point(size=0.1) + geom_density_2d() 
   hist(post$a,100, freq=F)
   lines(density(post$a),col='red')  
 }

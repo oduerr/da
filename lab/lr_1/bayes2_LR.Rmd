@@ -69,7 +69,7 @@ ggplot(samples,aes(x=a,y=b)) +
   geom_point(size=0.1, alpha=0.2) + 
   geom_density2d() 
 
-#Also ok
+#Also ok (non-ggplot)
 # plot(samples$a,samples$b, pch='.')
 a
 mean(samples$a) 

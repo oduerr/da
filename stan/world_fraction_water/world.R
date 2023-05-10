@@ -16,12 +16,12 @@ start_time <- Sys.time()
 library(cmdstanr)
 model = cmdstan_model('stan/world_fraction_water/world.stan')
 samples_cmd = model$sample(data = list(N=N, W=W), seed=123)
-samples_cmd = samples_cmd$draws('p') #Extract parameter 'p'
+samples_cmd = samples_cmd$draws('p', format = 'data.frame') #Extract parameter 'p'
 Sys.time() - start_time #~10 sec
 
 #Comparison with the grid approximation
-hist(samples_grid, freq = FALSE, xlim=c(0,1))
-lines(density(samples_cmd), col='green')
+hist(samples_cmd$p, freq = FALSE, xlim=c(0,1))
+lines(density(samples_cmd$p), col='green', lw=5)
 
 #Using RStan 
 library(rstan)
