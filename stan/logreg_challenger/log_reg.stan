@@ -18,8 +18,6 @@ model {
   //y ~ bernoulli(inv_logit(alpha + beta * x)); //inv_logit aka sigmoid
 }
 generated quantities {
-  real Y_predict[N2];
   vector[N2] p_predict;
-  Y_predict = bernoulli_logit_rng(alpha + beta * x2);
   p_predict = inv_logit(alpha + beta * x2);
 }

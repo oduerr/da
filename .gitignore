@@ -82,3 +82,4 @@ website/stan/simple_lr
 lab/lr_mcmc_diag/linear_regression
 lab/lr_mcmc_diag/Stan_Primer_model_pred
 stan/howell1/unconditional
+stan/logreg_challenger/log_reg

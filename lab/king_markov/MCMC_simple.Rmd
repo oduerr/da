@@ -1,0 +1,66 @@
+---
+output:
+  pdf_document:
+    highlight: pygments
+    includes:
+      in_header: header_lsg.tex
+---
+```{r, echo=FALSE, eval=TRUE, message=FALSE}
+  if (exists("lsg") == FALSE){ #Nur falls von RStudio aufgerufen
+    lsg <- TRUE   #Wenn man die lsg ausgeben will dann lsg <- TRUE sonst 
+  }
+  if (exists("baseDir") == FALSE){ #Nur falls von RStudio aufgerufen
+    baseDir = getwd()
+  }
+  ig <- function(name, scale = 1) {
+     return (paste0("\\includegraphics[ scale =", scale,"]{", baseDir,"/", name, "}"))
+  }
+```
+
+
+## Implement own MCMC Algorithm
+
+a) Change the following "King Markov" algorithm so that the islands are visited proportional to the number of the island squared. Visualize the resulting chain (first 200 steps) and the distribution.
+
+```{r, eval=FALSE}
+num_weeks <- 1e5
+positions <- rep(0,num_weeks)
+current <- 5
+for ( i in 1:num_weeks ) {
+  ## record current position
+    positions[i] <- current
+  ## flip coin to generate proposal
+    proposal <- current + sample( c(-1,1) , size=1 )
+  ## now make sure he loops around the archipelago
+    if ( proposal < 1 ) proposal <- 10
+    if ( proposal > 10 ) proposal <- 1
+  ## move?
+    prob_move <- proposal^2/current^2
+    current <- ifelse( runif(1) < prob_move , proposal , current )
+}
+plot(positions[1:100])
+lines(positions[1:100])
+plot(table(positions)/num_weeks)
+```
+
+```{r, eval=lsg, echo=lsg, fig.height=3}
+num_weeks <- 1e5
+positions <- rep(0,num_weeks)
+current <- 10
+for ( i in 1:num_weeks ) {
+  ## record current position
+    positions[i] <- current
+  ## flip coin to generate proposal
+    proposal <- current + sample( c(-1,1) , size=1 )
+  ## now make sure he loops around the archipelago
+    if ( proposal < 1 ) proposal <- 10
+    if ( proposal > 10 ) proposal <- 1
+  ## move?
+    prob_move <- proposal/current
+    current <- ifelse( runif(1) < prob_move , proposal , current )
+}
+plot(positions[1:100])
+lines(positions[1:100])
+plot(table(positions)/num_weeks)
+```
+

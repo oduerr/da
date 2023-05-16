@@ -1,7 +1,7 @@
 //Model for linear 
 data{
     int<lower=0> N;
-    vector[N] y;
+    vector[N] y;    
     vector[N] x;
 }
 

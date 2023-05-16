@@ -124,6 +124,7 @@ Visualize the posterior distribution of $a,b$ and $a$ from the samples. Note tha
 # Extract samples
 post = samples$draws(format = 'df') #Sampling
 if (lsg){ #Only show plots in the solution
+  library(tidyverse)
   ggplot(post, aes(x=a, y=b)) + geom_point(size=0.1) + geom_density_2d() 
   hist(post$a,100, freq=F)
   lines(density(post$a),col='red')  

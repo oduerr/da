@@ -26,7 +26,7 @@ a)  Use the same data generating process as in `Maximum Likelihood Principle (li
 
 ```{r, echo=lsg, eval=lsg}
   set.seed(1)
-  N = 5
+  N = 50
   x = seq(-2,2, length.out = N)
   y = rnorm(N, mean = 2 * x + 1, sd = 1)
 ```
@@ -74,6 +74,7 @@ ggplot(samples,aes(x=a,y=b)) +
 a
 mean(samples$a) 
 hist(samples$a)
+plot(density(samples$a))
 
 b
 mean(samples$b)
@@ -83,8 +84,8 @@ lm(y ~ x)
 d)  At $x=1$ calculate $\mu_|x = a+bx$ from the posterior samples and plot it. Extract the mean and the $0.05$ and $0.95$ quantiles
 
 ```{r, echo=lsg, eval=lsg, results="hide", warning=FALSE}
-  x1 = 1
-  mu = samples$a + samples$b*(x1)
+  x1 = 100
+  mu = samples$a*x1 + samples$b
   plot(density(mu))
   mean(mu)
   quantile(mu,c(0.05, 0.95))

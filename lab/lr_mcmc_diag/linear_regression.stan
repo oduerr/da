@@ -7,7 +7,7 @@ data{
 parameters{
   real a; //Instead of using e.g. half Gaussian
   real b;
-  real sigma;
+  real<lower=0> sigma;
 }
 
 model{
