@@ -13,6 +13,8 @@ parameters {
 }
 model {
   y ~ bernoulli_logit(alpha + beta * x); 
+  alpha ~ normal(0,100);
+  beta ~ normal(0,100);
   //No priors on alpha and beta
   //Alternative version (not so much optimized)
   //y ~ bernoulli(inv_logit(alpha + beta * x)); //inv_logit aka sigmoid

@@ -165,7 +165,7 @@ for (i in 1:T){ #Samples from the posterior
   }
 }
 
-if (FALSE){
+if (TRUE){
   plot(x, y, xlim=c(-10,15), ylim=c(-25,25), ylab='mu=a*x+b')
   for (i in 1:100){
     lines(xs, muix[i,],lwd=0.25,col='blue')

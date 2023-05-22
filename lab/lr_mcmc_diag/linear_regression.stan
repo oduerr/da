@@ -5,7 +5,7 @@ data{
 }
 
 parameters{
-  real a; //Instead of using e.g. half Gaussian
+  real a; 
   real b;
   real<lower=0> sigma;
 }
@@ -13,7 +13,7 @@ parameters{
 model{
   //y ~ normal(mu, sigma);
   y ~ normal(a * x + b, sigma);
-  a ~ normal(3, 10); 
+  a ~ normal(0, 10); 
   b ~ normal(0, 10); 
   sigma ~ uniform(0,100);
 }

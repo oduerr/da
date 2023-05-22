@@ -19,13 +19,15 @@ All valid and applicable measures are variants of the log scoring rule of the po
 
 $$
   elpd := \sum_{i=1}^{N} E_{y \sim p_t(y)}\left[\log(p(y|x_i,D))\right]  
-$$ This quantity requires integrating over $p_t(y)$ the true data generating process DGP for a given $x_i$. Which we usually of course don't have. Before detailing how to estimate the quantity, we note that different transformations exists.
+$$ 
+
+This quantity requires integrating over $p_t(y)$ the true data generating process DGP for a given $x_i$. Which we usually of course don't have. Before detailing how to estimate the quantity, we note that different variants exists:
 
 -   elpd the higher the better
 
 -   Deviance $-2 \cdot elpd$ the lower the better (see AIC and WAIC later)
 
--   NLL $-elpd/N$ the lower the better and further not depending on the number of data points $N$. Since we are so used to the NLL, we also include it in the comparison, although this name is not 100% correct.
+-   NLL $-elpd/N$ the lower the better. The NLL further does not depending on the number of data points $N$. Since we are so used to the NLL, we also include it in the comparison, although this name is not 100% correct.
 
 ### Estimating elpd
 

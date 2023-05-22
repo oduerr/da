@@ -4,6 +4,7 @@ library(ggplot2)
 challenger = read.csv('stan/logreg_challenger/challenger.txt', header = TRUE)
 Temp = challenger$Temp
 Failure = challenger$Failure
+
 qplot(Temp, Failure)
 erg<-glm(as.factor(Failure)~Temp, family=binomial(logit), data = challenger)
 summary(erg)
@@ -27,14 +28,13 @@ if (FALSE){
   traceplot(log.samples)
   print(log.samples)
   d = extract(log.samples)
-  dens(d$alpha, main='alpha')
+  rethinking::dens(d$alpha, main='alpha')
 }
 library(cmdstanr)
 m_rcmdstan <- cmdstan_model('stan/logreg_challenger/log_reg.stan') #Compiling
-samples = m_rcmdstan$sample(data=list(N=23L,x=challenger$Temp, y=challenger$Failure, N2=length(x), x2=x))
+samples = m_rcmdstan$sample(num_samples = 2000,data=list(N=23L,x=challenger$Temp, y=challenger$Failure, N2=length(x), x2=x))
 bayesplot::mcmc_trace(samples$draws(c('alpha', 'beta', 'lp__')))
-
-library(tidybayes)
+samples
 d = samples$draws('p_predict', format='df')[,1:36]
 
 plot(Temp, Failure, xlim=c(30,100), main='Challenger', sub='Bayes vs ML') 
