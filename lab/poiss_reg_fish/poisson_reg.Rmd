@@ -1,0 +1,121 @@
+---
+output:
+  pdf_document:
+    highlight: pygments
+  html_document:
+    df_print: paged
+---
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE}
+  if (exists("lsg") == FALSE){ #Nur falls von RStudio aufgerufen
+    lsg <- TRUE   #Wenn man die lsg ausgeben will dann lsg <- TRUE sonst 
+  }
+  if (exists("baseDir") == FALSE){ #Nur falls von RStudio aufgerufen
+    baseDir = getwd()
+  }
+  ig <- function(name, scale = 1) {
+     return (paste0("\\includegraphics[ scale =", scale,"]{", baseDir,"/", name, "}"))
+  }
+```
+
+## Count Data Regression (Fish)
+
+Here you work with the fishing data from: https://stats.idre.ucla.edu/r/dae/zip/. The target variable is the number of fish caught, during a state park visit by a group. You have data of 250 groups that went to the park. Each group was questioned about how many fish they caught (count), how many children were in the group (child), how many people were in the group (persons), if they used a live bait (livebait) and whether or not they brought a camper to the park (camper). You randomly split the data into train and test dataset (80% train and 20% test). 
+
+You can load the data and split it into a training and testset as follows.
+
+```{r}
+dat <- read.csv("https://raw.githubusercontent.com/tensorchiefs/dl_book/master/data/fish.csv", header = TRUE)
+X = dat[,2:5] #"livebait","camper","persons","child
+y = dat[,8] #"number of fish caught"
+# Determine the number of rows in the dataset
+num_rows <- nrow(dat)
+
+# Determine the number of rows for the training set (80% of the dataset)
+train_rows <- sample(1:num_rows, size = round(0.8*num_rows))
+
+# Create the training set
+X_train <- X[train_rows,]
+y_train <- y[train_rows]
+
+# Create the test set
+X_test <- X[-train_rows,]
+y_test <- y[-train_rows]
+```
+
+
+```{r, echo=FALSE, eval=FALSE}
+# load the necessary package
+library(stats)
+# combine X_train and y_train into a single data frame for the model fitting
+train_data <- cbind(X_train, y_train)
+# Fit the Poisson regression model
+poisson_model <- glm(y_train ~ ., data = train_data, family = poisson)
+# Print the summary of the model
+summary(poisson_model)
+```
+
+a) Define a Poisson regression model in Stan. More specifically:
+
+We wish to model count data $y_i$ for $i = 1, ..., N$ where $y_i$ represents the $i^{th}$ count, which is assumed to follow a Poisson distribution. 
+
+The linear predictor $\eta_i$ is given by:
+
+$$
+\eta_i = X_i \beta + \alpha
+$$
+
+where $X_i$ represents the $i^{th}$ row of the matrix of predictor variables $X$, $\beta$ is a vector of regression coefficients, and $\alpha$ is the intercept term.
+
+The relationship between the linear predictor $\eta_i$ and the mean $\lambda_i$ of the Poisson distribution is given by:
+
+$$
+\lambda_i = \exp(\eta_i)
+$$
+
+The likelihood function, for the data under this model is given by:
+
+$$
+Y_i \thicksim \text{Pois}(\lambda_i)
+$$
+
+
+Under the Bayesian framework, we assign prior distributions to the parameters $\alpha$ and $\beta$. The posterior distribution of the parameters given the data is then proportional to the product of the likelihood and the priors.
+
+
+```{r, echo=lsg, eval=lsg, warning=FALSE}
+  # Compile model
+library(cmdstanr)
+model <- cmdstan_model("poisson_reg.stan")
+
+# prepare data for Stan model
+stan_data <- list(N = nrow(X_train),
+                  K = ncol(X_train),
+                  X = X_train,
+                  y = y_train)
+
+# Fit model
+fit <- model$sample(data = stan_data, chains = 4, iter_warmup = 1000, iter_sampling = 1000)
+
+# print the summary of the model
+fit
+```
+
+
+b) Do you fish more, when child are present? Plot the posterior for the corresponding coefficient.  
+
+```{r, echo=lsg, eval=lsg, warning=FALSE}
+library(ggplot2)
+# Extract the 4th beta
+posterior_samples <- fit$draws(format = 'df')
+beta4_samples <- posterior_samples[, "beta[4]"]
+
+# Create a data frame for plotting
+df <- data.frame(children = beta4_samples$`beta[4]`)
+
+# Plot the histogram of the samples
+ggplot(df, aes(x=children)) +
+  geom_density() +
+  theme_minimal() +
+  labs(x="Coefficient for Children", y="Density")
+```
