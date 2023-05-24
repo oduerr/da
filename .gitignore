@@ -83,3 +83,6 @@ lab/lr_mcmc_diag/linear_regression
 lab/lr_mcmc_diag/Stan_Primer_model_pred
 stan/howell1/unconditional
 stan/logreg_challenger/log_reg
+lab/robust_regression/1d_lin_robust
+lab/poiss_reg_fish/poisson_reg
+lab/robust_regression/1d_lin
