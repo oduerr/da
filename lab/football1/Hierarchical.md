@@ -134,94 +134,6 @@ indices at,ht correspond to the t=1-20 teams.
 
 ``` r
 nhmodel <- cmdstan_model('non_hier_model.stan')
-```
-
-    ## Warning in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382464e384aa.stan', line 4, column 2: Declaration
-    ##     of arrays by placing brackets after a variable name is deprecated and
-    ##     will be removed in Stan 2.33.0. Instead use the array keyword before the
-    ##     type. This can be changed automatically using the auto-format flag to
-    ##     stanc
-    ## Warning in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382464e384aa.stan', line 5, column 2: Declaration
-    ##     of arrays by placing brackets after a variable name is deprecated and
-    ##     will be removed in Stan 2.33.0. Instead use the array keyword before the
-    ##     type. This can be changed automatically using the auto-format flag to
-    ##     stanc
-    ## Warning in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382464e384aa.stan', line 6, column 2: Declaration
-    ##     of arrays by placing brackets after a variable name is deprecated and
-    ##     will be removed in Stan 2.33.0. Instead use the array keyword before the
-    ##     type. This can be changed automatically using the auto-format flag to
-    ##     stanc
-    ## Warning in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382464e384aa.stan', line 7, column 2: Declaration
-    ##     of arrays by placing brackets after a variable name is deprecated and
-    ##     will be removed in Stan 2.33.0. Instead use the array keyword before the
-    ##     type. This can be changed automatically using the auto-format flag to
-    ##     stanc
-    ## Warning in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382464e384aa.stan', line 9, column 2: Declaration
-    ##     of arrays by placing brackets after a variable name is deprecated and
-    ##     will be removed in Stan 2.33.0. Instead use the array keyword before the
-    ##     type. This can be changed automatically using the auto-format flag to
-    ##     stanc
-    ## Warning in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382464e384aa.stan', line 10, column 2: Declaration
-    ##     of arrays by placing brackets after a variable
-
-    ##  name is deprecated and
-    ##     will be removed in Stan 2.33.0. Instead use the array keyword before the
-    ##     type. This can be changed automatically using the auto-format flag to
-    ##     stanc
-    ## Warning in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382464e384aa.stan', line 47, column 2: Declaration
-    ##     of arrays by placing brackets after a variable name is deprecated and
-    ##     will be removed in Stan 2.33.0. Instead use the array keyword before the
-    ##     type. This can be changed automatically using the auto-format flag to
-    ##     stanc
-    ## Warning in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382464e384aa.stan', line 48, column 2: Declaration
-    ##     of arrays by placing brackets after a variable name is deprecated and
-    ##     will be removed in Stan 2.33.0. Instead use the array keyword before the
-    ##     type. This can be changed automatically using the auto-format flag to
-    ##     stanc
-
-    ## In file included from /var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382464e384aa.hpp:1:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/src/stan/model/model_header.hpp:4:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math.hpp:19:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math/rev.hpp:10:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math/rev/fun.hpp:198:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math/prim/functor.hpp:15:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math/prim/functor/integrate_ode_rk45.hpp:6:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math/prim/functor/ode_rk45.hpp:9:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/numeric/odeint.hpp:76:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/numeric/odeint/integrate/observer_collection.hpp:23:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/function.hpp:30:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/function/detail/prologue.hpp:17:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/function/function_base.hpp:21:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/type_index.hpp:29:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/type_index/stl_type_index.hpp:47:
-    ## /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/container_hash/hash.hpp:132:33: warning: 'unary_function<const std::error_category *, unsigned long>' is deprecated [-Wdeprecated-declarations]
-    ##         struct hash_base : s
-
-    ## td::unary_function<T, std::size_t> {};
-    ##                                 ^
-
-    ## /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/container_hash/hash.hpp:692:18: note: in instantiation of template class 'boost::hash_detail::hash_base<const std::error_category *>' requested here
-    ##         : public boost::hash_detail::hash_base<T*>
-    ##                  ^
-    ## /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/container_hash/hash.hpp:420:24: note: in instantiation of template class 'boost::hash<const std::error_category *>' requested here
-    ##         boost::hash<T> hasher;
-    ##                        ^
-    ## /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/container_hash/hash.hpp:551:9: note: in instantiation of function template specialization 'boost::hash_combine<const std::error_category *>' requested here
-    ##         hash_combine(seed, &v.category());
-    ##         ^
-    ## /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:29: note: 'unary_function<const std::error_category *, unsigned long>' has been explicitly marked deprecated here
-    ## struct _LIBCPP_TEMPLATE_VIS _LIBCPP_DEPRECATED_IN_CXX11 unary_function
-    ##                             ^
-    ## /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:825:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
-    ## #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
-    ##                                         ^
-    ## /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:810:49: note: expanded from macro '_LIBCPP_DEPRECATED'
-    ## #      define _LIBCPP_DEPRECATED __attribute__((deprecated))
-    ##                                                 ^
-
-    ## 1 warning generated.
-
-``` r
 nhfit = nhmodel$sample(data = my_data)
 #nhfit_stan = stan(file = 'non_hier_model.stan', data = my_data)
 ```
@@ -268,13 +180,13 @@ abline(a=0,  b=1, lty='dashed')
 sqrt(mean((pred_scores - true_scores)^2))
 ```
 
-    ## [1] 1.189626
+    ## [1] 1.187492
 
 ``` r
 cor(pred_scores, true_scores)
 ```
 
-    ## [1] 0.4433056
+    ## [1] 0.447017
 
 ``` r
 get_score = function(s1new, s2new, data){
@@ -356,93 +268,6 @@ Instead we define priors on the population, known as the hyperpriors.
 
 ``` r
 hmodel <- cmdstan_model('hier_model.stan')
-```
-
-    ## Warning in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 4, column 2: Declaration
-    ##     of arrays by placing brackets after a variable name is deprecated and
-    ##     will be removed in Stan 2.33.0. Instead use the array keyword before the
-    ##     type. This can be changed automatically using the auto-format flag to
-    ##     stanc
-    ## Warning in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 5, column 2: Declaration
-    ##     of arrays by placing brackets after a variable name is deprecated and
-    ##     will be removed in Stan 2.33.0. Instead use the array keyword before the
-    ##     type. This can be changed automatically using the auto-format flag to
-    ##     stanc
-    ## Warning in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 6, column 2: Declaration
-    ##     of arrays by placing brackets after a variable name is deprecated and
-    ##     will be removed in Stan 2.33.0. Instead use the array keyword before the
-    ##     type. This can be changed automatically using the auto-format flag to
-    ##     stanc
-    ## Warning in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 7, column 2: Declaration
-    ##     of arrays by placing brackets after a variable name is deprecated and
-    ##     will be removed in Stan 2.33.0. Instead use the array keyword before the
-    ##     type. This can be changed automatically using the auto-format flag to
-    ##     stanc
-    ## Warning in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 9, column 2: Declaration
-    ##     of arrays by placing brackets after a variable name is deprecated and
-    ##     will be removed in Stan 2.33.0. Instead use the array keyword before the
-    ##     type. This can be changed automatically using the auto-format flag to
-    ##     stanc
-    ## Warning in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 10, column 2: Declaration
-    ##     of arrays by placing brackets after a variable
-
-    ##  name is deprecated and
-    ##     will be removed in Stan 2.33.0. Instead use the array keyword before the
-    ##     type. This can be changed automatically using the auto-format flag to
-    ##     stanc
-    ## Warning in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 60, column 2: Declaration
-    ##     of arrays by placing brackets after a variable name is deprecated and
-    ##     will be removed in Stan 2.33.0. Instead use the array keyword before the
-    ##     type. This can be changed automatically using the auto-format flag to
-    ##     stanc
-    ## Warning in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 61, column 2: Declaration
-    ##     of arrays by placing brackets after a variable name is deprecated and
-    ##     will be removed in Stan 2.33.0. Instead use the array keyword before the
-    ##     type. This can be changed automatically using the auto-format flag to
-    ##     stanc
-
-    ## In file included from /var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.hpp:1:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/src/stan/model/model_header.hpp:4:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math.hpp:19:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math/rev.hpp:10:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math/rev/fun.hpp:198:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math/prim/functor.hpp:15:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math/prim/functor/integrate_ode_rk45.hpp:6:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math/prim/functor/ode_rk45.hpp:9:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/numeric/odeint.hpp:76:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/numeric/odeint/integrate/observer_collection.hpp:23:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/function.hpp:30:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/function/detail/prologue.hpp:17:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/function/function_base.hpp:21:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/type_index.hpp:29:
-    ## In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/type_index/stl_type_index.hpp:47:
-    ## /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/container_hash/hash.hpp:132:33: warning: 'unary_function<const std::error_category *, unsigned long>' is deprecated [-Wdeprecated-declarations]
-    ##         struct hash_base : s
-
-    ## td::unary_function<T, std::size_t> {};
-    ##                                 ^
-    ## /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/container_hash/hash.hpp:692:18: note: in instantiation of template class 'boost::hash_detail::hash_base<const std::error_category *>' requested here
-    ##         : public boost::hash_detail::hash_base<T*>
-    ##                  ^
-    ## /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/container_hash/hash.hpp:420:24: note: in instantiation of template class 'boost::hash<const std::error_category *>' requested here
-    ##         boost::hash<T> hasher;
-    ##                        ^
-    ## /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/container_hash/hash.hpp:551:9: note: in instantiation of function template specialization 'boost::hash_combine<const std::error_category *>' requested here
-    ##         hash_combine(seed, &v.category());
-    ##         ^
-    ## /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:29: note: 'unary_function<const std::error_category *, unsigned long>' has been explicitly marked deprecated here
-    ## struct _LIBCPP_TEMPLATE_VIS _LIBCPP_DEPRECATED_IN_CXX11 unary_function
-    ##                             ^
-    ## /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:825:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
-    ## #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
-    ##                                         ^
-    ## /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:810:49: note: expanded from macro '_LIBCPP_DEPRECATED'
-    ## #      define _LIBCPP_DEPRECATED __attribute__((deprecated))
-    ##                                                 ^
-
-    ## 1 warning generated.
-
-``` r
 hfit = hmodel$sample(data = my_data)
 ```
 
@@ -456,16 +281,6 @@ hfit = hmodel$sample(data = my_data)
 
     ## Chain 1
 
-    ## Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-
-    ## Chain 2 Exception: normal_lpdf: Scale parameter is 0, but must be positive! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 47, column 0 to column 30)
-
-    ## Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-
-    ## Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-
-    ## Chain 2
-
     ## Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
     ## Chain 3 Exception: normal_lpdf: Scale parameter is 0, but must be positive! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 47, column 0 to column 30)
@@ -475,6 +290,16 @@ hfit = hmodel$sample(data = my_data)
     ## Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 
     ## Chain 3
+
+    ## Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+
+    ## Chain 4 Exception: normal_lpdf: Scale parameter is 0, but must be positive! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 46, column 0 to column 30)
+
+    ## Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+
+    ## Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
+    ## Chain 4
 
     ## Warning: 21 of 4000 (1.0%) transitions ended with a divergence.
     ## See https://mc-stan.org/misc/warnings for details.
@@ -490,16 +315,16 @@ hfit
 ```
 
     ##    variable    mean  median   sd  mad      q5     q95 rhat ess_bulk ess_tail
-    ##  lp__       -450.43 -450.41 6.00 5.94 -460.16 -440.53 1.00      824      766
-    ##  home          0.35    0.35 0.05 0.05    0.26    0.43 1.00     3475     2038
-    ##  att_raw[1]   -0.04   -0.04 0.14 0.14   -0.28    0.20 1.00     6907     2611
-    ##  att_raw[2]   -0.10   -0.10 0.15 0.15   -0.35    0.14 1.00     5227     2326
-    ##  att_raw[3]   -0.30   -0.30 0.16 0.16   -0.57   -0.06 1.00     6258     2517
-    ##  att_raw[4]   -0.23   -0.23 0.15 0.15   -0.48    0.01 1.00     6671     2989
-    ##  att_raw[5]   -0.21   -0.21 0.15 0.16   -0.46    0.03 1.00     6937     2919
-    ##  att_raw[6]    0.17    0.17 0.14 0.14   -0.06    0.40 1.00     6969     3128
-    ##  att_raw[7]    0.31    0.31 0.13 0.13    0.09    0.52 1.00     5214     3178
-    ##  att_raw[8]   -0.31   -0.31 0.16 0.16   -0.59   -0.05 1.00     5137     2164
+    ##  lp__       -450.83 -450.78 6.06 5.78 -460.69 -441.38 1.00      761      637
+    ##  home          0.35    0.35 0.05 0.05    0.26    0.43 1.00     4689     3020
+    ##  att_raw[1]   -0.04   -0.04 0.14 0.15   -0.27    0.20 1.00     4171     2894
+    ##  att_raw[2]   -0.10   -0.10 0.15 0.15   -0.35    0.14 1.00     5232     2596
+    ##  att_raw[3]   -0.30   -0.30 0.16 0.16   -0.58   -0.04 1.00     4980     2787
+    ##  att_raw[4]   -0.24   -0.23 0.16 0.15   -0.50    0.01 1.00     6601     3114
+    ##  att_raw[5]   -0.21   -0.21 0.16 0.16   -0.48    0.04 1.00     5106     2623
+    ##  att_raw[6]    0.17    0.17 0.13 0.13   -0.06    0.38 1.00     4816     2948
+    ##  att_raw[7]    0.31    0.31 0.14 0.13    0.08    0.53 1.00     3703      911
+    ##  att_raw[8]   -0.32   -0.32 0.17 0.17   -0.62   -0.05 1.00     4286     2292
     ## 
     ##  # showing 10 of 1118 rows (change via 'max_rows' argument or 'cmdstanr_max_rows' option)
 
@@ -530,13 +355,13 @@ abline(a=0,  b=1, lty='dashed')
 sqrt(mean((pred_scores - true_scores)^2))
 ```
 
-    ## [1] 1.178678
+    ## [1] 1.179311
 
 ``` r
 cor(pred_scores, true_scores)
 ```
 
-    ## [1] 0.4801424
+    ## [1] 0.4785276
 
 ``` r
  get_score(s1new, s2new, data)
