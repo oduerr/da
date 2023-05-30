@@ -90,3 +90,5 @@ stan/elpd/unconditional_normal
 stan/complex_prior/2_normals
 stan/complex_prior/2_trunc_normals
 stan/complex_prior/normal
+lab/football1/non_hier_model
+lab/football1/hier_model
