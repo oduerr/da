@@ -1,0 +1,235 @@
+---
+  output:
+    github_document
+---
+
+# Excercise:
+
+This notebook compares a non-hierarchical model and a hierarchical model to predict the scores of English premier league matches.
+
+## Your tasks
+Step through the notebook and try to understand it.
+
+
+### Background
+
+This notebook is a tutorial on Hierarchical modelling using Stan which is adopted from <https://github.com/MaggieLieu/STAN_tutorials/blob/master/Hierarchical/Hierarchical.Rmd>. The model is also described in the paper: <https://discovery.ucl.ac.uk/id/eprint/16040/1/16040.pdf>
+
+Modifications include:
+
+-   Removing of the pooled model
+
+-   Removing the fixed prior for home advantage (which has a std of about 1e-4)
+
+    -   Nevertheless, it appears necessary, as mentioned in the paper, to implement a sum-to-zero restriction for both the defense and offense. This stems from the fact that teams compete against one another, making these abilities dependent on each other. For further details, please refer to the aforementioned paper and its associated references.
+
+```{r}
+lsg = FALSE #Set to FALSE before submitting
+#require(rstan)
+#set.seed(1) #set seed 
+library(cmdstanr)
+options(mc.cores = parallel::detectCores())
+```
+
+### Reading the data
+
+First we read in the data
+
+```{r}
+data = read.csv('https://raw.githubusercontent.com/MaggieLieu/STAN_tutorials/master/Hierarchical/premiereleague.csv',col.names = c('Home','score1', 'score2', 'Away'), stringsAsFactors = FALSE)
+```
+
+```{r}
+head(data)
+```
+
+```{r}
+ng = nrow(data)
+cat('we have G =', ng, 'games \n')
+```
+
+```{r}
+nt = length(unique(data$Home))
+cat('We have T = ', nt, 'teams \n')
+```
+
+### Data Preparation
+
+Now convert team names for each match into numbers (for the lookup)
+
+```{r}
+teams = unique(data$Home)
+ht = unlist(sapply(1:ng, function(g) which(teams == data$Home[g])))
+at = unlist(sapply(1:ng, function(g) which(teams == data$Away[g])))
+```
+
+```{r}
+# we will save the last np games to predict
+np=50
+ngob = ng-np #number of games to fit
+my_data = list(
+  nt = nt, 
+  ng = ngob,
+  ht = ht[1:ngob], 
+  at = at[1:ngob], 
+  s1 = data$score1[1:ngob],
+  s2 = data$score2[1:ngob],
+  np = np,
+  htnew = ht[(ngob+1):ng],
+  atnew = at[(ngob+1):ng]
+)
+```
+
+### Traditional (non-hierachical) method
+
+We will assume that the goals scored come from a poisson distribution
+
+-   s1 \~ Poisson(theta_g1) #game g score by home team
+
+-   s2 \~ Poisson(theta_g2) #game g score by away team
+
+Assuming a log-linear random effect model
+
+-   log(theta_g1) = home + att_ht + def_at
+
+-   log(theta_g2) = att_at + def_ht
+
+Where home is a constant for the advantage for the team hosting the game att and def are the attack and defense abilities of the teams where the indices at,ht correspond to the t=1-20 teams.
+
+```{r, results="hide", warning=FALSE}
+nhmodel <- cmdstan_model('non_hier_model.stan')
+nhfit = nhmodel$sample(data = my_data)
+#nhfit_stan = stan(file = 'non_hier_model.stan', data = my_data)
+```
+
+#### Non-Hierarchical model predicted scores of the unseen 
+
+```{r non_hier_pred_scores}
+library(tidyverse)
+s1new = nhfit$draws(format = "df", 's1new') %>% select(-.chain, -.iteration, -.draw)
+s2new = nhfit$draws(format = "df", 's2new') %>% select(-.chain, -.iteration, -.draw)
+pred_scores = c(colMeans(s1new),colMeans(s2new))
+true_scores = c(data$score1[(ngob+1):ng],data$score2[(ngob+1):ng] )
+plot(true_scores, pred_scores, xlim=c(0,5), ylim=c(0,5), pch=20, ylab='predicted scores', xlab='true scores')
+abline(a=0,  b=1, lty='dashed')
+
+sqrt(mean((pred_scores - true_scores)^2))
+cor(pred_scores, true_scores)
+```
+
+```{r, eval=lsg, show=lsg}
+get_score = function(s1new, s2new, data){
+  s1_pred_score = round(colMeans(s1new),0)
+  s2_pred_score = round(colMeans(s2new),0)
+  points = 0
+  for (i in 1:length(s1_pred_score)){
+      pred_scorediff = s1_pred_score - s2_pred_score
+      if (s1_pred_score[i] == data$score1[ngob+i]
+          && s2_pred_score[i] == data$score2[ngob+i]){
+        points = points + 3
+      } else {
+        if (s1_pred_score[i] == s2_pred_score[i]){ #Call it a draw
+          if (data$score1[ngob+i] == data$score2[ngob+i]) {
+            points = points + 1
+          }
+        } else {#No draw
+           if(sign(pred_scorediff[i]) == sign(data$score1[ngob+i] - data$score2[ngob+i])){
+             points = points + 1
+           }
+        }
+      } 
+  }
+  return (points)
+}
+get_score(s1new, s2new, data)
+```
+
+#### Defense / Attack Non-Hierachical
+
+We can also look at the attack/defense of the teams:
+
+```{r attack_defense_non_hier}
+attack = nhfit$draws(format = "df", 'att') %>% 
+  select(-.chain, -.iteration, -.draw) %>% colMeans()
+ 
+defense = nhfit$draws(format = "df", 'def') %>% 
+  select(-.chain, -.iteration, -.draw) %>% colMeans()
+plot(attack,defense,xlim=c(-0.4,1.1))
+abline(h=0)
+abline(v=0)
+text(attack,defense, labels=teams, cex=0.7, pos=4)
+```
+
+### Your Excercise / Determine the home advantage
+
+```{r home_adv_non_hier, show=lsg, eval=lsg}
+library(tidybayes)
+#home_adv = rstan::extract(nhfit)$home
+#hist(home_adv, 100, freq = FALSE, main=paste0("Home Adv, mean: ", round(mean(home_adv),2)))
+#lines(density(home_adv))
+
+tidy_draws(nhfit) %>% 
+  select(home) %>% 
+  ggplot(aes(x=home)) + geom_density() 
+```
+
+# Hierarchical model
+
+In a hierarchical model, the parameters of interest, in our case the attack and defense ability are drawn from the population distribution.
+
+-   att[t] \~ normal(mu_att, tau_att)
+
+-   def[t] \~ normal(mu_def, tau_def)
+
+Instead we define priors on the population, known as the hyperpriors.
+
+```{r hmodel, results="hide", warning=FALSE}
+hmodel <- cmdstan_model('hier_model.stan')
+hfit = hmodel$sample(data = my_data)
+#hfit = stan(file = 'hier_model.stan', data = my_data)
+```
+## Checking the chain
+```{r }
+hfit 
+```
+
+## Prediction of Hierarchical Model
+
+```{r hpreds, fig.height=5, fig.width=5}
+s1new = hfit$draws(format = "df", 's1new') %>% select(-.chain, -.iteration, -.draw)
+s2new = hfit$draws(format = "df", 's2new') %>% select(-.chain, -.iteration, -.draw)
+pred_scores = c(colMeans(s1new),colMeans(s2new))
+true_scores = c(data$score1[(ngob+1):ng],data$score2[(ngob+1):ng] )
+plot(true_scores, pred_scores, xlim=c(0,5), ylim=c(0,5), pch=20, ylab='predicted scores', xlab='true scores')
+abline(a=0,  b=1, lty='dashed')
+
+sqrt(mean((pred_scores - true_scores)^2))
+cor(pred_scores, true_scores)
+```
+
+```{r, eval=lsg, show=lsg}
+ get_score(s1new, s2new, data)
+```
+
+### Mean attack and dense abilities
+```{r attack_defense_hier}
+attack = hfit$draws(format = "df", 'att') %>% 
+  select(-.chain, -.iteration, -.draw) %>% colMeans()
+ 
+defense = hfit$draws(format = "df", 'def') %>% 
+  select(-.chain, -.iteration, -.draw) %>% colMeans()
+plot(attack,defense,xlim=c(-0.4,1.1))
+abline(h=0)
+abline(v=0)
+text(attack,defense, labels=teams, cex=0.7, pos=4)
+```
+
+#### Home Advantage h-model you job!
+
+```{r home_adv_hier, show=lsg, eval=lsg}
+tidy_draws(hfit) %>% 
+  select(home) %>% 
+  ggplot(aes(x=home)) + geom_density() 
+```
+
+
