@@ -5,17 +5,37 @@
       toc: TRUE
 ---
 
-**Status: generated quantities not working**
+# An primer on the subtleties of evaluating performance in Bayesian regression.
 
 ## Understanding NLL and LOO
 
-Some notes for the evaluation of the performance of a Bayesian probabilistic prediction. We follow the paper [1] "Practical Bayesian model evaluation using leave-one-out cross-validation and WAIC" from Aki Vehtari, Andrew Gelman, Jonah Gabry <https://arxiv.org/abs/1507.04544> and statistical rethinking. We apply the method first on a syntactical example and then on the `car` example given in statistical rethinking.
+Some notes for the evaluation of the performance of a Bayesian probabilistic prediction. We follow the paper [1] "Practical Bayesian model evaluation using leave-one-out cross-validation and WAIC" from Aki Vehtari, Andrew Gelman, Jonah Gabry <https://arxiv.org/abs/1507.04544> and statistical rethinking. We apply the method first on a synthetic example and then on the `car` example given in statistical rethinking.
 
 ### The quantity we like to estimate (elpd)
 
-All valid and applicable measures are variants of the log scoring rule of the posterior predicted distribution.[^1] In the regression setting, the additional question remains at which points $x_i$ this quantity should be evaluated. In [1] the quantity `elpd` the *expected log pointwise predictive density for a new dataset* is therefore defined as:
+All valid and applicable measures are variants of the log scoring rule of the posterior predicted distribution $p(y|D)$ of the model given the data, while $p_t(y)$ is the true DGP.[^1] That is 
 
+$$
+ E_{y \sim p_t(y)}\left[\log(p(y|D))\right] 
+$$
 [^1]: Other proper scoring rules are also possible. In some communities the CPRS is preferred over the NLL.
+
+### Unconditional case
+
+Let's consider the case of a unconditional normal distribution. 
+
+```{r, message=FALSE, warning=FALSE, results='hide'}
+  N = 5
+  data = list(y=rnorm(N, 0, 1), N=N)
+  m <-  cmdstan_model('/Users/oli/Documents/GitHub/da/stan/elpd/unconditional_normal.stan')
+  fit <- m$sample(data)
+  d = loo::loo(fit$draws("log_lik"))
+  d
+```
+
+### Regression Setting
+In the regression setting, the additional question remains at which points $x_i$ this quantity should be evaluated. In [1] the quantity `elpd` the *expected log pointwise predictive density* is evaluated at the given datapoints $x_i$ for $i=1,\ldots,N$ and defined as:
+
 
 $$
   elpd := \sum_{i=1}^{N} E_{y \sim p_t(y)}\left[\log(p(y|x_i,D))\right]  
@@ -39,7 +59,7 @@ $$
    \mathit{lppd} := \mathit{lpd} := \sum_{i=1}^{N} \log(p(y_i|x_i,D))  
 $$
 
-This the log pointwise predictive density (lppd) in statistical rethinking and lpd in [1]. This quantity of course underestimates the elpd since it is shows overfitting and depends on the number of parameters of the model. A crude approximation is to subtract number of parameters $p$ (or add it when talking about deviance). This gives rise to the Akaike Information Criteriom AIC criterion:
+This the log pointwise predictive density (lppd) in statistical rethinking and lpd in [1]. This quantity of course underestimates the elpd since it is shows overfitting and depend on the number of parameters of the model. A crude approximation is to subtract number of parameters $p$ (or add it when talking about deviance). This gives rise to the Akaike Information Criteriom AIC criterion:
 
 $$
 AIC = -2\cdot (lppd - p)
@@ -63,7 +83,9 @@ The first approximation which can be done, is to evaluate the expectation at a *
 
 $$
   \mathit{elpd_{test}} = \sum_{i=1}^{N} \log(p(y_i|x_i,D)) = -N \cdot \mathit{NLL}
-$$ A special case of such a test set is leave-one-out crossvalidation, loo.
+$$ 
+
+A special case of such a test set is leave-one-out crossvalidation, loo.
 
 $$
   \mathit{elpd_{loo}} = \sum_{i=1}^{N} \log(p(y_i|x_i,D_{-i})) 
@@ -76,7 +98,7 @@ The $-i$ in $D_{-i}$ indicates that the training has been done without the data 
 We simulate some data, so that we know the DGP.
 
 ```{r sim_data}
-N = 20
+N = 50
 SD = 0.3
 A = 1
 B = 2
@@ -94,11 +116,12 @@ plot(x,y)
 
 ### Theoretical value
 
-In principle we know that the data is distributed normally with constant spread SD. In this case the elpd can be evaluated at a single data point and would be
+In principle, we know that the data is distributed normally with constant spread sd. In this case the elpd can be evaluated at a single data point and would be
 
 $$
 \mathit{elpd} = \sum_{i=1}^{N} E_{y \sim p(y|x_i)}\left[\log(p(y|x_i,D))\right] = N \cdot \int_{-\infty}^{+\infty} \log(N(y|0,0.3)) \cdot N(y|0, 0.3) \; dy
 $$
+
 
 ```{r, message=FALSE, warning=FALSE}
   # Numerical Integration
@@ -106,8 +129,9 @@ $$
   N*integrate(f, -10,10)$value
   (elpd.theo = N*integrate(f, -Inf,Inf)$value)
   (nll.theo = -elpd.theo/N)
-  #integrate(f, -Inf,Inf) not working
+  0.5*log(2*pi*SD^2)+0.5 #Entropy of a Gaussian
 ```
+
 
 But note that having only a few data points, we cannot estimate the quantity since there is still uncertainty in the parameters. This uncertainty is referred to as epistemic or model uncertainty.
 
@@ -132,7 +156,7 @@ parameters{
 model{
   //y ~ normal(mu, sigma);
   y ~ normal(a * x + b, sigma);
-  a ~ normal(3, 10); 
+  a ~ normal(0, 10); 
   b ~ normal(0, 10);
   sigma ~ normal(0,10);
 }
@@ -181,7 +205,16 @@ The package `loo` provides advances estimates of the `elpd`. For that a matrix o
   }
   ps = calc_ps()
   dim(ps)
+  N*mean(ps)
 ```
+
+Alternatively, we we could use the samples generated by the stan code.
+```{r}
+ps = rstan::extract(fit,"log_lik")[[1]]
+dim(ps)
+N*mean(ps)
+```
+
 
 Creating of summary statistics.
 

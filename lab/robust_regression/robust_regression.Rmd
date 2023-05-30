@@ -1,0 +1,151 @@
+---
+output:
+  pdf_document:
+    highlight: pygments
+    includes:
+      in_header: header_lsg.tex
+---
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE}
+  if (exists("lsg") == FALSE){ #Nur falls von RStudio aufgerufen
+    lsg <- TRUE   #Wenn man die lsg ausgeben will dann lsg <- TRUE sonst 
+  }
+  if (exists("baseDir") == FALSE){ #Nur falls von RStudio aufgerufen
+    baseDir = getwd()
+  }
+  ig <- function(name, scale = 1) {
+     return (paste0("\\includegraphics[ scale =", scale,"]{", baseDir,"/", name, "}"))
+  }
+```
+
+## Robust Regression
+
+In this exercise, we investigate the beneficial use of t-distribution for robust regression.
+
+Use the following code to create some data, including two outlieres.
+
+```{r, echo=TRUE, eval=TRUE}
+  ######## Creating Data #####
+s <- matrix(c(1, .6, 
+              .6, 1), 
+            nrow = 2, ncol = 2)
+set.seed(3)
+#Data w/o outliers
+d = data.frame(MASS::mvrnorm(n = 100, mu = c(0,0), Sigma = s))
+colnames(d) = c('y','x')
+#sorting
+idx = sort(d$x, index.return = TRUE)$ix
+d = d[idx,1:2]
+o <- d
+
+dat_no_outlier = list(
+  N = nrow(o),
+  x = o$x,
+  y = o$y
+)
+o[c(1:2), 1] <- c(5, 4.5)
+dat = list(
+  N = nrow(o),
+  x = o$x,
+  y = o$y
+)
+plot(y ~ x, dat, main='data with 2 outliers')
+```
+
+a) Fit a linear model to the data (with and w/o outlier). For the slope and intercept assume normal priors centred around zero with spread of 10. For sigma assume a half normal distribution with spread of 10. Compare the posteriors for the slope a.
+
+
+```{r, echo=lsg, eval=lsg, warning=FALSE,  results="hide"}
+  compiled_model <- cmdstan_model('/Users/oli/Documents/GitHub/da/lab/robust_regression/1d_lin.stan')
+  fit_no <- compiled_model$sample(dat_no_outlier)
+  fit_no
+  fit <- compiled_model$sample(dat)
+  fit
+```
+
+```{r, echo=lsg, eval=lsg, warning=FALSE,  results="hide"}
+  compiled_model <- cmdstan_model('/Users/oli/Documents/GitHub/da/lab/robust_regression/1d_lin.stan')
+  fit_no <- compiled_model$sample(dat_no_outlier)
+  fit_no
+  fit <- compiled_model$sample(dat)
+  fit
+```
+
+```{r, echo=lsg, eval=lsg, warning=FALSE}
+a = fit$draws('a', format = 'df')$a
+b = fit$draws('b', format = 'df')$b
+a_no = fit_no$draws('a', format = 'df')$a
+b_no = fit_no$draws('b', format = 'df')$b
+plot(density(a_no), col='green', xlim=c(-1,1))
+lines(density(a), col='red')  
+```
+
+b) Plot the data and include $E(y|x) = \bar{a} \cdot x + \bar{b}$ , where $\bar{a}$ and $\bar{b}$ are the respective posterior means. 
+
+```{r, echo=lsg, eval=lsg, warning=FALSE}
+  plot(y ~ x, dat, main='Non-Robust regressions')  
+  
+  gauss_a_no = mean(a_no)
+  gauss_b_no = mean(b_no)
+  curve(gauss_a_no*x + gauss_b_no, add = TRUE, lty=2, lwd=2, col='green')
+  
+  gauss_a = mean(a)
+  gauss_b = mean(b)
+  curve(gauss_a*x + gauss_b, add = TRUE, lty=2, lwd=2, col='red')
+```
+
+c) Robust regression: Modify the stan code above to output a t-distribution instead of a Gaussian. See e.g. https://mc-stan.org/docs/2_18/functions-reference/student-t-distribution.html how to parametrize a t-distribution. Ensure that the parameter is $\nu \ge 1$. Plot $E(y|x) = \bar{a} \cdot x + \bar{b}$. Fit the robust to the data with the outliers and plot it.   
+
+
+```{r, echo=lsg, eval=lsg, warning=FALSE,  results="hide"}
+  robust_model <- cmdstan_model('/Users/oli/Documents/GitHub/da/lab/robust_regression/1d_lin_robust.stan')  
+  fit_robust <- robust_model$sample(dat)
+```
+
+
+```{r, echo=lsg, eval=lsg, warning=FALSE,  results="hide"}
+  plot(y ~ x, dat, main='Robust regressions')  
+  
+  gauss_a_no = mean(a_no)
+  gauss_b_no = mean(b_no)
+  curve(gauss_a_no*x + gauss_b_no, add = TRUE, lty=2, lwd=2, col='green')
+  
+  gauss_a = mean(a)
+  gauss_b = mean(b)
+  curve(gauss_a*x + gauss_b, add = TRUE, lty=2, lwd=2, col='red')
+  
+  a = fit_robust$draws('a', format = 'df')$a
+  b = fit_robust$draws('b', format = 'df')$b
+  robust_a = mean(a)
+  robust_b = mean(b)
+  curve(robust_a*x + robust_b, add = TRUE, lty=2, lwd=2, col='blue')
+  
+```
+
+d) Preform an estimation to a leave on out cross validation (PSIS-LOO), using the loo function from the loo package.
+
+```{r, echo=lsg, eval=lsg, warning=FALSE,  results="hide"}
+  m <-    cmdstan_model('/Users/oli/Documents/GitHub/da/lab/robust_regression/1d_lin.stan')
+  fit <- m$sample(dat)
+  d = loo::loo(fit$draws("log_lik"))
+  print("Data with outliers non-robust")
+  print(d$estimates)
+
+  fit <- m$sample(dat_no_outlier)
+  d = loo::loo(fit$draws("log_lik"))
+  print("Data w/o outliers non-robust")
+  print(d$estimates)
+  
+   m <-    cmdstan_model('/Users/oli/Documents/GitHub/da/lab/robust_regression/1d_lin_robust.stan')
+  fit <- m$sample(dat)
+  d = loo::loo(fit$draws("log_lik"))
+  print("Data with outliers robust")
+  print(d$estimates)
+
+  fit <- m$sample(dat_no_outlier)
+  d = loo::loo(fit$draws("log_lik"))
+  print("Data w/o outliers robust")
+  print(d$estimates)
+```
+
+
