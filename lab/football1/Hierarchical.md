@@ -180,13 +180,13 @@ abline(a=0,  b=1, lty='dashed')
 sqrt(mean((pred_scores - true_scores)^2))
 ```
 
-    ## [1] 1.187492
+    ## [1] 1.188831
 
 ``` r
 cor(pred_scores, true_scores)
 ```
 
-    ## [1] 0.447017
+    ## [1] 0.4449657
 
 ``` r
 get_score = function(s1new, s2new, data){
@@ -244,16 +244,7 @@ text(attack,defense, labels=teams, cex=0.7, pos=4)
 
 ### Your Excercise / Determine the home advantage
 
-``` r
-library(tidybayes)
-#home_adv = rstan::extract(nhfit)$home
-#hist(home_adv, 100, freq = FALSE, main=paste0("Home Adv, mean: ", round(mean(home_adv),2)))
-#lines(density(home_adv))
-
-tidy_draws(nhfit) %>% 
-  select(home) %>% 
-  ggplot(aes(x=home)) + geom_density() 
-```
+Plot the posterior of the variable `home`
 
 # Hierarchical model
 
@@ -271,19 +262,19 @@ hmodel <- cmdstan_model('hier_model.stan')
 hfit = hmodel$sample(data = my_data)
 ```
 
-    ## Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+    ## Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 1 Exception: normal_lpdf: Scale parameter is 0, but must be positive! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 46, column 0 to column 30)
+    ## Chain 2 Exception: normal_lpdf: Scale parameter is 0, but must be positive! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 47, column 0 to column 30)
 
-    ## Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+    ## Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
-    ## Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+    ## Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 
-    ## Chain 1
+    ## Chain 2
 
     ## Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 3 Exception: normal_lpdf: Scale parameter is 0, but must be positive! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 47, column 0 to column 30)
+    ## Chain 3 Exception: normal_lpdf: Scale parameter is 0, but must be positive! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 46, column 0 to column 30)
 
     ## Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
@@ -291,17 +282,7 @@ hfit = hmodel$sample(data = my_data)
 
     ## Chain 3
 
-    ## Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-
-    ## Chain 4 Exception: normal_lpdf: Scale parameter is 0, but must be positive! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 46, column 0 to column 30)
-
-    ## Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-
-    ## Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-
-    ## Chain 4
-
-    ## Warning: 21 of 4000 (1.0%) transitions ended with a divergence.
+    ## Warning: 49 of 4000 (1.0%) transitions ended with a divergence.
     ## See https://mc-stan.org/misc/warnings for details.
 
 ``` r
@@ -315,16 +296,16 @@ hfit
 ```
 
     ##    variable    mean  median   sd  mad      q5     q95 rhat ess_bulk ess_tail
-    ##  lp__       -450.83 -450.78 6.06 5.78 -460.69 -441.38 1.00      761      637
-    ##  home          0.35    0.35 0.05 0.05    0.26    0.43 1.00     4689     3020
-    ##  att_raw[1]   -0.04   -0.04 0.14 0.15   -0.27    0.20 1.00     4171     2894
-    ##  att_raw[2]   -0.10   -0.10 0.15 0.15   -0.35    0.14 1.00     5232     2596
-    ##  att_raw[3]   -0.30   -0.30 0.16 0.16   -0.58   -0.04 1.00     4980     2787
-    ##  att_raw[4]   -0.24   -0.23 0.16 0.15   -0.50    0.01 1.00     6601     3114
-    ##  att_raw[5]   -0.21   -0.21 0.16 0.16   -0.48    0.04 1.00     5106     2623
-    ##  att_raw[6]    0.17    0.17 0.13 0.13   -0.06    0.38 1.00     4816     2948
-    ##  att_raw[7]    0.31    0.31 0.14 0.13    0.08    0.53 1.00     3703      911
-    ##  att_raw[8]   -0.32   -0.32 0.17 0.17   -0.62   -0.05 1.00     4286     2292
+    ##  lp__       -450.84 -450.65 5.95 5.46 -460.48 -441.40 1.02      468      203
+    ##  home          0.35    0.35 0.05 0.05    0.26    0.43 1.00     4932     3220
+    ##  att_raw[1]   -0.03   -0.03 0.15 0.15   -0.28    0.20 1.00     6912     2962
+    ##  att_raw[2]   -0.10   -0.10 0.15 0.14   -0.35    0.13 1.00     6628     3294
+    ##  att_raw[3]   -0.30   -0.30 0.17 0.16   -0.60   -0.05 1.00     5691     2281
+    ##  att_raw[4]   -0.23   -0.23 0.15 0.16   -0.50    0.01 1.00     4840     2807
+    ##  att_raw[5]   -0.22   -0.22 0.15 0.15   -0.47    0.02 1.00     5834     2851
+    ##  att_raw[6]    0.17    0.17 0.14 0.14   -0.06    0.39 1.00     5910     2846
+    ##  att_raw[7]    0.30    0.30 0.13 0.13    0.08    0.51 1.00     1792      584
+    ##  att_raw[8]   -0.31   -0.31 0.17 0.17   -0.62   -0.04 1.00     2617     2481
     ## 
     ##  # showing 10 of 1118 rows (change via 'max_rows' argument or 'cmdstanr_max_rows' option)
 
@@ -355,13 +336,13 @@ abline(a=0,  b=1, lty='dashed')
 sqrt(mean((pred_scores - true_scores)^2))
 ```
 
-    ## [1] 1.179311
+    ## [1] 1.182217
 
 ``` r
 cor(pred_scores, true_scores)
 ```
 
-    ## [1] 0.4785276
+    ## [1] 0.4740927
 
 ``` r
  get_score(s1new, s2new, data)
@@ -393,9 +374,3 @@ text(attack,defense, labels=teams, cex=0.7, pos=4)
 ![](Hierarchical_files/figure-gfm/attack_defense_hier-1.png)<!-- -->
 
 #### Home Advantage h-model you job!
-
-``` r
-tidy_draws(hfit) %>% 
-  select(home) %>% 
-  ggplot(aes(x=home)) + geom_density() 
-```

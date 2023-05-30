@@ -1,6 +1,8 @@
 ---
   output:
     github_document
+  params:
+    lsg: FALSE 
 ---
 
 # Excercise:
@@ -162,7 +164,9 @@ text(attack,defense, labels=teams, cex=0.7, pos=4)
 
 ### Your Excercise / Determine the home advantage
 
-```{r home_adv_non_hier, show=lsg, eval=lsg}
+Plot the posterior of the variable `home`
+
+```{r home_adv_non_hier, show=lsg, eval=lsg, echo=lsg}
 library(tidybayes)
 #home_adv = rstan::extract(nhfit)$home
 #hist(home_adv, 100, freq = FALSE, main=paste0("Home Adv, mean: ", round(mean(home_adv),2)))
@@ -226,7 +230,7 @@ text(attack,defense, labels=teams, cex=0.7, pos=4)
 
 #### Home Advantage h-model you job!
 
-```{r home_adv_hier, show=lsg, eval=lsg}
+```{r home_adv_hier, show=lsg, eval=lsg, echo=lsg}
 tidy_draws(hfit) %>% 
   select(home) %>% 
   ggplot(aes(x=home)) + geom_density() 
