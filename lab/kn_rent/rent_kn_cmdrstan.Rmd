@@ -1,0 +1,153 @@
+---
+  output:
+    github_document
+---
+
+## Rents in Konstanz
+The following cell loads the rent prices for the county (Landkreis) of Konstanz. It has been processed from data provided by Immoscout24 / Kaggle see  https://www.kaggle.com/datasets/corrieaar/apartment-rental-offers-in-germany the data is from 2018 / 2019. Some preprocessing has been done in the beginning of https://github.com/oduerr/da/blob/master/stan/kn_rent/KN_Immodata.R
+
+### Data Proprocessing
+```{r data}
+  lsg = TRUE
+  KN_Kreis = read.csv2('https://raw.githubusercontent.com/oduerr/da/master/stan/kn_rent/KN_Kreis.csv')
+  KN_Kreis$X = NULL
+  sum(is.na(KN_Kreis$totalRent))#51
+  sum(is.na(KN_Kreis$baseRent))#0
+  (N = nrow(KN_Kreis)) #218
+```
+### Overview (No pooling)
+
+```{r no_pooling, warning=FALSE,message=FALSE}
+  library(ggplot2)
+  library(magrittr)
+  library(dplyr)
+  KN_Kreis %>% 
+    filter(training) %>% 
+    ggplot(aes(x=livingSpace, y=baseRent)) +
+    geom_point() + 
+    geom_smooth(method='lm', formula= y~x) + 
+    labs(subtitle = 'Rental Prices in Konstanz County (Training Data)') +
+    ggthemes::theme_hc(base_size = 12) 
+```
+
+We see that the rent is linear depended on the `livinigSpace`, but there there is some considerable spread. Let's have a look at the different cities in the county.
+
+```{r complete_pooling, warning=FALSE,message=FALSE}
+KN_Kreis %>% 
+  filter(training) %>% 
+  ggplot(aes(x=livingSpace, y=baseRent, col=regio3)) +
+  geom_point() + 
+  geom_smooth(method='lm', formula= y~x, se=FALSE) + 
+  labs(subtitle = 'Rental Prices in Konstanz County (Training Data)') +
+  facet_wrap(~regio3) + 
+  coord_cartesian(xlim = c(0, 250), ylim = c(0, 3000)) + 
+  ggthemes::theme_hc(base_size = 6) 
+```
+For the individual cities there is less spread. But some of them only have one data point, therefore full pooling does not work and hierarchical models come to shine.
+
+### Preparing the data for hierachical modelling 
+Here we add a city identifier, $j=1,2,\ldots,J$ and split the data into a training and test set.
+
+```{r}
+  cities = sort(unique(KN_Kreis$regio3))
+  J = length(cities)
+  cities_numbers = data.frame(regio3 = cities, id = 1:J)
+  KN_Kreis = KN_Kreis %>% right_join(cities_numbers, by='regio3')
+  KN_train = KN_Kreis %>% filter(training)
+  KN_test = KN_Kreis %>% filter(!training)
+```
+
+It's always a good idea to scale your data before regression. For this example not doing so will cause some divergent transitions. Since we are not allowed to know anything about the testdata, we just use the training data for scaling and prepare a list for stan.
+
+```{r}
+x_mean = mean(KN_train$livingSpace)
+x_sd = sd(KN_train$livingSpace)
+y_mean = mean(KN_train$baseRent)
+y_sd = sd(KN_train$baseRent) 
+
+kn_stan_dat = list(
+  N = nrow(KN_train),
+  y = (KN_train$baseRent - y_mean)/y_sd,
+  x = (KN_train$livingSpace - x_mean)/x_sd,
+  #y = KN_train$baseRent,
+  #x = KN_train$livingSpace,
+  j = KN_train$id,
+  
+  N_t = nrow(KN_test),
+  y_t = (KN_test$baseRent - y_mean)/y_sd,
+  x_t = (KN_test$livingSpace - x_mean)/x_sd,
+  #y_t = KN_test$baseRent,
+  #x_t = KN_test$livingSpace,
+  j_t = KN_test$id,
+  J = J,
+  
+  y_t_unscaled = KN_test$baseRent
+)
+```
+
+### Fitting the model in Stan
+Definitiomn of the model.
+
+
+
+```{r sampling, results="hide", warning=FALSE}
+library(cmdstanr)
+options(mc.cores = parallel::detectCores())
+kn_s.model <- cmdstan_model('kn_hier.stan')
+kn_s = kn_s.model$sample(data=kn_stan_dat) 
+```
+### Base costs
+```{r joy_intercept, warning=FALSE,message=FALSE}
+library(tidybayes)
+library(bayesplot)
+library(ggridges)
+spread_draws(kn_s, u[i,j]) %>%
+  filter(i == 1) %>% #looking at the intercept
+  right_join(cities_numbers, by = c("j" = "id")) %>% 
+  ggplot(aes(x=u, y=regio3)) + 
+  geom_density_ridges() +
+  labs(title = 'Base rent', 
+       subtitle = 'Draws from posterior',
+       x = 'Intercept [Scaled]') +
+  theme_ridges()
+```
+
+
+```{r joy_slope, warning=FALSE,message=FALSE}
+library(tidybayes)
+library(bayesplot)
+library(ggridges)
+spread_draws(kn_s, u[i,j]) %>%
+  filter(i == 2) %>% #looking at the scope
+  right_join(cities_numbers, by = c("j" = "id")) %>% 
+  ggplot(aes(x=u, y=regio3)) + 
+  geom_density_ridges() +
+  labs(title = 'Increase in rent with living space', 
+       subtitle = 'Draws from posterior',
+       x = 'Slope Euro/sqm [Scaled]') +
+  theme_ridges()
+```
+
+### Task 1 increase of rent in Konstanz city
+Repaet the plot from a above using unscaled variable. You may focuss on Konstanz only. Konstanz has the following id (variable j in the posterior)
+```{r}
+  cities_numbers %>% kableExtra::kable()
+```
+
+
+```{r post_slope_kn, eval=lsg, echo=lsg, warning=FALSE,message=FALSE}
+  slope_kn_scaled = spread_draws(kn_s, u[i,j]) %>%
+   filter(i == 2) %>%  filter(j == 11) 
+  slope_kn_scaled_unscaled = y_sd / x_sd * slope_kn_scaled 
+  ggplot(slope_kn_scaled_unscaled) + 
+    geom_density(aes(x=u)) +
+    xlab('Euro / sqm') + 
+    labs(title = 'Posterior for increase of rent in KN')
+  quantile(slope_kn_scaled_unscaled$u, c(0.05,0.5,0.95))
+```
+
+
+
+
+
+

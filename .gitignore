@@ -92,3 +92,5 @@ stan/complex_prior/2_trunc_normals
 stan/complex_prior/normal
 lab/football1/non_hier_model
 lab/football1/hier_model
+lab/kn_rent/kn_hier
+stan/kn_rent/kn_hier
