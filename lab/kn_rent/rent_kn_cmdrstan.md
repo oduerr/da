@@ -12,7 +12,7 @@ beginning of
 ### Data Proprocessing
 
 ``` r
-  lsg = TRUE
+  lsg = FALSE
   KN_Kreis = read.csv2('https://raw.githubusercontent.com/oduerr/da/master/stan/kn_rent/KN_Kreis.csv')
   KN_Kreis$X = NULL
   sum(is.na(KN_Kreis$totalRent))#51
@@ -67,8 +67,10 @@ KN_Kreis %>%
 
 ![](rent_kn_cmdrstan_files/figure-gfm/complete_pooling-1.png)<!-- -->
 For the individual cities there is less spread. But some of them only
-have one data point, therefore full pooling does not work and
-hierarchical models come to shine.
+have a few or even a single data points. Therefore full pooling does not
+work (for a single data points) or it’s better to include information
+from the other cities (two or more data points). This is the case when
+and hierarchical models come to shine.
 
 ### Preparing the data for hierachical modelling
 
@@ -141,23 +143,9 @@ kn_s.model <- cmdstan_model('kn_hier.stan')
 kn_s = kn_s.model$sample(data=kn_stan_dat) 
 ```
 
-    ## Chain 1 Rejecting initial value:
-
-    ## Chain 1   Error evaluating the log probability at the initial value.
-
-    ## Chain 1 Exception: exponential_lpdf: Random variable[1] is -1.96222, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-    ## Chain 1 Exception: exponential_lpdf: Random variable[1] is -1.96222, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-
-    ## Chain 1 Rejecting initial value:
-
-    ## Chain 1   Error evaluating the log probability at the initial value.
-
-    ## Chain 1 Exception: exponential_lpdf: Random variable[1] is -0.395316, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-    ## Chain 1 Exception: exponential_lpdf: Random variable[1] is -0.395316, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-
     ## Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 1 Exception: exponential_lpdf: Random variable[2] is -0.0115572, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 1 Exception: normal_lpdf: Scale parameter is 0, but must be positive! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 39, column 4 to column 31)
 
     ## Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
@@ -167,7 +155,7 @@ kn_s = kn_s.model$sample(data=kn_stan_dat)
 
     ## Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 1 Exception: exponential_lpdf: Random variable[2] is -0.0325954, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 1 Exception: exponential_lpdf: Random variable[2] is -0.555307, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
@@ -177,37 +165,7 @@ kn_s = kn_s.model$sample(data=kn_stan_dat)
 
     ## Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 1 Exception: exponential_lpdf: Random variable[2] is -0.815499, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-
-    ## Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-
-    ## Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-
-    ## Chain 1
-
-    ## Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-
-    ## Chain 1 Exception: exponential_lpdf: Random variable[2] is -0.484597, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-
-    ## Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-
-    ## Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-
-    ## Chain 1
-
-    ## Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-
-    ## Chain 1 Exception: exponential_lpdf: Random variable[2] is -0.214635, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-
-    ## Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-
-    ## Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-
-    ## Chain 1
-
-    ## Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-
-    ## Chain 1 Exception: exponential_lpdf: Random variable[1] is -0.183895, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 1 Exception: exponential_lpdf: Random variable[2] is -0.310042, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
@@ -219,54 +177,12 @@ kn_s = kn_s.model$sample(data=kn_stan_dat)
 
     ## Chain 2   Error evaluating the log probability at the initial value.
 
-    ## Chain 2 Exception: exponential_lpdf: Random variable[2] is -0.0322881, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-    ## Chain 2 Exception: exponential_lpdf: Random variable[2] is -0.0322881, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-
-    ## Chain 2 Rejecting initial value:
-
-    ## Chain 2   Error evaluating the log probability at the initial value.
-
-    ## Chain 2 Exception: exponential_lpdf: Random variable[1] is -0.777929, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-    ## Chain 2 Exception: exponential_lpdf: Random variable[1] is -0.777929, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-
-    ## Chain 2 Rejecting initial value:
-
-    ## Chain 2   Error evaluating the log probability at the initial value.
-
-    ## Chain 2 Exception: exponential_lpdf: Random variable[1] is -1.20997, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-    ## Chain 2 Exception: exponential_lpdf: Random variable[1] is -1.20997, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-
-    ## Chain 2 Rejecting initial value:
-
-    ## Chain 2   Error evaluating the log probability at the initial value.
-
-    ## Chain 2 Exception: exponential_lpdf: Random variable[2] is -1.40786, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-    ## Chain 2 Exception: exponential_lpdf: Random variable[2] is -1.40786, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-
-    ## Chain 2 Rejecting initial value:
-
-    ## Chain 2   Error evaluating the log probability at the initial value.
-
-    ## Chain 2 Exception: exponential_lpdf: Random variable[1] is -0.0238431, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-    ## Chain 2 Exception: exponential_lpdf: Random variable[1] is -0.0238431, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-
-    ## Chain 2 Rejecting initial value:
-
-    ## Chain 2   Error evaluating the log probability at the initial value.
-
-    ## Chain 2 Exception: exponential_lpdf: Random variable[2] is -0.809014, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-    ## Chain 2 Exception: exponential_lpdf: Random variable[2] is -0.809014, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-
-    ## Chain 2 Rejecting initial value:
-
-    ## Chain 2   Error evaluating the log probability at the initial value.
-
-    ## Chain 2 Exception: exponential_lpdf: Random variable[1] is -1.01602, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-    ## Chain 2 Exception: exponential_lpdf: Random variable[1] is -1.01602, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 2 Exception: exponential_lpdf: Random variable[1] is -1.76785, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 2 Exception: exponential_lpdf: Random variable[1] is -1.76785, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 2 Exception: exponential_lpdf: Random variable[1] is -94.7203, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 2 Exception: exponential_lpdf: Random variable[1] is -510.817, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
@@ -276,7 +192,7 @@ kn_s = kn_s.model$sample(data=kn_stan_dat)
 
     ## Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 2 Exception: exponential_lpdf: Random variable[1] is -0.962589, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 2 Exception: exponential_lpdf: Random variable[1] is -15.0495, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
@@ -286,7 +202,7 @@ kn_s = kn_s.model$sample(data=kn_stan_dat)
 
     ## Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 2 Exception: exponential_lpdf: Random variable[2] is -0.564914, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 2 Exception: exponential_lpdf: Random variable[1] is -0.142369, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
@@ -296,7 +212,27 @@ kn_s = kn_s.model$sample(data=kn_stan_dat)
 
     ## Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 2 Exception: exponential_lpdf: Random variable[1] is -2.9873, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 2 Exception: exponential_lpdf: Random variable[2] is -0.222187, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+
+    ## Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+
+    ## Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
+    ## Chain 2
+
+    ## Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+
+    ## Chain 2 Exception: exponential_lpdf: Random variable[2] is -0.113752, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+
+    ## Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+
+    ## Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
+    ## Chain 2
+
+    ## Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+
+    ## Chain 2 Exception: exponential_lpdf: Random variable[2] is -1.44264, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
@@ -308,12 +244,54 @@ kn_s = kn_s.model$sample(data=kn_stan_dat)
 
     ## Chain 3   Error evaluating the log probability at the initial value.
 
-    ## Chain 3 Exception: exponential_lpdf: Random variable[2] is -0.384278, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
-    ## Chain 3 Exception: exponential_lpdf: Random variable[2] is -0.384278, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 3 Exception: exponential_lpdf: Random variable[1] is -0.405132, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 3 Exception: exponential_lpdf: Random variable[1] is -0.405132, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+
+    ## Chain 3 Rejecting initial value:
+
+    ## Chain 3   Error evaluating the log probability at the initial value.
+
+    ## Chain 3 Exception: exponential_lpdf: Random variable[2] is -1.07845, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 3 Exception: exponential_lpdf: Random variable[2] is -1.07845, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+
+    ## Chain 3 Rejecting initial value:
+
+    ## Chain 3   Error evaluating the log probability at the initial value.
+
+    ## Chain 3 Exception: exponential_lpdf: Random variable[1] is -1.74522, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 3 Exception: exponential_lpdf: Random variable[1] is -1.74522, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+
+    ## Chain 3 Rejecting initial value:
+
+    ## Chain 3   Error evaluating the log probability at the initial value.
+
+    ## Chain 3 Exception: exponential_lpdf: Random variable[2] is -1.56911, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 3 Exception: exponential_lpdf: Random variable[2] is -1.56911, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+
+    ## Chain 3 Rejecting initial value:
+
+    ## Chain 3   Error evaluating the log probability at the initial value.
+
+    ## Chain 3 Exception: exponential_lpdf: Random variable[1] is -0.910529, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 3 Exception: exponential_lpdf: Random variable[1] is -0.910529, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+
+    ## Chain 3 Rejecting initial value:
+
+    ## Chain 3   Error evaluating the log probability at the initial value.
+
+    ## Chain 3 Exception: exponential_lpdf: Random variable[1] is -1.29627, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 3 Exception: exponential_lpdf: Random variable[1] is -1.29627, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+
+    ## Chain 3 Rejecting initial value:
+
+    ## Chain 3   Error evaluating the log probability at the initial value.
+
+    ## Chain 3 Exception: exponential_lpdf: Random variable[1] is -1.69905, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 3 Exception: exponential_lpdf: Random variable[1] is -1.69905, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 3 Exception: normal_lpdf: Scale parameter is 0, but must be positive! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 39, column 4 to column 31)
+    ## Chain 3 Exception: exponential_lpdf: Random variable[2] is -15.65, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
@@ -323,7 +301,7 @@ kn_s = kn_s.model$sample(data=kn_stan_dat)
 
     ## Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 3 Exception: exponential_lpdf: Random variable[2] is -0.0823353, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 3 Exception: exponential_lpdf: Random variable[2] is -1.12527, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
@@ -333,7 +311,7 @@ kn_s = kn_s.model$sample(data=kn_stan_dat)
 
     ## Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 3 Exception: exponential_lpdf: Random variable[2] is -0.0919003, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 3 Exception: exponential_lpdf: Random variable[2] is -0.0517832, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
@@ -343,7 +321,7 @@ kn_s = kn_s.model$sample(data=kn_stan_dat)
 
     ## Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 3 Exception: exponential_lpdf: Random variable[1] is -2.71484, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 3 Exception: exponential_lpdf: Random variable[2] is -0.10424, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
@@ -353,17 +331,24 @@ kn_s = kn_s.model$sample(data=kn_stan_dat)
 
     ## Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 3 Exception: exponential_lpdf: Random variable[2] is -0.0894527, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 3 Exception: exponential_lpdf: Random variable[1] is -0.663006, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
     ## Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 
     ## Chain 3
+
+    ## Chain 4 Rejecting initial value:
+
+    ## Chain 4   Error evaluating the log probability at the initial value.
+
+    ## Chain 4 Exception: exponential_lpdf: Random variable[1] is -1.19209, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 4 Exception: exponential_lpdf: Random variable[1] is -1.19209, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 4 Exception: exponential_lpdf: Random variable[2] is -0.0961596, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 4 Exception: exponential_lpdf: Random variable[2] is -0.885484, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
@@ -373,7 +358,57 @@ kn_s = kn_s.model$sample(data=kn_stan_dat)
 
     ## Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 4 Exception: exponential_lpdf: Random variable[2] is -0.416682, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 4 Exception: exponential_lpdf: Random variable[2] is -1.73599, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+
+    ## Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+
+    ## Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
+    ## Chain 4
+
+    ## Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+
+    ## Chain 4 Exception: exponential_lpdf: Random variable[2] is -856.351, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+
+    ## Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+
+    ## Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
+    ## Chain 4
+
+    ## Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+
+    ## Chain 4 Exception: exponential_lpdf: Random variable[2] is -26.7643, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+
+    ## Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+
+    ## Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
+    ## Chain 4
+
+    ## Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+
+    ## Chain 4 Exception: exponential_lpdf: Random variable[1] is -1.02613, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+
+    ## Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+
+    ## Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
+    ## Chain 4
+
+    ## Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+
+    ## Chain 4 Exception: exponential_lpdf: Random variable[2] is -0.0843454, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+
+    ## Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
+
+    ## Chain 4 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
+    ## Chain 4
+
+    ## Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
+
+    ## Chain 4 Exception: exponential_lpdf: Random variable[1] is -0.258731, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
@@ -383,7 +418,7 @@ kn_s = kn_s.model$sample(data=kn_stan_dat)
 
     ## Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 
-    ## Chain 1 Exception: exponential_lpdf: Random variable[1] is -0.00562947, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
+    ## Chain 1 Exception: exponential_lpdf: Random variable[1] is -0.720887, but must be nonnegative! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpN3fbyc/model-20df1c631b3.stan', line 29, column 2 to column 23)
 
     ## Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 
@@ -391,7 +426,7 @@ kn_s = kn_s.model$sample(data=kn_stan_dat)
 
     ## Chain 1
 
-    ## Warning: 1 of 4000 (0.0%) transitions ended with a divergence.
+    ## Warning: 2 of 4000 (0.0%) transitions ended with a divergence.
     ## See https://mc-stan.org/misc/warnings for details.
 
 ### Base costs
@@ -428,9 +463,11 @@ spread_draws(kn_s, u[i,j]) %>%
   theme_ridges()
 ```
 
-![](rent_kn_cmdrstan_files/figure-gfm/joy_slope-1.png)<!-- -->
+![](rent_kn_cmdrstan_files/figure-gfm/joy_slope-1.png)<!-- --> \### Task
+1 Discuss the difference between Konstanz and Aach in the intercept and
+Slope.
 
-### Task 1 increase of rent in Konstanz city
+### Task 2 increase of rent in Konstanz city
 
 Repaet the plot from a above using unscaled variable. You may focuss on
 Konstanz only. Konstanz has the following id (variable j in the
@@ -614,22 +651,3 @@ Stockach
 </tr>
 </tbody>
 </table>
-
-``` r
-  slope_kn_scaled = spread_draws(kn_s, u[i,j]) %>%
-   filter(i == 2) %>%  filter(j == 11) 
-  slope_kn_scaled_unscaled = y_sd / x_sd * slope_kn_scaled 
-  ggplot(slope_kn_scaled_unscaled) + 
-    geom_density(aes(x=u)) +
-    xlab('Euro / sqm') + 
-    labs(title = 'Posterior for increase of rent in KN')
-```
-
-![](rent_kn_cmdrstan_files/figure-gfm/post_slope_kn-1.png)<!-- -->
-
-``` r
-  quantile(slope_kn_scaled_unscaled$u, c(0.05,0.5,0.95))
-```
-
-    ##       5%      50%      95% 
-    ## 10.93580 11.93363 12.92801

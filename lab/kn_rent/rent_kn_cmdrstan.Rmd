@@ -8,7 +8,7 @@ The following cell loads the rent prices for the county (Landkreis) of Konstanz.
 
 ### Data Proprocessing
 ```{r data}
-  lsg = TRUE
+  lsg = FALSE
   KN_Kreis = read.csv2('https://raw.githubusercontent.com/oduerr/da/master/stan/kn_rent/KN_Kreis.csv')
   KN_Kreis$X = NULL
   sum(is.na(KN_Kreis$totalRent))#51
@@ -43,7 +43,7 @@ KN_Kreis %>%
   coord_cartesian(xlim = c(0, 250), ylim = c(0, 3000)) + 
   ggthemes::theme_hc(base_size = 6) 
 ```
-For the individual cities there is less spread. But some of them only have one data point, therefore full pooling does not work and hierarchical models come to shine.
+For the individual cities there is less spread. But some of them only have a few or even a single data points. Therefore full pooling does not work (for a single data points) or it's better to include information from the other cities (two or more data points). This is the case when and hierarchical models come to shine.
 
 ### Preparing the data for hierachical modelling 
 Here we add a city identifier, $j=1,2,\ldots,J$ and split the data into a training and test set.
@@ -127,8 +127,14 @@ spread_draws(kn_s, u[i,j]) %>%
        x = 'Slope Euro/sqm [Scaled]') +
   theme_ridges()
 ```
+### Task 1 
+Discuss the difference between Konstanz and Aach in the intercept and Slope.
+```{r Task1, echo=lsg, warning=FALSE,message=FALSE}
+# Both intercept and slope are higher in Konstanz, this reflects the fact that the Konstanz is more expensive place. But
+# you also observe that Konstanz has a smaller spread than Aach. This is due to the fact that there are more data in Konstanz compared to Aach.
+```
 
-### Task 1 increase of rent in Konstanz city
+### Task 2 increase of rent in Konstanz city
 Repaet the plot from a above using unscaled variable. You may focuss on Konstanz only. Konstanz has the following id (variable j in the posterior)
 ```{r}
   cities_numbers %>% kableExtra::kable()
