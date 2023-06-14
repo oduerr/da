@@ -15,7 +15,8 @@ parameters {
   //See paper https://discovery.ucl.ac.uk/id/eprint/16040/1/16040.pdf using a sum-to-zero constraint
   vector[nt - 1] att_raw; //attack ability of each team
   vector[nt - 1] def_raw; //defence ability of each team
-  //hyper parameters
+  
+  //hyper parameters <-- New in Hierachical Model
   real mu_att;
   real<lower=0> tau_att;
   real mu_def;
@@ -32,11 +33,10 @@ transformed parameters {
   
   theta1 = exp(home + att[ht] - def[at]);
   theta2 = exp(att[at] - def[ht]);
-
 }
 
 model {
-//hyper priors
+//hyper priors  <-- New in Hierachical Model
 mu_att ~ normal(0,0.1);
 tau_att ~ normal(0,1);
 mu_def ~ normal(0,0.1);
@@ -49,8 +49,8 @@ home ~ normal(0,1);
 
 
 //likelihood
-    s1 ~ poisson(theta1);
-    s2 ~ poisson(theta2);
+s1 ~ poisson(theta1);
+s2 ~ poisson(theta2);
 }
 
 generated quantities {

@@ -11,8 +11,13 @@ data {
 }
 
 parameters {
-  real home; //home advantage
-  //See paper https://discovery.ucl.ac.uk/id/eprint/16040/1/16040.pdf using a sum-to-zero constraint
+  //home advantage
+  real home; 
+  
+  //See paper https://discovery.ucl.ac.uk/id/eprint/16040/1/16040.pdf 
+  //Suggest using a sum-to-zero constraint: on average the attack capabilities should be zero
+  //We model them using nt-1 paramters
+  //See https://mc-stan.org/docs/2_18/stan-users-guide/parameterizing-centered-vectors.html
   vector[nt - 1] att_raw; //attack ability of each team
   vector[nt - 1] def_raw; //defence ability of each team
 }
@@ -21,7 +26,8 @@ transformed parameters {
   vector[ng] theta1; //score probability of home team
   vector[ng] theta2; //score probability of away team
 
-  //See https://mc-stan.org/docs/2_18/stan-users-guide/parameterizing-centered-vectors.html
+  //The last component is the sum of all others see
+  //https://mc-stan.org/docs/2_18/stan-users-guide/parameterizing-centered-vectors.html
   vector[nt] att = append_row(att_raw, -sum(att_raw));
   vector[nt] def = append_row(def_raw, -sum(def_raw));
   

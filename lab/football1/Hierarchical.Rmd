@@ -10,8 +10,8 @@
 This notebook compares a non-hierarchical model and a hierarchical model to predict the scores of English premier league matches.
 
 ## Your tasks
-Step through the notebook and try to understand it.
 
+Step through the notebook and try to understand it.
 
 ### Background
 
@@ -26,7 +26,7 @@ Modifications include:
     -   Nevertheless, it appears necessary, as mentioned in the paper, to implement a sum-to-zero restriction for both the defense and offense. This stems from the fact that teams compete against one another, making these abilities dependent on each other. For further details, please refer to the aforementioned paper and its associated references.
 
 ```{r}
-lsg = FALSE #Set to FALSE before submitting
+lsg = TRUE #Set to FALSE before submitting
 #require(rstan)
 #set.seed(1) #set seed 
 library(cmdstanr)
@@ -67,7 +67,7 @@ at = unlist(sapply(1:ng, function(g) which(teams == data$Away[g])))
 
 ```{r}
 # we will save the last np games to predict
-np=50
+np=30
 ngob = ng-np #number of games to fit
 my_data = list(
   nt = nt, 
@@ -104,7 +104,7 @@ nhfit = nhmodel$sample(data = my_data)
 #nhfit_stan = stan(file = 'non_hier_model.stan', data = my_data)
 ```
 
-#### Non-Hierarchical model predicted scores of the unseen 
+#### Non-Hierarchical model predicted scores of the unseen
 
 ```{r non_hier_pred_scores}
 library(tidyverse)
@@ -192,7 +192,9 @@ hmodel <- cmdstan_model('hier_model.stan')
 hfit = hmodel$sample(data = my_data)
 #hfit = stan(file = 'hier_model.stan', data = my_data)
 ```
+
 ## Checking the chain
+
 ```{r }
 hfit 
 ```
@@ -216,6 +218,7 @@ cor(pred_scores, true_scores)
 ```
 
 ### Mean attack and dense abilities
+
 ```{r attack_defense_hier}
 attack = hfit$draws(format = "df", 'att') %>% 
   select(-.chain, -.iteration, -.draw) %>% colMeans()
@@ -235,5 +238,3 @@ tidy_draws(hfit) %>%
   select(home) %>% 
   ggplot(aes(x=home)) + geom_density() 
 ```
-
-

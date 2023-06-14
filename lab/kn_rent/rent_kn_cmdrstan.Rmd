@@ -43,7 +43,7 @@ KN_Kreis %>%
   coord_cartesian(xlim = c(0, 250), ylim = c(0, 3000)) + 
   ggthemes::theme_hc(base_size = 6) 
 ```
-For the individual cities there is less spread. But some of them only have a few or even a single data points. Therefore full pooling does not work (for a single data points) or it's better to include information from the other cities (two or more data points). This is the case when and hierarchical models come to shine.
+For the individual cities there is less spread. But some of them only have a few or even a single data points. Therefore full pooling does not make sense (for a single data points) or it's better to include information from the other cities (two or more data points). This is the case when and hierarchical models come to shine.
 
 ### Preparing the data for hierachical modelling 
 Here we add a city identifier, $j=1,2,\ldots,J$ and split the data into a training and test set.
