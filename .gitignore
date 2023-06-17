@@ -96,3 +96,6 @@ lab/kn_rent/kn_hier
 stan/kn_rent/kn_hier
 lab/kn_rent/rent_kn_cmdrstan_lsg.html
 lab/kn_rent/rent_kn_cmdrstan_nolsg.html
+stan/football/correlated_samples_fixed
+stan/football/hier_model_cor
+stan/gp/GP_island

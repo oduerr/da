@@ -22,11 +22,17 @@ dat=list(
   T = d$total_tools
 )
 
-m1 = stan_model(file='GP_island.stan')
-s = Sys.time()
-fit_island = sampling(m1, dat)
-Sys.time() - s
-
+if (FALSE){
+  m1 = stan_model(file='stan/gp/GP_island.stan')
+  s = Sys.time()
+  fit_island = sampling(m1, dat)
+  Sys.time() - s
+}
+library(cmdstanr)
+m1.cmd = cmdstan_model('stan/gp/GP_island.stan')
+fit_island = m1.cmd$sample(dat)
+options(cmdstanr_max_rows=40)
+fit_island
 library(tidybayes)
 post = spread_draws(fit_island, c(etasq,rhosq,g,b))
 # plot 50 functions sampled from posterior
@@ -36,9 +42,8 @@ for ( i in 1:50 )
   curve( post$etasq[i]*exp(-post$rhosq[i]*x^2) , add=TRUE , col=col.alpha("black",0.3) )
 post %>% ggplot(aes(x=b)) + geom_density() + labs(title='Scaling with population')
 
+
 loo::loo(fit_island)
-
-
 ##### Make predictions for a new island #####
 Lu = runif(10, 1,4) #Lummerland
 Dmat_ext = rbind(cbind(Dmat, Lu),c(lu,0))
@@ -51,7 +56,7 @@ dat1=list(
   P = c(d$population, 3000), #We assume 3000 inhabitans (Lummerland has less)
   T = d$total_tools #We only have 10 entries for the tool
 )
-m1_pred = stan_model(file='GP_island_pred.stan')
+m1_pred = stan_model(file='stan/gp/GP_island_pred.stan')
 fit_island_pred = sampling(m1_pred, dat1, iter = 6000)
 
 if (FALSE){

@@ -18,7 +18,7 @@ library(ggplot2); theme_set(theme_bw())
 x <- seq(0, 1, .01)
 qplot(x, dinvgamma(x, 3, 1), geom = "line") + xlab('rho')
 
-fit_regression = stan(file = '~/Documents/workspace/da/stan/gp/GP_regression.stan', 
+fit_regression = stan(file = '~/Documents/GitHub/da/stan/gp/GP_regression.stan', 
                   data=list(
                     N1=N, 
                     x1 = x_train,

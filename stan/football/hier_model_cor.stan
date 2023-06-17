@@ -14,11 +14,11 @@ data {
 }
 
 parameters {
-  real home; //home advantage
-  matrix[2, nt] A_z; //attack / defence ability of each team
   //correlation
   cholesky_factor_corr[2] L_u; //Attack and Defense correlation
   vector<lower=0>[2] sigma_u;  //Attack and Defense spread
+  real home; //home advantage
+  matrix[2, nt] A_z; //attack / defence ability of each team
 }
 
 transformed parameters {
@@ -27,11 +27,6 @@ transformed parameters {
 
   matrix[2,nt] A;
   A = diag_pre_multiply(sigma_u, L_u) * A_z; //
-  //A = L_u * A_z; 
-  //att[ht] = A[ht,1] 
-  //def[ht] = A[ht,2]
-  //theta1 = exp(home + att[ht] - def[at]);
-  //theta2 = exp(att[at] - def[ht]);
   for (i in 1:ng) {
     theta1[i] = exp(home + A[1, ht[i]] - A[2, at[i]]);
     theta2[i] = exp(A[1,at[i]] - A[2,ht[i]]);
