@@ -41,4 +41,9 @@ for ( i in 1:50 )
 ####### Below Solution #####
 
 post %>% ggplot(aes(x=b)) + geom_density() + labs(title='Scaling with population')
+df = post %>% spread_draws(b) 
+mean(df$b)
+P=2
+(P**mean(df$b)) #1.20 you expect about 20% more tools
+
 

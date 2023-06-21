@@ -1,7 +1,6 @@
 ---
   output:
-    pdf_document:
-    highlight: pygments
+    github_document
 ---
 
 # Correlated Hierarchical Model
@@ -13,7 +12,7 @@ This notebook introduces correlated hierarchical models by modelling the results
 We first load the data:
 
 ```{r, warning=FALSE}
-lsg = TRUE #Set to FALSE before submitting
+lsg = FALSE #Set to FALSE before submitting
 require(rstan)
 set.seed(1) #set seed 
 options(mc.cores = parallel::detectCores())
@@ -75,7 +74,7 @@ quad_form_diag(rho, sigma)
 
 where `quad_form_diag` is a performant implementation of the three matrix multiplication. We could take the following stan code to sample, from a multivariate Gaussian:
 
-```{stan output.var="model_1"}
+```{stan output.var="model_1", eval=FALSE}
 data {
   int<lower=0> K;
   vector[K] sigma;
@@ -179,16 +178,6 @@ In stan the equation (2) can be coded as:
 diag_pre_multiply(sigma, L) * Z
 ```
 
-```{r}
-L
-dat = list(J=200, sigma=sigma, rho=rho, K=2, L=L)
-fit <- mod$sample(data = dat,chains = 1,iter_warmup = 0,
-                    iter_sampling = 1, seed =1, fixed_param = TRUE)
-s = tidybayes::spread_draws(fit, Z_gen[j,i]) 
-mvsamples2 = s %>% pivot_wider(names_from = 'i', values_from = 'samples') 
-  colnames(mvsamples2) = c('j', 'att', 'def')
-```
-
 ## Coding the strength of the teams
 
 We just saw that the Cholesky Decomposition allows to transform independend standard Gaussian to a correlated MVG. Before seeing any data the attack and defense abilities of each team can be constructed as follows. First, two random variables are drawn from a Gaussian. Then these two parameters are transformed to a MVG using the Cholesky Decomposition and $\sigma_{\tt att}$ and $\sigma_{\tt def}$. The later transformation is the same for all teams. The abilities of the individual teams can be described by two variables for all teams that makes a matrix $A_z$ with dimension $(2,J)$, with $J$ the number of teams.
@@ -199,7 +188,7 @@ We have the following parameters:
 
 For all teams in common (hyperparameters):
 
--   `L_u` the Cholesky Matrix which stores the attack and defense correlation. For the two dimensional case in football this is one variable.
+-   `L_u=L'` the Cholesky Decomposition of the correlation matrix (unit diagonal) which stores the attack and defense correlation. For the two dimensional case in football this is one variable.
 -   `sigma_u` which corresponds to the spread, here two variables $\sigma_{\tt att}$ and $\sigma_{\tt def}$.
 -   `home` the home advantage
 
