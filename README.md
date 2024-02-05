@@ -3,6 +3,35 @@ Material for the data analytics course
 
 website (under construction): https://oduerr.github.io/da/Stan_Primer_Full.html
 
+# Installation on your machine
+
+## Using docker
+Install the docker container as described in [https://github.com/JBris/stan-cmdstanr-docker](https://github.com/JBris/stan-cmdstanr-docker)
+
+Getting the containter
+```
+docker pull ghcr.io/jbris/stan-cmdstanr-docker:latest
+```
+
+Running the containter
+```
+docker run -it --rm -p 8787:8787 ghcr.io/jbris/stan-cmdstanr-docker:latest
+```
+
+Accessing the container. Go to [http://localhost:8787/](http://localhost:8787/) and use the password from the console.
+
+
+
+
+
+
+
+
+# Installation for SomSem 2024 at HTWG
+Under construction
+
+
+
 # Installation for SomSem 2023 at HTWG
 In you download folder you find a more detailed instruction `Einleitung CMDStan.pdf`
 
