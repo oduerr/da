@@ -14,7 +14,7 @@ Then start the docker container in the command line using:
 ```
 docker run --rm -ti -e PASSWORD=yourpassword -p 8787:8787 ghcr.io/jbris/stan-cmdstanr-docker
 ```
-You can then access a running instance via
+You can then access a running RStudio with instance cmdstanr via
 [localhost:8787](http://localhost:8787) the username is `rstudio` and the password `yourpassword`.
 
 
@@ -24,5 +24,6 @@ you can use a Kaggle Notebooks as cloud based application. See [oduerr-rstan](ht
 
 
 ## Checking installation
+From https://github.com/oduerr/da/tree/master/stan/checking_installation upload the 'simple_lr.stan' file to the RStudio (server or local) and execute the file 'check_cmdstan_installation.R'
 
 
