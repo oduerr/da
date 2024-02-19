@@ -5,6 +5,12 @@ website (under construction): https://oduerr.github.io/da/Stan_Primer_Full.html
 
 # Installation for SomSem 2024 at HTWG
 Please install [cmdrstan](https://mc-stan.org/cmdstanr/) on your laptop. 
+
+```
+docker run --rm -ti -e PASSWORD=yourpassword -p 8787:8787 ghcr.io/jbris/stan-cmdstanr-docker
+```
+
+
 If you don't manage to do so you can also install [rstan](https://mc-stan.org/users/interfaces/rstan). As a fallback 
 you can use a Kaggle Notebooks, see [oduerr-rstan](https://www.kaggle.com/code/oduerr/oduerr-rstan) for an example of such a notebooks.
 
