@@ -5,50 +5,24 @@ website (under construction): https://oduerr.github.io/da/Stan_Primer_Full.html
 
 # Installation for SomSem 2024 at HTWG
 
+## Ideal Case: Installing cmdstanr on your Laptop
 Please install [cmdrstan](https://mc-stan.org/cmdstanr/) on your laptop. 
 
 ## Docker installation for HTWG machines
-If that is not working for you. You might use the docker installation. 
-Please start the docker container in the command line using:
+If that is not working for you. You might use the docker installation. First, start the `Docker Desktop` application.
+Then start the docker container in the command line using:
 ```
 docker run --rm -ti -e PASSWORD=yourpassword -p 8787:8787 ghcr.io/jbris/stan-cmdstanr-docker
 ```
 You can then access a running instance via
-[localhost:8787](http://localhost:8787) the username is `rstudio` and the password `yourpassword`
-
-## Fallback when not using HTWG machines
-If you don't manage to do so you can also install [rstan](https://mc-stan.org/users/interfaces/rstan). As a fallback 
-you can use a Kaggle Notebooks, see [oduerr-rstan](https://www.kaggle.com/code/oduerr/oduerr-rstan) for an example of such a notebooks.
+[localhost:8787](http://localhost:8787) the username is `rstudio` and the password `yourpassword`.
 
 
-# OLD installation
+## Fallback when not using HTWG machines (rstan instead of cmdstamr)
+If you don't manage to install `cmdrstan` on you local machine. You can try to install [rstan](https://mc-stan.org/users/interfaces/rstan) on your local machine. Or you can  
+you can use a Kaggle Notebooks as cloud based application. See [oduerr-rstan](https://www.kaggle.com/code/oduerr/oduerr-rstan) for an example of such a notebook.
 
-## Installation for SomSem 2023 at HTWG
-This is most likely not working anymore. 
-In you download folder you find a more detailed instruction `Einleitung CMDStan.pdf`
-
-## Creation of the conda enviroment (takes time need to be done once)
-Create a conda enviroment. Windows-Key Start `CMD-Anaconda`  
-```
-conda create -n stan-env -c conda-forge cmdstan
-```
-
-## Activate conda enviroment (needs to be done for each new session)
-
-```
-conda activate stan-env
-```
-
-## Starting RStudio
-Set path to conda enviroment 
-```
-library(cmdstanr)
-#change oduerr
-set_cmdstan_path("C:/Users/YOUR_USER_NAME/.conda/envs/stan-env/Library/bin/cmdstan") 
-```
 
 ## Checking installation
-
-Go to download folder open and execute `check_cmdstan_installation.R`
 
 
