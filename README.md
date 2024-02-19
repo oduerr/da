@@ -1,6 +1,7 @@
 # da
 Material for the data analytics course
 
+Moodle Course Site: https://moodle.htwg-konstanz.de/moodle/course/view.php?id=1553 
 website (under construction): https://oduerr.github.io/da/Stan_Primer_Full.html
 
 # Installation for SomSem 2024 at HTWG
