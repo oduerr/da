@@ -8,6 +8,8 @@ data {
   int<lower=0> at[ng]; //away team index
   int<lower=0> s1[ng]; //score home team
   int<lower=0> s2[ng]; //score away team
+  
+  
   int<lower=0> np; //number of predicted games
   int<lower=0> htnew[np]; //home team index for prediction
   int<lower=0> atnew[np]; //away team index for prediction

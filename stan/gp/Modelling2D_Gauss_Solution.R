@@ -36,3 +36,12 @@ mu1=slider(-5,5,0, step = 0.5),
 mu2=slider(-5,5,0, step = 0.5)
 )
 
+
+Sigma = matrix(c(1,0.8,0.8,1), nrow=2)
+Sigma
+#3 DOF
+chol(Sigma)
+
+
+
+

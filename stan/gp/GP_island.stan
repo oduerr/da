@@ -47,7 +47,7 @@ model {
   b ~ exponential( 1 );
   g ~ exponential( 1 );
   for (i in 1:N) {
-    lambda[i] = (a*P[i]^b/g)*exp(f[i]);
+    lambda[i] = ((a*P[i]^b)/g)*exp(f[i]);
     T[i] ~ poisson(lambda[i]);
   }
 }
