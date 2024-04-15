@@ -1,0 +1,138 @@
+---
+title: "Direction"
+author: "Oliver"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
+  # Load necessary library for plotting
+  library(ggplot2)
+  set.seed(42)
+  n_samples <- 5e3
+```
+
+## Non-Identifiability for linear SCMs with Gaussian Noise
+
+In the book "Elements of Causal Inference" by Peters, Janzing, and Schölkopf the authors discuss how to identify the causal direction between two variables in a linear structural causal model (SCM) with **non-Gaussian** noise. In theorem 4.2 they show that if the observational distribution $P(X, Y)$ (or $P_{X,Y}$ in their notation) can be created by the linear model
+
+$$
+  Y = \alpha X + U_Y \; \text{with} \; U_Y  \perp X 
+$$
+
+Then there exists a linear model in the reverse causal direction
+
+$$
+X = \beta \, Y +  U_X
+$$
+
+with $U_X \perp Y$ that also generates the same observational distribution. If and only if the noise terms $N_Y$ and $U_Y$ are non-Gaussian. While the authors discuss the non-Gaussian case, we were like to focus on the Gaussian case and investigate the non identifiability of the causal direction. That is there **should exist two SCMs** that are producing the same observational distribution but have different causal directions.
+
+We will generate two SCMs, SCM1 and SCM2, that are observationally equivalent: I.e. the joint distribution and marginal distribution of the observed variables are the same in both models. SCM1 has a causal relationship where X causes Y, while SCM2 has a reverse causal relationship where Y causes X.
+
+### SCM1: X causes Y
+
+To avoid notational clutter, we will not introduce an exogenous variable $U_X$ in the SCM1 model since $X=U_X$, which is also not done the book.
+
+$$
+  U_Y \sim \mathcal{N}(0, 1) \\
+  X \sim \mathcal{N}(0, 1) \\
+  Y \leftarrow 2X + U_Y
+$$
+
+```{r}
+# SCM1: X causes Y
+X_scm1 <- rnorm(n_samples, mean = 0, sd = 1)
+epsilon_Y_scm1 <- rnorm(n_samples, mean = 0, sd = 1)
+Y_scm1 <- 2 * X_scm1 + epsilon_Y_scm1
+
+data_scm1 <- data.frame(X = X_scm1, Y = Y_scm1, Model = "SCM1")
+
+# Checking for Gaussian QQ plot
+library(car)
+qqPlot(Y_scm1, main='QQ Plot for Y_scm1 (check for Normal distribution)')
+mean(Y_scm1)  #~0.00
+sd(Y_scm1)    #2.24 ~ sqrt(5)
+lc = lm(Y_scm1 ~ X_scm1) 
+confint(lc)
+summary(lc)$r.squared
+```
+
+The marginal distribution of Y is normal with mean $\approx 0$ and standard deviation $\approx \sqrt{4 + 1} = 2.24$. This is due to the fact that the sum of two independent normal random variables is also normal with the mean equal to the sum of the means and variance equal to the sum of the variances. In our case $Y = 2X + U_Y$ where $U_Y \sim \mathcal{N}(0, 1)$ and $X \sim \mathcal{N}(0, 1)$, so $Y \sim \mathcal{N}(0+0, 4 + 1)$.
+
+### SCM2: Y causes X
+
+The SCM2 model is defined as follows:
+
+$$         
+U_X \sim \mathcal{N}(0, ???) \\
+Y \sim \mathcal{N} \\
+X \leftarrow \beta \cdot Y + U_X
+$$
+
+#### Empirical evaluation of the parameters in the anti-causal direction
+
+Let's try to find the parameters of the anti-causal model empirically and fit the data in the anti-causal direction.
+
+```{r}
+  lac = lm(X_scm1 ~ Y_scm1) 
+  # Get the R^2 value
+  summary(lac)$r.squared
+  confint(lac)
+  # Print Residual variance
+  var(lac$residuals)
+```
+
+First, we observe that the R-squared value is identical to the one obtained in the causal direction, indicating that both models explain the data equally well. Empirically, we find that the coefficients are $\beta = 0.40$ and $Var(U_X) = 0.2$ for the anti-causal model.
+
+### Theoretical Derivation of the Anti-Causal Model
+
+Let's derive the coefficients of the anti-causal model. First the marginal distribution of Y is a sum of two Gaussians and thus a Gaussian. The variance $var(Y)=var(2X + U_Y)=4+1=5$ and the mean is 0. The coefficient $\beta$ can be calculated from $\beta = \frac{cov(X,Y)}{var(Y)}$. The $cov(X,Y)=cov(X, X 2 + U_Y)=2 var(x)=2$, . Thus $\beta = 2/5 = 0.4$. The variance of the noise term can be derived from the marginal distribution of X. From
+
+$$
+1 = Var(X) = Var(0.4Y + U_X) = Var(0.4 Y) + Var(U_X) = 0.4^2 * 5 + 1
+$$
+
+So we find that SCM2:
+$$
+  U_X \sim \mathcal{N}(0, 0.2) \\
+  Y \sim \mathcal{N}(0, 5) \\
+  X \leftarrow 0.4 \cdot Y + U_X
+$$
+
+## Comparison of the observational data of the 2 SCMs
+
+```{r}
+Y_scm2 <- rnorm(n_samples, mean = 0, sd = sqrt(5))
+epsilon_X_scm2 <- rnorm(n_samples, mean = 0, sd = sqrt(0.2)) 
+
+# Assuming the reverse relationship has a similar form, but we need to consider the scale of the effect
+# To maintain the distribution equivalence, X is derived from Y, adjusting the coefficients accordingly
+X_scm2 <- 0.40*Y_scm2 + epsilon_X_scm2
+data_scm2 <- data.frame(X = X_scm2, Y = Y_scm2, Model = "SCM2")
+
+data_all = rbind(data_scm1, data_scm2)
+library(ggplot2)
+library(ggExtra)
+
+# Assuming data_all and the previous ggplot code are already defined
+
+# Generate the base scatter plot
+scatter_plot <- ggplot(data_all, aes(x = X, y = Y, color = Model)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  ggtitle("Observational Equivalence in SCMs") +
+  labs(subtitle = "SCM1 vs. SCM2", x = "X", y = "Y") +
+  scale_color_manual(values = c("SCM1" = "blue", "SCM2" = "red"))
+
+# Add marginal density plots to the scatter plot
+ggMarginal(scatter_plot, type = "density", margins = "both", size = 5, groupColour = TRUE)
+
+
+mean(X_scm2)  #~0.00
+sd(X_scm2)    #1.01
+lm(Y_scm1 ~ X_scm1) #-0.005064     2.009818
+```
