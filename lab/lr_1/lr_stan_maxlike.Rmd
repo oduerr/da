@@ -1,0 +1,65 @@
+---
+output:
+  pdf_document:
+    highlight: pygments
+    includes:
+      in_header: header_lsg.tex
+---
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE}
+  if (exists("lsg") == FALSE){ #Nur falls von RStudio aufgerufen
+    lsg <- TRUE   #Wenn man die lsg ausgeben will dann lsg <- TRUE sonst 
+  }
+  if (exists("baseDir") == FALSE){ #Nur falls von RStudio aufgerufen
+    baseDir = getwd()
+  }
+  ig <- function(name, scale = 1) {
+     return (paste0("\\includegraphics[ scale =", scale,"]{", baseDir,"/", name, "}"))
+  }
+```
+
+## Linear Regression with Stan and Maximum Likelihood
+
+In this excerise, we will use Stan to do a linear regression. The aim is to use Stan to describe the problem in the setting of the probabilistic programming language Stan. 
+
+a) We simulate 50 data points $(x,y)$ under the assumptions from linear regression $y \sim Norm(\mu=2.0 \cdot x + 1.0, \sigma=1)$. Let $x$ be in the range from -2 to 2. Hint: use the function $rnorm$. NOte that the data is generated with a fixed x and a random y.
+
+```{r, echo=lsg, eval=lsg}
+  set.seed(1)
+  N = 50
+  x = seq(-2,2, length.out = N)
+  y = rnorm(N, mean = 2 * x + 1, sd = 1)
+```
+
+b)  Fit the maximum likelihood solution with the R command `lm`. Plot the Data and $\mu_{ML} = E(y|x)$
+
+```{r, echo=lsg, eval=lsg, warning=FALSE}
+  maxl = lm(y ~ x)
+  d = coef(maxl)
+  a = d[2]
+  b = d[1]
+  curve(a*x+b, from = -5, to=5)
+  points(x,y)
+  a
+  b
+```
+
+c) Formulate the problem in Stan. In case you are stuck, the stan-file can be found at <https://github.com/oduerr/da/blob/master/lab/lr_1/lr_maxlike.stan>. After defining the model, you can get the maximum likelihood solution by using the optimization algorithm from Stan via:
+
+```{r, eval=lsg, echo=TRUE, warning=FALSE}
+library(cmdstanr)
+#Reading the model definition 
+m_rcmdstan <- cmdstan_model('~/Documents/GitHub/da/lab/lr_1/lr_maxlike.stan')
+data_list = list(N=N,x=x, y=y)
+# Fitting the Maximum Likelihood Solution using Optimization
+res = m_rcmdstan$optimize(data = data_list)
+res$mle() #The maximum likelihood solution
+```
+
+You task is to create the Stan model `lr_maxlike.stan`.
+```{r, eval=lsg, echo=FALSE, warning=FALSE}
+# print the Stan model
+m_rcmdstan
+```
+
+
