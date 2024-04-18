@@ -143,6 +143,27 @@ logLik(lm(y ~ x)) #log-likelihood of the lm model (sum and not the mean)
 We can also use the `cmdrstan` package to do the optimization. Here is
 the stan code
 
+``` stan
+data {
+  int<lower=0> N;           // Number of data points
+  vector[N] x;              // Predictor variable
+  vector[N] y;              // Outcome variable
+}
+
+parameters {
+  real beta_0;              // Intercept
+  real beta_1;              // Slope
+  real<lower=0> sigma;      // Standard deviation of the residuals
+}
+
+model {
+    // Adding the likelihood of the data given the parameters
+    for (i in 1:N) {
+        target += normal_lpdf(y[i] | beta_1 * x[i] + beta_0, sigma);
+    }
+}
+```
+
 Especially with `cmdrstan` it is a good practice to have the stan code
 in a separate file. This makes it easier to debug and to work with the
 code. Further, the models are then cached.
@@ -166,57 +187,12 @@ library(cmdstanr)
 ``` r
 stan_data = list(N = length(x), x = x, y = y)
 mod = cmdstan_model('lr.stan')
-```
-
-    In file included from /var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/RtmpjZFYdF/model-16f7136cd4024.hpp:1:
-    In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/src/stan/model/model_header.hpp:4:
-    In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math.hpp:19:
-    In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math/rev.hpp:10:
-    In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math/rev/fun.hpp:198:
-    In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math/prim/functor.hpp:15:
-    In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math/prim/functor/integrate_ode_rk45.hpp:6:
-    In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/stan/math/prim/functor/ode_rk45.hpp:9:
-    In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/numeric/odeint.hpp:76:
-    In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/numeric/odeint/integrate/observer_collection.hpp:23:
-    In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/function.hpp:30:
-    In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/function/detail/prologue.hpp:17:
-    In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/function/function_base.hpp:21:
-    In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/type_index.hpp:29:
-    In file included from /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/type_index/stl_type_index.hpp:47:
-    /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/container_hash/hash.hpp:132:33: warning: 'unary_function<const std::error_category *, unsigned long>' is deprecated [-Wdeprecated-declarations]
-            struct hash_base : s
-
-    td::unary_function<T, std::size_t> {};
-                                    ^
-
-    /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/container_hash/hash.hpp:692:18: note: in instantiation of template class 'boost::hash_detail::hash_base<const std::error_category *>' requested here
-            : public boost::hash_detail::hash_base<T*>
-                     ^
-    /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/container_hash/hash.hpp:420:24: note: in instantiation of template class 'boost::hash<const std::error_category *>' requested here
-            boost::hash<T> hasher;
-                           ^
-    /Users/oli/.cmdstan/cmdstan-2.32.0/stan/lib/stan_math/lib/boost_1.78.0/boost/container_hash/hash.hpp:551:9: note: in instantiation of function template specialization 'boost::hash_combine<const std::error_category *>' requested here
-            hash_combine(seed, &v.category());
-            ^
-    /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:29: note: 'unary_function<const std::error_category *, unsigned long>' has been explicitly marked deprecated here
-    struct _LIBCPP_TEMPLATE_VIS _LIBCPP_DEPRECATED_IN_CXX11 unary_function
-                                ^
-    /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:825:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
-    #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
-                                            ^
-    /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:810:49: note: expanded from macro '_LIBCPP_DEPRECATED'
-    #      define _LIBCPP_DEPRECATED __attribute__((deprecated))
-                                                    ^
-
-    1 warning generated.
-
-``` r
 mod$optimize(data = stan_data)
 ```
 
-    Initial log joint probability = -7892 
+    Initial log joint probability = -280.23 
         Iter      log prob        ||dx||      ||grad||       alpha      alpha0  # evals  Notes  
-          19      -61.2062   0.000109536   6.90475e-06           1           1       41    
+          13      -61.2062   0.000122445   0.000296856           1           1       17    
     Optimization terminated normally:  
       Convergence detected: relative gradient magnitude is below tolerance 
     Finished in  0.1 seconds.

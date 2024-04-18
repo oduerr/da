@@ -92,7 +92,7 @@ logLik(lm(y ~ x)) #log-likelihood of the lm model (sum and not the mean)
 ## Using stan
 We can also use the `cmdrstan` package to do the optimization. Here is the stan code
 
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=TRUE}
 #| class-output: stan
 #| echo: false
 cat(readLines("lr.stan"), sep = "\n")
