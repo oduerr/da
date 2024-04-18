@@ -92,30 +92,13 @@ logLik(lm(y ~ x)) #log-likelihood of the lm model (sum and not the mean)
 ## Using stan
 We can also use the `cmdrstan` package to do the optimization. Here is the stan code
 
-```{eval=false}
-data {
-  int<lower=0> N;           // Number of data points
-  vector[N] x;              // Predictor variable
-  vector[N] y;              // Outcome variable
-}
-
-parameters {
-  real beta_0;              // Intercept
-  real beta_1;              // Slope
-  real<lower=0> sigma;      // Standard deviation of the residuals
-}
-
-model {
-    // Adding the likelihood of the data given the parameters
-    for (i in 1:N) {
-        target += normal_lpdf(y[i] | beta_1 * x[i] + beta_0, sigma);
-    }
-}
-
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+#| class-output: stan
+#| echo: false
+cat(readLines("lr.stan"), sep = "\n")
 ```
 
-
-Especially with `cmdrstan` it is a good pratice to have the stan code in a separate file. This makes it easier to debug and to work with the code. Further, the models are then cached.
+Especially with `cmdrstan` it is a good practice to have the stan code in a separate file. This makes it easier to debug and to work with the code. Further, the models are then cached.
 
 ```{r}
 library(cmdstanr)

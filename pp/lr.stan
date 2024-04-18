@@ -16,3 +16,4 @@ model {
         target += normal_lpdf(y[i] | beta_1 * x[i] + beta_0, sigma);
     }
 }
+
