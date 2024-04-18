@@ -1,12 +1,15 @@
-# Linear Regression (SGD)
+# Linear Regression with probabilistic programming
 
 This notebook shows how to do a simple linear regression using
-stochastic gradient descent. We will just define the likelihood of the
-linear regression model, the rest is done automatically.
+stochastic gradient descent. You will see that you just need to define
+the likelihood of the model and the rest is done automatically. We will
+first use the `numDeriv` package to calculate the gradient and use the
+high level probabilistic programming language Stan.
 
 ## Data Generation
 
 ``` r
+# Generating data from a linear regression model
 set.seed(1)
 x = seq(0,5, length.out = 50)
 y = rnorm(50, mean = 2 * x + 1, sd = 1)
@@ -37,7 +40,10 @@ nll(c(0,1,1), x, y) #beta_0 = 0, beta_1 = 1, sigma = 1 ==> ~8.81
 
 ## Side Track Automatic Differentiation
 
-Integration is hard, but differentiation became easy with computers…
+Integration is hard, but differentiation became easy with computers. In
+the following we show how to calculate the gradient of a function using
+the `numDeriv` package. The `numDeriv` package uses numerical
+differentiation to calculate the gradient.
 
 ``` r
 library(numDeriv)
@@ -72,7 +78,7 @@ grad(f, c(-2,5,-4)) #30 25  1
 
     [1] 30 25  1
 
-## Calculation of the gradient
+## Calculation of the gradient of the NLL
 
 Note that it is possible to calculate the gradient of the negative
 log-likelihood using the `numDeriv` package. The gradient is calculated
@@ -170,21 +176,6 @@ code. Further, the models are then cached.
 
 ``` r
 library(cmdstanr)
-```
-
-    This is cmdstanr version 0.5.3
-
-    - CmdStanR documentation and vignettes: mc-stan.org/cmdstanr
-
-    - CmdStan path: /Users/oli/.cmdstan/cmdstan-2.32.0
-
-    - CmdStan version: 2.32.0
-
-
-    A newer version of CmdStan is available. See ?install_cmdstan() to install it.
-    To disable this check set option or environment variable CMDSTANR_NO_VER_CHECK=TRUE.
-
-``` r
 stan_data = list(N = length(x), x = x, y = y)
 mod = cmdstan_model('lr.stan')
 mod$optimize(data = stan_data)
