@@ -87,3 +87,35 @@ After about 1000 iterations the parameters are close to their optimal values. We
 ```{r} 
 lm(y ~ x)$coefficients
 ```
+
+## Using stan
+We can also use the `cmdrstan` package to do the optimization. 
+
+```{stan, output.var='model_code'}
+data {
+  int<lower=0> N;           // Number of data points
+  vector[N] x;              // Predictor variable
+  vector[N] y;              // Outcome variable
+}
+
+parameters {
+  real beta_0;              // Intercept
+  real beta_1;              // Slope
+  real<lower=0> sigma;      // Standard deviation of the residuals
+}
+
+model {
+    // Adding the likelihood of the data given the parameters
+    for (i in 1:N) {
+        target += normal_lpdf(y[i] | beta_1 * x[i] + beta_0, sigma);
+    }
+}
+```
+
+```{r, warning=FALSE, message=FALSE}
+library(cmdstanr)
+stan_data = list(N = length(x), x = x, y = y)
+mod = cmdstan_model(write_stan_file(model_code@model_code))
+mod$optimize(data = stan_data)
+```
+

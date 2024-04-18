@@ -131,3 +131,48 @@ lm(y ~ x)$coefficients
 
     (Intercept)           x 
        1.115878    1.993828 
+
+## Using stan
+
+We can also use the `cmdrstan` package to do the optimization.
+
+``` stan
+data {
+  int<lower=0> N;           // Number of data points
+  vector[N] x;              // Predictor variable
+  vector[N] y;              // Outcome variable
+}
+
+parameters {
+  real beta_0;              // Intercept
+  real beta_1;              // Slope
+  real<lower=0> sigma;      // Standard deviation of the residuals
+}
+
+model {
+    // Adding the likelihood of the data given the parameters
+    for (i in 1:N) {
+        target += normal_lpdf(y[i] | beta_1 * x[i] + beta_0, sigma);
+    }
+}
+```
+
+``` r
+library(cmdstanr)
+stan_data = list(N = length(x), x = x, y = y)
+mod = cmdstan_model(write_stan_file(model_code@model_code))
+mod$optimize(data = stan_data)
+```
+
+    Initial log joint probability = -13336.6 
+        Iter      log prob        ||dx||      ||grad||       alpha      alpha0  # evals  Notes  
+          19      -61.2062   0.000136963   0.000919048           1           1       52    
+    Optimization terminated normally:  
+      Convergence detected: relative gradient magnitude is below tolerance 
+    Finished in  0.1 seconds.
+
+     variable estimate
+       lp__     -61.21
+       beta_0     1.12
+       beta_1     1.99
+       sigma      0.82
