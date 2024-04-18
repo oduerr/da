@@ -6,10 +6,9 @@ md_document:
     variant: markdown_github
 ---
 
-This notebook shows how to do a simple linear regression using s,tochastic gradient descent. 
-We will just define the likelihood of the linear regression model, the rest is done automatically.
+This notebook shows how to do a simple linear regression using stochastic gradient descent. We will just define the likelihood of the linear regression model, the rest is done automatically.
 
-
+## Data Generation
 ```{r, name='data'}
 set.seed(1)
 x = seq(0,5, length.out = 50)
@@ -60,7 +59,7 @@ grad(f, c(-2,5,-4)) #30 25  1
 ```
 
 ## Calculation of the gradient
-Note that it is possible to calculate the gradient of the negative log-likelihood of a function using the `numDeriv` package. The gradient is calculated as follows:
+Note that it is possible to calculate the gradient of the negative log-likelihood using the `numDeriv` package. The gradient is calculated as follows:
 
 ```{r}
 p = c(0,1,1)
@@ -72,15 +71,19 @@ grad_est
 Let us now do a simple gradient descent. We start with some initial values for the parameters and then iteratively update the parameters in the direction of the negative gradient. 
 
 ```{r}
-p = c(1,1,1)
-lr = 0.01
+p = c(1,1,1) #Initial values for the parameters
+lr = 0.01 #Definition of the learning rate
 for (i in 1:1000) {
   if (i == 1 | i %% 100 == 0)
     print(c(i, p, nll(p, x, y)))
   grad_est <- grad(func = function(p) nll(p, x, y), x = p)
-  p = p - lr * grad_est
+  p = p - lr * grad_est #Update the parameters
 }
 print(p)
 ```
 
+After about 1000 iterations the parameters are close to their optimal values. We can use the ultra fast optimized `lm` method to find the maximum likelihood estimates.
 
+```{r} 
+lm(y ~ x)$coefficients
+```

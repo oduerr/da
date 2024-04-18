@@ -1,8 +1,10 @@
 # Linear Regression (SGD)
 
 This notebook shows how to do a simple linear regression using
-s,tochastic gradient descent. We will just define the likelihood of the
+stochastic gradient descent. We will just define the likelihood of the
 linear regression model, the rest is done automatically.
+
+## Data Generation
 
 ``` r
 set.seed(1)
@@ -73,8 +75,8 @@ grad(f, c(-2,5,-4)) #30 25  1
 ## Calculation of the gradient
 
 Note that it is possible to calculate the gradient of the negative
-log-likelihood of a function using the `numDeriv` package. The gradient
-is calculated as follows:
+log-likelihood using the `numDeriv` package. The gradient is calculated
+as follows:
 
 ``` r
 p = c(0,1,1)
@@ -91,13 +93,13 @@ values for the parameters and then iteratively update the parameters in
 the direction of the negative gradient.
 
 ``` r
-p = c(1,1,1)
-lr = 0.01
+p = c(1,1,1) #Initial values for the parameters
+lr = 0.01 #Definition of the learning rate
 for (i in 1:1000) {
   if (i == 1 | i %% 100 == 0)
     print(c(i, p, nll(p, x, y)))
   grad_est <- grad(func = function(p) nll(p, x, y), x = p)
-  p = p - lr * grad_est
+  p = p - lr * grad_est #Update the parameters
 }
 ```
 
@@ -118,3 +120,14 @@ print(p)
 ```
 
     [1] 1.1225202 1.9917986 0.8229969
+
+After about 1000 iterations the parameters are close to their optimal
+values. We can use the ultra fast optimized `lm` method to find the
+maximum likelihood estimates.
+
+``` r
+lm(y ~ x)$coefficients
+```
+
+    (Intercept)           x 
+       1.115878    1.993828 
