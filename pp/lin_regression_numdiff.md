@@ -231,6 +231,7 @@ All three model definitions provided below yield the same results for
 the coefficients:
 
 ```
+#| class-output: stan
 // Loop (slowest method)
 model {
     for (i in 1:N) {

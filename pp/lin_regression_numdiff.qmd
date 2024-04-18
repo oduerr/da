@@ -123,6 +123,7 @@ The `target +=` is used to add the log-likelihood to the target. In Bayesian con
 Instead of employing a loop, which can be computationally slower, a vectorized approach offers a more efficient alternative. Additionally, the `~` syntax can be used as an alternative to `target +=`. The `~` syntax is generally more readable and often preferred for its clarity. All three model definitions provided below yield the same results for the coefficients:
 
 ```{eval=FALSE}
+#| class-output: stan
 // Loop (slowest method)
 model {
     for (i in 1:N) {
