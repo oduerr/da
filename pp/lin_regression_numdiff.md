@@ -38,12 +38,15 @@ nll(c(0,1,1), x, y) #beta_0 = 0, beta_1 = 1, sigma = 1 ==> ~8.81
 
     [1] 8.810049
 
-## Side Track Automatic Differentiation
+## Introduction to Automatic Differentiation
 
 Integration is hard, but differentiation became easy with computers. In
 the following we show how to calculate the gradient of a function using
 the `numDeriv` package. The `numDeriv` package uses numerical
-differentiation to calculate the gradient.
+differentiation to calculate the gradient. Basically all you have to do
+is to define a function returning a single float value and then call the
+`grad` function to get the gradient (the vector of partial derivatives)
+at a certain point.
 
 ``` r
 library(numDeriv)
@@ -92,20 +95,20 @@ grad_est
 
     [1]  -3.600448 -11.156105 -14.782220
 
-## Doing gradient descent
+## Performing Gradient Descent
 
-Let us now do a simple gradient descent. We start with some initial
-values for the parameters and then iteratively update the parameters in
-the direction of the negative gradient.
+Let’s now execute a simple gradient descent. We begin with some initial
+parameter values and then iteratively update these parameters in the
+direction of the negative gradient.
 
 ``` r
-p = c(1,1,1) #Initial values for the parameters
-lr = 0.01 #Definition of the learning rate
+p = c(1,1,1) # Initial values for the parameters
+lr = 0.01    # Definition of the learning rate
 for (i in 1:1000) {
   if (i == 1 | i %% 100 == 0)
     print(c(i, p, nll(p, x, y)))
   grad_est <- grad(func = function(p) nll(p, x, y), x = p)
-  p = p - lr * grad_est #Update the parameters
+  p = p - lr * grad_est # Update the parameters
 }
 ```
 
@@ -127,11 +130,23 @@ print(p)
 
     [1] 1.1225202 1.9917986 0.8229969
 
-After about 1000 iterations the parameters are close to their optimal
-values. We can use the ultra fast optimized `lm` method to find the
-maximum likelihood estimates.
+After about 1000 iterations, the parameters are close to their optimal
+values. It’s important to note that there are much more advanced
+optimization algorithms available that typically use the second
+derivative (Hessian) and require far fewer iterations. While it is
+technically possible to compute the Hessian using the `numDeriv`
+package, doing so can become complex. In this tutorial, our focus is
+more on understanding the principles of gradient descent rather than on
+achieving rapid optimization.
+
+## Comparison with R lm function
+
+We can employ the highly optimized `lm` function in R to find the
+maximum likelihood estimates efficiently. This method is not only fast
+but also provides robust estimates for linear models.
 
 ``` r
+# Obtain the coefficients of the linear model
 lm(y ~ x)$coefficients
 ```
 
@@ -139,15 +154,17 @@ lm(y ~ x)$coefficients
        1.115878    1.993828 
 
 ``` r
-logLik(lm(y ~ x)) #log-likelihood of the lm model (sum and not the mean)
+# Calculate the log-likelihood of the linear model
+# Note: This is the sum of the log-likelihoods, not the average.
+logLik(lm(y ~ x)) 
 ```
 
     'log Lik.' -61.20623 (df=3)
 
-## Using stan
+## Utilizing Stan for Optimization
 
-We can also use the `cmdrstan` package to do the optimization. Here is
-the stan code
+We can also employ the cmdrstan package to perform the optimization.
+Below, you can view the Stan code used for this purpose:
 
 ``` stan
 data {
@@ -170,9 +187,10 @@ model {
 }
 ```
 
-Especially with `cmdrstan` it is a good practice to have the stan code
-in a separate file. This makes it easier to debug and to work with the
-code. Further, the models are then cached.
+It is a best practice to store Stan code in a separate file when using
+`cmdrstan`. This approach simplifies debugging and code management.
+Additionally, storing models in separate files allows for caching,
+improving efficiency when models are reused.
 
 ``` r
 library(cmdstanr)
@@ -196,38 +214,42 @@ mod$optimize(data = stan_data)
 
 ### The target += syntax
 
-The `target +=` is used to add the log-likelihood to the target. The
-`target` is a global variable that is used to store the quantity to
+The `target +=` is used to add the log-likelihood to the target. In
+Bayesian context the `target` is the log-posterior that is the
+log-likelihood plus the log-prior. Here it is just the log-likelihood.
+The `target` is a global variable that is used to store the quantity to
 minimize. The `target` is then used to calculate the gradients and the
 Hessian.
 
 ### Alternative model syntax
 
-Instead of the of the loop we can have a vector. In `target +=` syntax,
-we can also use the `~` syntax. So all 3 model definiton yield the same
-result for the coefficients.
+Instead of employing a loop, which can be computationally slower, a
+vectorized approach offers a more efficient alternative. Additionally,
+the `~` syntax can be used as an alternative to `target +=`. The `~`
+syntax is generally more readable and often preferred for its clarity.
+All three model definitions provided below yield the same results for
+the coefficients:
 
 ```
-//Loop slowest
+// Loop (slowest method)
 model {
     for (i in 1:N) {
         target += normal_lpdf(y[i] | beta_1 * x[i] + beta_0, sigma);
     }
 }
 
-//Vectorized
-model{
-  target += normal_lpdf(y | beta_1 * x + beta_0, sigma);
+// Vectorized approach
+model {
+    target += normal_lpdf(y | beta_1 * x + beta_0, sigma);
 }
 
-// ~ syntax
-model{
-  y ~ normal(beta_1 * x + beta_0, sigma);
+// Using the '~' syntax
+model {
+    y ~ normal(beta_1 * x + beta_0, sigma);
 }
 ```
 
-Note that the `~` syntax is more readable and usually prefered. A little
-subtlety is using the `~` syntax constants in the density like the
-$\sqrt(2 \pi)$ are not included. This is not a problem, because the
-constants are not needed for optimization but gives different `lp__`
-values. So don’t be surprised if the `lp__` values are different.
+A subtle point about using the ~ syntax is that constants in the density
+function, such as $\sqrt(2 \pi)$, are not included. This exclusion does
+not affect optimization, but it results in different `lp__` values.
+Therefore, do not be surprised if the `lp__ values` differ.
