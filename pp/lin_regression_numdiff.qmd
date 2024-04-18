@@ -86,12 +86,13 @@ After about 1000 iterations the parameters are close to their optimal values. We
 
 ```{r} 
 lm(y ~ x)$coefficients
+logLik(lm(y ~ x)) #log-likelihood of the lm model (sum and not the mean)
 ```
 
 ## Using stan
-We can also use the `cmdrstan` package to do the optimization. 
+We can also use the `cmdrstan` package to do the optimization. Here is the stan code
 
-```{stan, output.var='model_code'}
+```{eval=false}
 data {
   int<lower=0> N;           // Number of data points
   vector[N] x;              // Predictor variable
@@ -110,12 +111,45 @@ model {
         target += normal_lpdf(y[i] | beta_1 * x[i] + beta_0, sigma);
     }
 }
+
 ```
 
-```{r, warning=FALSE, message=FALSE}
+
+Especially with `cmdrstan` it is a good pratice to have the stan code in a separate file. This makes it easier to debug and to work with the code. Further, the models are then cached.
+
+```{r}
 library(cmdstanr)
 stan_data = list(N = length(x), x = x, y = y)
-mod = cmdstan_model(write_stan_file(model_code@model_code))
+mod = cmdstan_model('lr.stan')
 mod$optimize(data = stan_data)
 ```
+### The target += syntax
+The `target +=` is used to add the log-likelihood to the target.\footnote{In Bayesian context the `target` is the log-posterior that is the log-likelihood plus the log-prior. Here it is just the log-likelihood} The `target` is a global variable that is used to store the quantity to minimize. The `target` is then used to calculate the gradients and the Hessian. 
+
+### Alternative model syntax
+Instead of the of the loop we can have a vector. In `target +=` syntax, we can also use the `~` syntax. So all 3 model definiton yield the same result for the coefficients.
+
+```{eval=FALSE}
+//Loop slowest
+model {
+    for (i in 1:N) {
+        target += normal_lpdf(y[i] | beta_1 * x[i] + beta_0, sigma);
+    }
+}
+
+//Vectorized
+model{
+  target += normal_lpdf(y | beta_1 * x + beta_0, sigma);
+}
+
+// ~ syntax
+model{
+  y ~ normal(beta_1 * x + beta_0, sigma);
+}
+```
+
+Note that the `~` syntax is more readable and usually prefered. A little subtlety is using the `~` syntax constants in the density like the $\sqrt(2 \pi)$ are not included. This is not a problem, because the constants are not needed for optimization but gives different `lp__` values. So don't be surprised if the `lp__` values are different.
+
+
+
 

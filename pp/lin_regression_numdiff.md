@@ -132,11 +132,18 @@ lm(y ~ x)$coefficients
     (Intercept)           x 
        1.115878    1.993828 
 
+``` r
+logLik(lm(y ~ x)) #log-likelihood of the lm model (sum and not the mean)
+```
+
+    'log Lik.' -61.20623 (df=3)
+
 ## Using stan
 
-We can also use the `cmdrstan` package to do the optimization.
+We can also use the `cmdrstan` package to do the optimization. Here is
+the stan code
 
-``` stan
+```
 data {
   int<lower=0> N;           // Number of data points
   vector[N] x;              // Predictor variable
@@ -157,16 +164,40 @@ model {
 }
 ```
 
+Especially with `cmdrstan` it is a good pratice to have the stan code in
+a separate file. This makes it easier to debug and to work with the
+code. Further, the models are then cached.
+
 ``` r
 library(cmdstanr)
+```
+
+    This is cmdstanr version 0.5.3
+
+    - CmdStanR documentation and vignettes: mc-stan.org/cmdstanr
+
+    - CmdStan path: /Users/oli/.cmdstan/cmdstan-2.32.0
+
+    - CmdStan version: 2.32.0
+
+
+    A newer version of CmdStan is available. See ?install_cmdstan() to install it.
+    To disable this check set option or environment variable CMDSTANR_NO_VER_CHECK=TRUE.
+
+``` r
 stan_data = list(N = length(x), x = x, y = y)
-mod = cmdstan_model(write_stan_file(model_code@model_code))
+mod = cmdstan_model('lr.stan')
+```
+
+    Warning in readLines(stan_file): incomplete final line found on 'lr.stan'
+
+``` r
 mod$optimize(data = stan_data)
 ```
 
-    Initial log joint probability = -13336.6 
+    Initial log joint probability = -280.23 
         Iter      log prob        ||dx||      ||grad||       alpha      alpha0  # evals  Notes  
-          19      -61.2062   0.000136963   0.000919048           1           1       52    
+          13      -61.2062   0.000122445   0.000296856           1           1       17    
     Optimization terminated normally:  
       Convergence detected: relative gradient magnitude is below tolerance 
     Finished in  0.1 seconds.
@@ -176,3 +207,41 @@ mod$optimize(data = stan_data)
        beta_0     1.12
        beta_1     1.99
        sigma      0.82
+
+### The target += syntax
+
+The `target +=` is used to add the log-likelihood to the target. The
+`target` is a global variable that is used to store the quantity to
+minimize. The `target` is then used to calculate the gradients and the
+Hessian.
+
+### Alternative model syntax
+
+Instead of the of the loop we can have a vector. In `target +=` syntax,
+we can also use the `~` syntax. So all 3 model definiton yield the same
+result for the coefficients.
+
+```
+//Loop slowest
+model {
+    for (i in 1:N) {
+        target += normal_lpdf(y[i] | beta_1 * x[i] + beta_0, sigma);
+    }
+}
+
+//Vectorized
+model{
+  target += normal_lpdf(y | beta_1 * x + beta_0, sigma);
+}
+
+// ~ syntax
+model{
+  y ~ normal(beta_1 * x + beta_0, sigma);
+}
+```
+
+Note that the `~` syntax is more readable and usually prefered. A little
+subtlety is using the `~` syntax constants in the density like the
+$\sqrt(2 \pi)$ are not included. This is not a problem, because the
+constants are not needed for optimization but gives different `lp__`
+values. So don’t be surprised if the `lp__` values are different.
