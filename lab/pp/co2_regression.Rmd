@@ -1,0 +1,102 @@
+---
+output:
+  pdf_document:
+    highlight: pygments
+    includes:
+      in_header: header_lsg.tex
+---
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE}
+  if (exists("lsg") == FALSE){ #Nur falls von RStudio aufgerufen
+    lsg <- TRUE   #Wenn man die lsg ausgeben will dann lsg <- TRUE sonst 
+  }
+  if (exists("baseDir") == FALSE){ #Nur falls von RStudio aufgerufen
+    baseDir = getwd()
+  }
+  ig <- function(name, scale = 1) {
+     return (paste0("\\includegraphics[ scale =", scale,"]{", baseDir,"/", name, "}"))
+  }
+```
+
+## Regression of CO2 data
+
+a) The following code will load the data set `co2` and plot it. The data set contains the monthly mean CO2 concentrations (in parts per million by volume) collected at the Mauna Loa Observatory in Hawaii, between 1959 and 1997. The data set contains two columns: the first column is the time in months (starting with 1 and ending with years*12), and the second column is the CO2 concentration.
+
+```{r, echo=TRUE, eval=TRUE}
+ # Loading the CO2 dataset
+ data("co2", package = "datasets")
+ co2_df <- data.frame(time = 1:length(co2), co2)
+ head(co2_df)
+ plot(co2, pch='.', main="CO2 concentration", xlab="Time (month)", ylab="CO2 concentration")
+```
+
+b) Use the following code for a linear regression. What is the average increase of CO2 per year?
+```{r, echo=lsg, eval=lsg}
+  maxl = lm(co2 ~ time, data = co2_df)
+  d = coef(maxl)
+  a = d[2]
+  b = d[1]
+  plot(co2_df, pch='.', main="CO2 concentration", xlab="Time (month number)", ylab="CO2 concentration")
+  abline(maxl, col="red")
+  maxl #Yearl 0.109 * 12
+```
+
+\lsg{"The average increase of CO2 per year is 0.109 * 12 = ppm."}
+
+
+c) Formulate the problem in Stan. Load the model co2.stan from `` understand the code and run it. You will run into problems, provide good starting values for the optimization.
+
+```{r, eval=lsg, echo=TRUE, warning=FALSE}
+# Compile the model
+mod <- cmdstan_model("~/Documents/GitHub/da/lab/pp/co2.stan")
+# Prepare data for Stan
+stan_data <- list(N = nrow(co2_df), time = co2_df$time, CO2 = co2_df$co2)
+# Use the optimizing function
+mle_results <- mod$optimize(data = stan_data)
+par = as.data.frame(t(mle_results$mle()))
+par
+```
+
+d) Use the following code to plot your prediction. 
+
+```{r, echo=lsg, eval=lsg}
+# Assuming mle_results contains the output from the Stan optimization
+alpha_mle <- par$alpha
+b_mle <-  par$b
+a_mle <- par$a
+omega_mle <- par$omega
+phi_mle <- par$phi
+
+# Generate predictions
+predicted_co2 <- par$alpha + par$b * co2_df$time + par$a * sin( par$omega * co2_df$time + par$phi)
+
+# Add predictions to the data frame
+plot(co2_df$time, co2_df$co2, pch='.', main="CO2 concentration", xlab="Time (month)", ylab="CO2 concentration", type = 'l', col='blue')
+lines(1:468,predicted_co2)
+```
+
+
+e) You will see that the fit is not perfect. Try to improve the fit by changing the starting values. 
+
+```{r, eval=lsg, echo=TRUE, warning=FALSE}
+initial_omega <- 2 * pi / 12  # Initial guess for the frequency of by 1 to see  
+initial_a <- 1  # Small amplitude, adjust based on visual inspection if needed
+initial_phi <- 0  # No phase shift initially
+initial_sigma <- sd(resid(maxl))
+initial_alpha = coef(maxl)[1]
+initial_b = coef(maxl)[2]
+
+
+init = list( a = initial_a, omega = initial_omega, phi = initial_phi, sigma = initial_sigma, alpha = initial_alpha, b = initial_b, c=initial_c)
+
+mle_results <- mod$optimize(iter=1000, data = stan_data, init = list(init))
+
+par = as.data.frame(t(mle_results$mle()))
+par
+# Generate predictions
+predicted_co2 <- par$alpha + par$b * co2_df$time +  par$a * sin( par$omega * co2_df$time + par$phi)
+
+# Add predictions to the data frame
+plot(co2_df$time, co2_df$co2, pch='.', main="CO2 concentration", xlab="Time (month)", ylab="CO2 concentration", type = 'l', col='blue')
+lines(1:468,predicted_co2)
+```

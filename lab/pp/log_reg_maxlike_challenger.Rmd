@@ -1,0 +1,126 @@
+---
+output:
+  pdf_document:
+    highlight: pygments
+    includes:
+      in_header: header_lsg.tex
+---
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE}
+  if (exists("lsg") == FALSE){ # Only if called from RStudio
+    lsg <- TRUE   # Set lsg <- TRUE to output solutions, otherwise FALSE
+  }
+  if (exists("baseDir") == FALSE){ # Only if called from RStudio
+    baseDir = getwd()
+  }
+  ig <- function(name, scale = 1) {
+     return (paste0("\\includegraphics[ scale =", scale,"]{", baseDir,"/", name, "}"))
+  }
+```
+
+## Logistic Regression with Stan for Challenger Data
+
+In this exercise, we will use the Challenger O-ring data to model the probability of O-ring failure as a function of temperature using logistic regression in Stan. Since this is a simple model,
+we can interpret the coefficients to understand the relationship between temperature and the probability of O-ring failure.
+
+a) Load the Challenger O-ring data. This dataset includes temperatures and O-ring failure indicators from the Space Shuttle launches:
+
+```{r, echo=TRUE, eval=TRUE}
+  url <- "https://raw.githubusercontent.com/oduerr/da/master/data/challenger.txt"
+  challenger <- read.csv(url, header = TRUE)
+```
+
+b) Analyze the data by plotting the temperature against O-ring failure status:
+
+```{r, echo=lsg, eval=lsg, warning=FALSE}
+  #Add jitter to the data to avoid overplotting
+  plot(jitter(challenger$Temp, factor = 1), challenger$Failure, xlab = "Temperature (F)", ylab = "O-ring Failure", pch = 19)
+```
+
+You can fit the logistic regression model using the R command `glm` with family binomial to find the maximum likelihood estimates as follows:
+
+```{r, echo=TRUE, eval=TRUE, warning=FALSE}
+  glm_fit = glm(Failure ~ Temp, family = binomial, data = challenger)
+  coef(glm_fit)
+  logLik(glm_fit)
+```
+
+c) Formulate the logistic regression problem in Stan. The Stan code should model the probability of failure based on temperature. Use Stan's optimization algorithm to find the maximum likelihood solution via
+
+```{r, eval=FALSE, echo=TRUE, warning=FALSE}
+library(cmdstanr)
+# Reading the model definition
+model_path <- 'lr_logistic.stan'  # Adjust the path as necessary
+stan_model <- cmdstan_model(model_path)
+data_list <- list(N = nrow(challenger), Temp = challenger$Temp, Failure = challenger$Failure)
+# Fitting the Maximum Likelihood Solution using Optimization
+result <- stan_model$optimize(data = data_list)
+result$mle # The maximum likelihood solution
+```
+
+Your task is to create the Stan model `lr_logistic.stan`. 
+Here are some tips to 
+
+```{r, eval=FALSE, echo=TRUE}
+data {
+  int<lower=0> N;                    
+  array[N] real Temp;                
+  array[N] int<lower=0, upper=1> Failure;   // failure status at each observation
+}
+
+parameters {
+  real alpha;                         // intercept
+  real beta;                          // coefficient for temperature
+}
+
+model {
+  // Logistic function for probability calculation
+  for (i in 1:N) {
+    real p = 1 / (1 + exp(-(alpha + TODO Temp[i])));  // Logistic function
+    Failure[i] ~ bernoulli(p);                        // Bernoulli distribution with probability p
+  }
+}
+```
+
+```{r, eval=lsg, echo=lsg, warning=FALSE}
+library(cmdstanr)
+# Reading the model definition
+model_path <- '~/Documents/GitHub/da/lab/pp/lr_logistic.stan'  # Adjust the path as necessary
+stan_model <- cmdstan_model(model_path)
+data_list <- list(N = nrow(challenger), Temp = challenger$Temp, Failure = challenger$Failure)
+# Fitting the Maximum Likelihood Solution using Optimization
+result <- stan_model$optimize(data = data_list)
+result$mle() # The maximum likelihood solution
+```
+
+e) The coefficients from the logistic regression model give us insights into how temperature affects the probability of O-ring failure. The coefficient for temperature (beta) indicates how the log-odds of failure change with a one-degree increase in temperature. That is
+
+$$
+\frac{odd(T \rightarrow T+1)}{odd(T)} = exp(\beta)
+$$
+
+
+Calculate the odds ratio (OR) for the temperature coefficient to interpret the effect of temperature on the probability of O-ring failure. Interpret the result.
+
+```{r, echo=lsg, eval=lsg, warning=FALSE}
+  # Calculate the odds ratio for the temperature coefficient
+  beta = result$mle()[2]
+  odds_ratio <- exp(beta)
+  odds_ratio 
+  #For each degree increase in temperature, the odds of O-ring failure needs to be multiplied by the odds  ratio of 0.79. Thus the risk of O-ring failure decreases with by 21% for each degree increase in temperature. This is independent of the current temperature.
+```
+
+g) Finally, plot the logistic regression curve to visualize the relationship between temperature and the probability of O-ring failure:
+
+```{r, echo=lsg, eval=lsg, warning=FALSE}
+  # Define the logistic function
+  logistic <- function(x) {
+    return(1 / (1 + exp(-x)))
+  }
+  
+  # Plot the logistic regression curve
+  x <- seq(min(challenger$Temp)*0.5, max(challenger$Temp)*1.5, length.out = 100)
+  y <- logistic(result$mle()[1] + result$mle()[2] * x)
+  plot(challenger$Temp, challenger$Failure, xlab = "Temperature (F)", ylab = "Prob. of O-ring Failure", pch = 19)
+  lines(x, y, col = "red")
+```

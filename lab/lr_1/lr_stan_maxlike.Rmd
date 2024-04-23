@@ -61,5 +61,3 @@ You task is to create the Stan model `lr_maxlike.stan`.
 # print the Stan model
 m_rcmdstan
 ```
-
-
