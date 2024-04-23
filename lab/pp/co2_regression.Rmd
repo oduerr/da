@@ -31,7 +31,7 @@ a) The following code will load the data set `co2` and plot it. The data set con
 ```
 
 b) Use the following code for a linear regression. What is the average increase of CO2 per year?
-```{r, echo=lsg, eval=lsg}
+```{r, echo=TRUE, eval=TRUE}
   maxl = lm(co2 ~ time, data = co2_df)
   d = coef(maxl)
   a = d[2]
@@ -41,13 +41,15 @@ b) Use the following code for a linear regression. What is the average increase 
   maxl #Yearl 0.109 * 12
 ```
 
+```{r, eval=FALSE, echo=lsg, warning=FALSE}
 \lsg{"The average increase of CO2 per year is 0.109 * 12 = ppm."}
+```
 
+c) Load the model co2.stan from `https://github.com/oduerr/da/blob/master/lab/pp/co2.stan` understand the code and run it. What is the model the STAN code describes?
 
-c) Formulate the problem in Stan. Load the model co2.stan from `` understand the code and run it. You will run into problems, provide good starting values for the optimization.
-
-```{r, eval=lsg, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 # Compile the model
+library(cmdstanr)
 mod <- cmdstan_model("~/Documents/GitHub/da/lab/pp/co2.stan")
 # Prepare data for Stan
 stan_data <- list(N = nrow(co2_df), time = co2_df$time, CO2 = co2_df$co2)
@@ -57,28 +59,25 @@ par = as.data.frame(t(mle_results$mle()))
 par
 ```
 
+```{r, eval=FALSE, echo=lsg, warning=FALSE}
+\lsg{"The model describes a linear regression model with a sinusoidal component. $y = N(\alpha + b \cdot t + a \sin(\omega \cdot t + \phi), \sigma)$ "}
+```
+
 d) Use the following code to plot your prediction. 
 
-```{r, echo=lsg, eval=lsg}
+```{r, echo=TRUE, eval=TRUE}
 # Assuming mle_results contains the output from the Stan optimization
-alpha_mle <- par$alpha
-b_mle <-  par$b
-a_mle <- par$a
-omega_mle <- par$omega
-phi_mle <- par$phi
-
 # Generate predictions
 predicted_co2 <- par$alpha + par$b * co2_df$time + par$a * sin( par$omega * co2_df$time + par$phi)
-
 # Add predictions to the data frame
 plot(co2_df$time, co2_df$co2, pch='.', main="CO2 concentration", xlab="Time (month)", ylab="CO2 concentration", type = 'l', col='blue')
-lines(1:468,predicted_co2)
+lines(predicted_co2)
 ```
 
 
-e) You will see that the fit is not perfect. Try to improve the fit by changing the starting values. 
+e) You will see that the fit is not perfect. Try to improve the fit by changing the starting values. Why have the starting values been choosen?
 
-```{r, eval=lsg, echo=TRUE, warning=FALSE}
+```{r, eval=TRUE, echo=TRUE, warning=FALSE}
 initial_omega <- 2 * pi / 12  # Initial guess for the frequency of by 1 to see  
 initial_a <- 1  # Small amplitude, adjust based on visual inspection if needed
 initial_phi <- 0  # No phase shift initially
@@ -87,7 +86,7 @@ initial_alpha = coef(maxl)[1]
 initial_b = coef(maxl)[2]
 
 
-init = list( a = initial_a, omega = initial_omega, phi = initial_phi, sigma = initial_sigma, alpha = initial_alpha, b = initial_b, c=initial_c)
+init = list( a = initial_a, omega = initial_omega, phi = initial_phi, sigma = initial_sigma, alpha = initial_alpha, b = initial_b)
 
 mle_results <- mod$optimize(iter=1000, data = stan_data, init = list(init))
 
