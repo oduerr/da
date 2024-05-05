@@ -11,10 +11,9 @@ parameters {
 }
 
 model {
-    // Adding the likelihood of the data given the parameters
-    for (i in 1:N) {
-        target += normal_lpdf(y[i] | beta_1 * x[i] + beta_0, sigma);
-    }
+    y ~ normal(beta_1 * x + beta_0, sigma);
 }
+
+
 
 

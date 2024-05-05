@@ -1,0 +1,78 @@
+---
+output: pdf_document 
+---
+```{r, echo=FALSE, eval=TRUE,comment=NA}
+options(useFancyQuotes = FALSE)
+files<-c( '/Users/oli/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_01_Bayes_1/bayes1_grid/bayes1_grid.Rmd' )
+baseDir=dirname(files[ 1 ])
+```
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE}
+  if (exists("lsg") == FALSE){ #Nur falls von RStudio aufgerufen
+    lsg <- TRUE   #Wenn man die lsg ausgeben will dann lsg <- TRUE sonst 
+  }
+  if (exists("baseDir") == FALSE){ #Nur falls von RStudio aufgerufen
+    baseDir = getwd()
+  }
+  ig <- function(name, scale = 1) {
+     return (paste0("\\includegraphics[ scale =", scale,"]{", baseDir,"/", name, "}"))
+  }
+```
+
+
+## Grid Approximation of the water on earth example
+In this approximation, we treat the parameter $p$ to be on a grid and assume as an approximation that the parameter can only take a discrete number of values. We then enforce that the sum of the posterior over all possible values must be 1. Note that a different grid approximation could take into account that the parameter $p$ is continuous and require that it's integral must be one. 
+
+We assume that the globe has been thrown $N = 9$ times and landed $W = 6$ times on water. Write a function, which calculated the "unnormalized posterior". Use the grid approximation to construct the posterior for the probability $p$ to land on water, assume a grid of 500 points. 
+
+a) Use a prior that reflect the fact that you have no clue, all values between $p = 0$ and $1$ are equally likely. Plot the posterior for all values of $p$.
+
+```{r, echo=lsg, eval=lsg, fig.height=4}
+#### Grid Aproximation
+W = 6
+N = 9
+un_norm_post = function (p){
+  return (dbinom(W, size = N, prob = p) * dunif(p, 0, 1))
+}
+ps = seq(0,1,length.out = 500)
+un = un_norm_post(ps)
+post_a = un/sum(un)
+plot(ps,post_a, pch='.')
+```
+
+b) Use a prior that reflect the fact that you know for sure that more then 40 percent of the earth is covered by water but otherwise, you have no clue. Plot the posterior for all values of $p$ and compare with a).
+
+```{r, echo=lsg, eval=lsg, fig.height=4}
+#### Grid Aproximation
+  W = 6
+  N = 9
+  un_norm_post = function (p){
+    return (dbinom(W, size = N, prob = p) * dunif(p, 0.4, 1))
+  }
+  ps = seq(0,1,length.out = 500)
+  un = un_norm_post(ps)
+  post_b = un/sum(un)
+  plot(ps,post_b, pch='.', col='red', ylab='Posterior Probability (not Density)', xlab='p')
+  points(ps,post_a,pch='.')
+```
+
+c) Draw 10 samples from the posterior in b), use the function `sample` make use of the `prob` argument and take care of the argument `replace`. 
+
+```{r, echo=lsg, eval=lsg, fig.height=4}
+  sample(ps, 10, prob = post_b, replace=TRUE)  
+```
+
+d) Given the data and the prior from b): What is the probability that there is more than 80 precent water on earth? Use samples from the posterior as in in c) but use at least 10000 samples to estimate that number.
+
+```{r, echo=lsg, eval=lsg, fig.height=4}
+  sm = sample(ps, 10000, prob = post_b, replace=TRUE)
+  mean(sm > 0.8)
+```
+
+
+
+
+
+
+
+

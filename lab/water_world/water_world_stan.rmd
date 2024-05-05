@@ -1,0 +1,59 @@
+---
+output: pdf_document 
+---
+\begin{center} \huge{ Bayes (Grid Approximation) } \end{center}
+
+```{r, echo=FALSE, eval=TRUE,comment=NA}
+options(useFancyQuotes = FALSE)
+files<-c( '/Users/oli/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_01_Bayes_1/bayes1_grid/bayes1_grid.Rmd' )
+baseDir=dirname(files[ 1 ])
+```
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE}
+  if (exists("lsg") == FALSE){ #Nur falls von RStudio aufgerufen
+    lsg <- TRUE   #Wenn man die lsg ausgeben will dann lsg <- TRUE sonst 
+  }
+  if (exists("baseDir") == FALSE){ #Nur falls von RStudio aufgerufen
+    baseDir = getwd()
+  }
+  ig <- function(name, scale = 1) {
+     return (paste0("\\includegraphics[ scale =", scale,"]{", baseDir,"/", name, "}"))
+  }
+```
+
+
+## Stan Sampling of the water on earth example
+This is simular to the grid approximation, but know we do the sampling with Stan, otherwise the situation is the same.
+We assume that the globe has been thrown $N = 9$ times and landed $W = 6$ times on water. 
+
+a) Use a prior that reflect the fact that you have know for sure that more then 40 percent of the earth is covered by water but otherwise, you have no clue. Plot the posterior for all values of $p$. 
+
+```{r, echo=lsg, eval=lsg, fig.height=4}
+library(cmdstanr)
+# See 
+model = cmdstan_model('~/Documents/GitHub/da/lab/water_world/world.stan')
+W = 6
+N = 9
+samples_cmd = model$sample(data = list(N=N, W=W), seed=123)
+samples_cmd = samples_cmd$draws('p', format = 'data.frame') #Extract parameter 'p'
+
+#Comparison with the grid approximation
+hist(samples_cmd$p, freq = FALSE, xlim=c(0,1))
+lines(density(samples_cmd$p), col='green', lw=5)
+```
+
+
+
+b) As in the grid approximation: What is the probability that there is more than 80 precent water on earth? Estimate again from the samples.
+
+```{r, echo=lsg, eval=lsg, fig.height=4}
+  mean(samples_cmd > 0.8)
+```
+
+
+
+
+
+
+
+
