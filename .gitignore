@@ -109,3 +109,5 @@ lab/lr_1/lr_maxlike_lp
 lab/water_world/world
 pp/lr
 pp/lr
+/keras_jax_env
+.vscode/settings.json

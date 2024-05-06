@@ -38,7 +38,12 @@ s_rcmdstan = m_rcmdstan$sample(data = data) #Sampling
 df = s_rcmdstan$draws(format = "df") #Extracting Samples as data.frame
 ```
 
+Printing the model in markdown 
+
+| {r, echo=lsg, eval=FALSE, code=readLines(“../world.stan”), collapse=TRUE, echo=TRUE}
+
 ### Tidy Bayes
+
 Works with rstan and cmdstanr
 
 ```{r tidy_bayes_minimal, eval=FALSE}
@@ -47,8 +52,10 @@ spread_draws(s, c(a,b)) #Extracts a and b from s (stan or cmdstan samples)
 spread_draws(s, f[i])  #Extracts vector f and calls components i
 ```
 
-### Bayes  plot
+### Bayes plot
+
 Works with rstan and cmdstanr
+
 ```{r tidy_bayes minimal, eval=FALSE}
   s = s_rcmdstan$draws() #We need to call draws() 2023
   bayesplot::mcmc_trace(s)
@@ -56,13 +63,13 @@ Works with rstan and cmdstanr
 
 ### RStudio
 
-Sometimes R gets slow when dealing with stan. At least in my case
+Sometimes R gets slow when rendering with stan. At least in my case
 
 ``` r
 rstan_options(javascript=FALSE)
 ```
 
-# In a more detail 
+# In a more detail
 
 In the following some notes on Stan. You might find the following resources helpful.
 
@@ -163,7 +170,7 @@ The package bayesplot can handle both interfaces
 
 #### Trace
 
-```{r trace}
+```{r trace, eval=FALSE}
 #traceplot(s_rstan, 'a')
 #bayesplot::mcmc_trace(s_rstan)
 bayesplot::mcmc_trace(s_rcmdstan$draws()) #similar result
@@ -200,6 +207,7 @@ Getting the samples can be done as
 Another handy package is tidybayes which can handle the output of `rstan` and `rcmdstan`
 
 #### Tidybayes
+
 ```{r}
 library(tidybayes)
 head(spread_draws(s_rcmdstan, c(a,b))) #Non-tidy a and b in one row
@@ -208,13 +216,13 @@ head(gather_draws(s_rcmdstan, c(a,b))) #The ggplot like syntax
 ```
 
 #### Command Stan Functions
-For more see: https://mc-stan.org/cmdstanr/articles/cmdstanr.html 
+
+For more see: https://mc-stan.org/cmdstanr/articles/cmdstanr.html
 
 ```{r}
 df <- s_rcmdstan$draws(format = "df")
 df %>% select(-c(.chain, .iteration, .draw)) %>% cor()
 ```
-
 
 #### Stan functions
 
@@ -313,21 +321,23 @@ quant_lines(xs,muix, col='blue')
 
 It's also possible to draw posterior predictive samples. One can use the `generated quantities` code block for that.
 
-    data{
-      int<lower=0> N;
-      vector[N] y;
-      vector[N] x;
-      //For the prediced distribution (new)
-      int<lower=0> N2;
-      vector[N2] x2;
-    }
+```         
+data{
+  int<lower=0> N;
+  vector[N] y;
+  vector[N] x;
+  //For the prediced distribution (new)
+  int<lower=0> N2;
+  vector[N2] x2;
+}
 
-    generated quantities {
-      real Y_predict[N2]; 
-      for (i in 1:N2){
-        Y_predict = normal_rng(a * x2 + b, sigma);
-      }
-    }
+generated quantities {
+  real Y_predict[N2]; 
+  for (i in 1:N2){
+    Y_predict = normal_rng(a * x2 + b, sigma);
+  }
+}
+```
 
 ```{r, eval=FALSE, results='hide'}
   x2 = -10:15
@@ -343,3 +353,11 @@ It's also possible to draw posterior predictive samples. One can use the `genera
   plot(x, y, xlim=c(-10,15), ylim=c(-25,25), ylab='quantiles (y and mu)')
   quant_lines(x2,y_pred, col='red')
 ```
+
+### Notes on creating excercises
+
+#### Inclusion of Stan code
+
+In case of `cmdrstan` the Stan code should be in an extra file to make the workflow easier and reuse compiled models. In case of `rstan` the Stan code can be included in the Rmd file as:
+
+| {r, echo=TRUE, eval=FALSE, code=readLines("../world.stan"), collapse=TRUE, echo=TRUE}
