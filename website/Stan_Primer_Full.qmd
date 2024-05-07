@@ -14,6 +14,38 @@ MCMC with Stan / Simple diagnostics
 
 A quick summary of commands (for a more details see below).
 
+## Cmdstan
+
+```{r cmdstan minimal, eval=FALSE}
+library(cmdstanr)
+m_rcmdstan <- cmdstan_model(file_stan) #Compiling
+s_rcmdstan = m_rcmdstan$sample(data = data) #Sampling
+df = s_rcmdstan$draws(format = "df") #Extracting Samples as data.frame
+```
+
+Printing the model in markdown 
+
+| {r, echo=lsg, eval=FALSE, code=readLines(“../world.stan”), collapse=TRUE}
+
+## Tidy Bayes
+
+Works with rstan and cmdstanr
+
+```{r tidy_bayes_minimal, eval=FALSE}
+library(tidybayes)
+spread_draws(s, c(a,b)) #Extracts a and b from s (stan or cmdstan samples)
+spread_draws(s, f[i])  #Extracts vector f and calls components i
+```
+
+## Bayes plot
+
+Works with rstan and cmdstanr
+
+```{r tidy_bayes minimal, eval=FALSE}
+  s = s_rcmdstan$draws() #We need to call draws() 2023
+  bayesplot::mcmc_trace(s)
+```
+
 ## Stan
 
 ```{r rstan_minimal, eval=FALSE}
@@ -29,45 +61,7 @@ s_rstan = sampling(m_rstan, data=data) #Sampling from file
 sampling(model_1, data=dat, algorithm="Fixed_param", chain=1, iter=1) 
 ```
 
-## Cmdstan
 
-```{r cmdstan minimal, eval=FALSE}
-library(cmdstanr)
-m_rcmdstan <- cmdstan_model(file_stan) #Compiling
-s_rcmdstan = m_rcmdstan$sample(data = data) #Sampling
-df = s_rcmdstan$draws(format = "df") #Extracting Samples as data.frame
-```
-
-Printing the model in markdown 
-
-| {r, echo=lsg, eval=FALSE, code=readLines(“../world.stan”), collapse=TRUE}
-
-### Tidy Bayes
-
-Works with rstan and cmdstanr
-
-```{r tidy_bayes_minimal, eval=FALSE}
-library(tidybayes)
-spread_draws(s, c(a,b)) #Extracts a and b from s (stan or cmdstan samples)
-spread_draws(s, f[i])  #Extracts vector f and calls components i
-```
-
-### Bayes plot
-
-Works with rstan and cmdstanr
-
-```{r tidy_bayes minimal, eval=FALSE}
-  s = s_rcmdstan$draws() #We need to call draws() 2023
-  bayesplot::mcmc_trace(s)
-```
-
-### RStudio
-
-Sometimes R gets slow when rendering with stan. At least in my case
-
-``` r
-rstan_options(javascript=FALSE)
-```
 
 # In a more detail
 
@@ -361,3 +355,15 @@ generated quantities {
 In case of `cmdrstan` the Stan code should be in an extra file to make the workflow easier and reuse compiled models. In case of `rstan` the Stan code can be included in the Rmd file as:
 
 | {r, echo=TRUE, eval=FALSE, code=readLines("../world.stan"), collapse=TRUE, echo=TRUE}
+
+# Attic 
+## RStudio bug 2023
+
+Sometimes R gets slow when rendering with stan code. At least in my case
+
+``` r
+rstan_options(javascript=FALSE)
+```
+
+Not observed anymore (2024)
+

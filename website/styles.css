@@ -1,1 +1,20 @@
-/* css styles */
+/* Reduce font size for headings */
+h1, h2, h3, h4, h5, h6 {
+    font-size: smaller; /* or specify exact sizes, e.g., 1.5em for h1, 1.2em for h2, etc. */
+}
+
+/* Reduce font weight for headings */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal; /* or use lighter weights if supported by the font */
+}
+
+/* Adjust color to reduce emphasis */
+h1, h2, h3, h4, h5, h6 {
+    color: #333; /* Darker or lighter depending on your design */
+}
+
+/* Modify margin to reduce spacing around headings */
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
