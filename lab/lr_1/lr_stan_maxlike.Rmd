@@ -57,7 +57,7 @@ res$mle() #The maximum likelihood solution
 ```
 
 You task is to create the Stan model `lr_maxlike.stan`.
-```{r, eval=lsg, echo=FALSE, warning=FALSE}
+```{r, echo=lsg, eval=FALSE, code=readLines('~/Documents/GitHub/da/lab/lr_1/lr_maxlike.stan'), collapse=TRUE}
 # print the Stan model
 m_rcmdstan
 ```

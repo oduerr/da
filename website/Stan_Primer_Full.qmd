@@ -40,7 +40,7 @@ df = s_rcmdstan$draws(format = "df") #Extracting Samples as data.frame
 
 Printing the model in markdown 
 
-| {r, echo=lsg, eval=FALSE, code=readLines(“../world.stan”), collapse=TRUE, echo=TRUE}
+| {r, echo=lsg, eval=FALSE, code=readLines(“../world.stan”), collapse=TRUE}
 
 ### Tidy Bayes
 
