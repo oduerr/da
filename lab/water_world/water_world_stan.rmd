@@ -22,7 +22,7 @@ We assume that the globe has been thrown $N = 9$ times and landed $W = 6$ times 
 
 a) Use a prior that reflect the fact that you have know for sure that more then 40 percent of the earth is covered by water but otherwise, you have no clue. Plot the posterior for all values of $p$. 
 
-```{r, echo=lsg, eval=FALSE, code=readLines("~/Documents/GitHub/da/lab/water_world/world.stan"), collapse=TRUE, echo=TRUE}
+```{r, echo=lsg, eval=FALSE, code=readLines("~/Documents/GitHub/da/lab/water_world/world.stan"), collapse=TRUE}
 #Stan Code
 ```
 
@@ -42,16 +42,9 @@ lines(density(samples_cmd$p), col='green', lw=5)
 
 
 
-b) As in the grid approximation: What is the probability that there is more than 80 precent water on earth? Estimate again from the samples.
+b) What is the probability that there is more than 80 precent water on earth? Estimate again from the samples. Use samples from the posterior as in in c).
 
 ```{r, echo=lsg, eval=lsg, fig.height=4}
   mean(samples_cmd$p > 0.8)
 ```
-
-
-
-
-
-
-
 

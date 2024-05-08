@@ -16,7 +16,7 @@ parameters{
     real<lower=0> sigma;
 }
 
-// Here we define the model itself. 
+// Here we define the model itself.    
 // Connects the input and output data with the parameters
 model{
     y ~ normal(a * x + b, sigma);

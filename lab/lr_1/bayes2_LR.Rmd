@@ -46,8 +46,6 @@ b)  Fit the maximum likelihood solution with the R command `lm`. Plot the Data a
 
 c)  Do a Bayesian analysis with a extremely flat prio, e.g. $a,b \sim unif(-100,100)$ and $\sigma \sim uniform(0,100)$. Extract samples of $a,b$ from the posterior and plot them. Compare the mean of the Bayesian Analysis with the Maximum Likelihood Solution.
 
-In case you cannot install `stan` or let it run on Kaggle the file <https://github.com/oduerr/da/raw/master/data/bayes2_LR_post.rda> contains samples of the posterior in an object called `post` and the data.
-
 In case you are stuck, the stan-file can be found at <https://github.com/oduerr/da/blob/master/lab/lr_1/lr.stan>
 
 ```{r, echo=lsg, eval=lsg, results="hide", warning=FALSE}
