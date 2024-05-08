@@ -111,3 +111,8 @@ pp/lr
 pp/lr
 /keras_jax_env
 .vscode/settings.json
+*.gz
+*.log
+*.fls
+*.fdb_latexmk
+*.aux

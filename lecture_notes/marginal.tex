@@ -1,0 +1,51 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{xcolor}
+\geometry{a4paper}
+
+\title{Posterior Predictive Distribution}
+\author{Oliver Dürr}
+\date{\today}
+
+\begin{document}  
+
+\maketitle
+
+\section*{Posterior Predictive (Formal Derivation)}
+
+\textbf{Definition 1: Conditional Distribution} \\
+
+\[
+p(\textcolor{blue}{Y_1}, \textcolor{blue}{Y_2}, \textcolor{blue}{Y_3} | \textcolor{red}{X_1}, \textcolor{red}{X_2}, \textcolor{red}{X_3}) = \frac{p(\textcolor{blue}{Y_1}, \textcolor{blue}{Y_2}, \textcolor{blue}{Y_3}, \textcolor{red}{X_1}, \textcolor{red}{X_2}, \textcolor{red}{X_3})}{p(\textcolor{red}{X_1}, \textcolor{red}{X_2}, \textcolor{red}{X_3})}
+\]
+
+\textbf{Definition 2: Marginal Distribution} \\
+
+\[
+p(Y_1, Y_2) = \int p(Y_1, Y_2, \textcolor{blue}{Y_3}) \, \textcolor{blue}{dY_3}
+\]
+
+\textbf{Derivation of Posterior Predictive Distribution \(P(Y | D)\)} \\
+\[
+P(Y | D) = \frac{P(Y, D)}{P(D)} \quad \text{(by definition)}
+\]
+\[
+\Rightarrow P(Y | D) = \int \frac{P(Y, D, \theta)}{P(D)} \, d\theta \quad \text{(marginalization over } \theta\text{)}
+\]
+\[
+= \int P(Y | D, \theta) \frac{P(D | \theta) P(\theta)}{P(D)} \, d\theta \quad \text{(chain rule: } P(Y, D, \theta) = P(Y | D, \theta) P(D | \theta) P(\theta)\text{)}
+\]
+\[
+= \int P(Y | D, \theta) P(\theta | D) \, d\theta \quad \text{(Bayes' rule for } P(\theta|D)\text{)}
+\]
+\[
+\text{(Assuming all data relevant to } Y \text{ is captured by } \theta\text{, } P(Y | D, \theta) = P(Y | \theta)\text{)}
+\]
+\[
+P(Y | D) = \int P(Y | \theta) P(\theta | D) \, d\theta \quad \text{(posterior predictive distribution)}
+\]
+
+\end{document}
