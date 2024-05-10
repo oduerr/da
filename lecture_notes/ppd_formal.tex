@@ -15,17 +15,19 @@
 \maketitle
 
 \section*{Posterior Predictive (Formal Derivation)}
+We are trying to derive the posterior predictive distribution \(P(Y | D)\) for a model with parameters \(\theta\), data \(D\), and a prediction \(Y\). \\
+We need the following definitions: \\
 
 \textbf{Definition 1: Conditional Distribution} \\
 
 \[
-p(\textcolor{blue}{Y_1}, \textcolor{blue}{Y_2}, \textcolor{blue}{Y_3} | \textcolor{red}{X_1}, \textcolor{red}{X_2}, \textcolor{red}{X_3}) = \frac{p(\textcolor{blue}{Y_1}, \textcolor{blue}{Y_2}, \textcolor{blue}{Y_3}, \textcolor{red}{X_1}, \textcolor{red}{X_2}, \textcolor{red}{X_3})}{p(\textcolor{red}{X_1}, \textcolor{red}{X_2}, \textcolor{red}{X_3})}
+P(\textcolor{blue}{Y_1}, \textcolor{blue}{Y_2}, \textcolor{blue}{Y_3} | \textcolor{red}{X_1}, \textcolor{red}{X_2}, \textcolor{red}{X_3}) = \frac{P(\textcolor{blue}{Y_1}, \textcolor{blue}{Y_2}, \textcolor{blue}{Y_3}, \textcolor{red}{X_1}, \textcolor{red}{X_2}, \textcolor{red}{X_3})}{P(\textcolor{red}{X_1}, \textcolor{red}{X_2}, \textcolor{red}{X_3})}
 \]
 
 \textbf{Definition 2: Marginal Distribution} \\
 
 \[
-p(Y_1, Y_2) = \int p(Y_1, Y_2, \textcolor{blue}{Y_3}) \, \textcolor{blue}{dY_3}
+P(Y_1, Y_2) = \int P(Y_1, Y_2, \textcolor{blue}{Y_3}) \, \textcolor{blue}{dY_3}
 \]
 
 \textbf{Derivation of Posterior Predictive Distribution \(P(Y | D)\)} \\
