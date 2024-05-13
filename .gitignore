@@ -116,3 +116,8 @@ pp/lr
 *.fls
 *.fdb_latexmk
 *.aux
+stan/sampling_circle/sampling_euclidean
+stan/sampling_circle/sampling_euclidean_abitrary_dim
+stan/sampling_circle/sampling_polar
+stan/sampling_circle/sampling_polar_abitrary_dim
+stan/howell1/unconditional
