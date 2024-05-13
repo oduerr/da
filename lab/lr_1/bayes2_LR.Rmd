@@ -46,7 +46,16 @@ b)  Fit the maximum likelihood solution with the R command `lm`. Plot the Data a
 
 c)  Do a Bayesian analysis with a extremely flat prio, e.g. $a,b \sim unif(-100,100)$ and $\sigma \sim uniform(0,100)$. Extract samples of $a,b$ from the posterior and plot them. Compare the mean of the Bayesian Analysis with the Maximum Likelihood Solution.
 
-In case you are stuck, the stan-file can be found at <https://github.com/oduerr/da/blob/master/lab/lr_1/lr.stan>
+#### Hints:
+Stan: In case you are stuck, the stan-file can be found at <https://github.com/oduerr/da/blob/master/lab/lr_1/lr.stan>
+
+Creating samples from posterior:
+```{r, echo=TRUE, eval=FALSE}
+  library(cmdstanr)
+  m_rcmdstan <- cmdstan_model('Link_to_stan_file.stan')
+  post = m_rcmdstan$sample(data=list(N=N,x=x, y=y)) #Sampling from the posterior
+  samples = post$draws(format = "df") #Extracting the samples in standard data.frame format
+```
 
 ```{r, echo=lsg, eval=lsg, results="hide", warning=FALSE}
 library(cmdstanr)
@@ -57,10 +66,7 @@ m_rcmdstan <- cmdstan_model('~/Documents/GitHub/da/lab/lr_1/lr.stan')
 post = m_rcmdstan$sample(data=list(N=N,x=x, y=y))
 #samples = extract(post)
 samples = post$draws(format = "df")
-#data=d
-#save(post, data, file='~/Documents/workspace/da/data/bayes2_LR_post.rda')
-#load('~/Documents/workspace/da/data/bayes2_LR_post.rda') #We use the samples drawn before
-#d=data
+
 #In nice
 library(ggplot2)
 ggplot(samples,aes(x=a,y=b)) + 
@@ -89,7 +95,7 @@ d)  At $x=1$ calculate $\mu_|x = a+bx$ from the posterior samples and plot it. E
   quantile(mu,c(0.05, 0.95))
 ```
 
-e)  Repeat d) (without plots) at 40 positions from $x=-10$ to $x=10$. Extract the mean and the 0.05 and 0.95 quantiles. Plot it against the data together with the maximum likelihood solution.
+e)  As in d) calculate $\mu_|x = a+bx$ at 40 positions from $x=-10$ to $x=10$. Extract the mean and the 0.05 and 0.95 quantiles. Plot the mean and the quantiles against $x$. Also add the data together with the maximum likelihood solution to the plot.
 
 ```{r, echo=lsg, eval=lsg, results="hide", warning=FALSE}
   xs = seq(-10,10,length.out = 40)
