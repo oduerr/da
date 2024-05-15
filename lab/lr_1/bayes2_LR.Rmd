@@ -20,7 +20,7 @@ output:
 
 ## Linear Regression
 
-In this excercise, we compare the MaxLike solution with a Bayesian Solution for linear regression.
+In this exercise, we will compare the Maximum Likelihood (ML) solution with a Bayesian solution for linear regression. We will generate synthetic data, fit models using both methods, and analyze the results to understand the differences in their approaches and outcomes.
 
 a)  Use the same data generating process as in `Maximum Likelihood Principle (linear regression)`. Simulate 50 data points $(x,y)$ under the assumptions from linear regression $y \sim Norm(\mu=2.0 \cdot x + 1.0, \sigma=1)$. Let $x$ be in the range from -2 to 2. Hint: use the function $rnorm$.
 
