@@ -26,8 +26,7 @@ we can interpret the coefficients to understand the relationship between tempera
 a) Load the Challenger O-ring data. This dataset includes temperatures and O-ring failure indicators from the Space Shuttle launches:
 
 ```{r, echo=TRUE, eval=TRUE}
-  url <- "https://raw.githubusercontent.com/oduerr/da/master/data/challenger.txt"
-  challenger <- read.csv(url, header = TRUE)
+  challenger = edudat::load_data("challenger.csv")
 ```
 
 b) Analyze the data by plotting the temperature against O-ring failure status:
