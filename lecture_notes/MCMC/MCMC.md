@@ -1,6 +1,21 @@
 # Lecture Notes on MCMC
 Oliver Dürr
 
+- [A note on notation](#a-note-on-notation)
+  - [Using $p(\theta)$ instead of
+    $p(\theta|D)$](#using-ptheta-instead-of-pthetad)
+  - [Densities vs. probabilities](#densities-vs.-probabilities)
+- [A high level overview of Markov
+  Chains.](#a-high-level-overview-of-markov-chains.)
+  - [Statistical physics and detailed
+    balance](#statistical-physics-and-detailed-balance)
+- [Detailed balance](#detailed-balance)
+  - [Controling $P_{ij}$](#controling-p_ij)
+  - [Exercise (Simple MCMC Algorthim)](#exercise-simple-mcmc-algorthim)
+- [Continious case details \[Advanced topic might be skipped in first
+  reading\]](#continious-case-details-advanced-topic-might-be-skipped-in-first-reading)
+  - [Sampling in a different space](#sampling-in-a-different-space)
+
 In this lecture note, we will discuss the basics of Markov Chain Monte
 Carlo (MCMC) methods. MCMC methods are a class of algorithms that are
 used to sample from a probability distribution $p(\theta)$ such as the
@@ -35,7 +50,7 @@ While in general in the lecture we will use the terms “density” and
 we will use the term “density” to refer to the probability density
 function of a continuous distribution and “probability” to refer to the
 probability mass function of a discrete distribution. In case the
-destinction is crucial, we will use the terms $Pr(\cdot)$ for
+destinction is crucial, we will use the terms $P(\cdot)$ for
 probabilities and $p(\cdot)$ for densities.
 
 ## A high level overview of Markov Chains.
@@ -46,7 +61,9 @@ series where the next value depends only on the current value (Markov
 Property). In Figure @fig:two-chains: we show two Markov chains,
 starting from different initial values. Note that after about 150 steps
 both chains fluctuate around the same value. This is the *stationary
-distribution* of the Markov chain.
+distribution* of the Markov chain. A Markov chain reaches a stationary
+distribution when the distribution of the states no longer changes as
+the chain progresses.
 
 <div id="fig-two-chains" fig-align="center">
 
@@ -99,7 +116,7 @@ that get trapped in a local minimum.
 
 ## Detailed balance
 
-For a Markov chain to be useful, it needs to convert of a stationary
+For a Markov chain to be useful, it needs to convert to a stationary
 distribution and the stationary distribution needs to be the target
 distribution $p(\theta)$. The Metropolis-Hastings algorithm is a simple
 MCMC algorithm that ensures that the Markov chain converges to the
@@ -191,6 +208,16 @@ get the following chain of moves.
 5.  **Iterate**: Repeat steps 2-4 for a large number of iterations to
     ensure convergence to the stationary distribution.
 
+#### A short note on the continuous case
+
+So far we have discussed the Metropolis-Hastings algorithm in the
+context of discrete states. However, the Metropolis-Hastings algorithm
+can be extended to continuous states, easily. There might be pitfalls
+when changing to the continuous case, don’t just replace the
+probabilities $P_i$ with densities $p(\theta)$! However here the
+Metropolis-Hastings algorithm is the same as in the discrete case. Just
+exchange the probabilities with densities.
+
 <div>
 
 > **Note**
@@ -241,3 +268,181 @@ hist(thetas[200:Steps], main = "Density of the samples", freq=FALSE, 30)
 ```
 
 ![](MCMC_files/figure-commonmark/simple-2.png)
+
+<div class="exercise">
+
+### Exercise (Simple MCMC Algorthim)
+
+Play around with the code above.
+
+#### a) What do you observer if you change the standard deviation of the proposal distribution?
+
+#### b) Change the target distribution to $p(\theta) \propto \exp(-\theta^2/2)$.
+
+</div>
+
+## Continious case details \[Advanced topic might be skipped in first reading\]
+
+Let’s look at the continous case in more detail. We derived the
+Metropolis-Hastings algorithm for the discrete case, where we have
+probabilities and not densities. The MH acceptance probability is given
+by
+
+$$
+A_{ij} = \min (1, \frac{T_{ji}P_i}{T_{ij} P_j})
+$$
+
+The probability $P_i$ for the state $\theta_i$ is replaced by the
+density $p(\theta_i)$ times the infinitisimal volume element
+$d\theta_i$. The transition probability $T_{ji}$ that starting in $i$ we
+move to $j$ is replaced by the proposal density $T(\theta_j|\theta_i)$
+times the infinitisimal volume element $d\theta_j$. Note we have a
+probability in the target volumne $d\theta_j$ and not in the “from”
+volume $d\theta_i$. So altogether we get
+
+$$
+A(\theta_i \leftarrow \theta_j) = \min \left(1, \frac{d\theta_j T(\theta_j|\theta_i) p(\theta_i) d\theta_i}{d\theta_i T(\theta_i|\theta_j) p(\theta_j) d\theta_j}\right)
+$$ Note that the volume elements $d\theta_i$ and $d\theta_j$ cancel out.
+So we get
+
+$$
+A(\theta_i \leftarrow \theta_j) = \min \left(1, \frac{T(\theta_j|\theta_i) p(\theta_i)}{T(\theta_i|\theta_j) p(\theta_j) }\right)
+\label{eq:mh-acceptance}
+$$ Which is the same as in the discrete case! However, there might be
+pitfalls when changing to the continous case, don’t just replace the
+probabilities $P_i$ with densities $p(\theta)$! This is for example the
+case in the following.
+
+### Sampling in a different space
+
+There are several reasons, to sample in a different space, then the
+space where the target distribution $p(\theta)$ is defined. It might be
+hard to sample in $\theta$, but it’s easy to sample in another space
+$x$. For example in $\theta$ the probability landscape might have very
+narrow regions, but in $x$ it’s much nicer behaved. We will encounter
+this in the famous Neal’s funnel example later. Another reason is that
+$\theta$ is in a restricted space. We will use the following example in
+spherical coordinates to illustrate this. Suppose we have a problem
+where we have a good idea that the radius $r$ is around 1, but we have
+no idea about the angle $\varphi$. We can express this in the following
+prior
+
+$$
+p(\theta) = p(r,\varphi) = p(r)p(\varphi) = N(r|1,0.1) \cdot U(\varphi|0,2\pi) 
+$$ Assume, we have no data, then the Target Distribution is then given
+by $p(r,\varphi) \propto N(r|1,0.1)$. Note that in this space, we have
+restrictions on the parameters $r > 0$ and $0 \le \varphi < 2\pi$. We
+have to design the proposal density $T(\theta^*|\theta)$ such that these
+restrictions are intact. While this is possible in the
+Metropolis-Hastings algorithm, it’s really hard to enforce this in more
+advanced algorithms like Hamiltonian Monte Carlo, where we need an
+unrestricted space. To solve this we transform the problem in a
+difference space $x$, where we have no restrictions. Be careful and
+consider probabilities:
+
+$$
+  p(x) dx = p(\theta) d\theta \quad \Rightarrow \quad p(\theta) = p(x) \left| \frac{dx}{d\theta} \right|
+$$ With the Jacobian Determinant
+$J = \left| \frac{dx}{d\theta} \right|$, e.g.  becomes:
+
+$$
+A(\theta_i \leftarrow \theta_j) = \min \left(1, \frac{T(\theta_j|\theta_i) p(\theta_i)}{T(\theta_i|\theta_j) p(\theta_j)} \right) = \min \left(1, \frac{T(x_j|x_i) p(x_i) J_i}{T(x_i|x_j) p(x_j) J_j} \right)
+$$
+
+We have $x_1 = r \cos(\varphi)$ and $x_2 = r \sin(\varphi)$, so we get
+the Jacobian Determinant as:
+
+$$
+J = 
+\left|
+\begin{pmatrix}
+\frac{\partial x_1}{\partial r} & \frac{\partial x_1}{\partial \varphi} \\
+\frac{\partial x_2}{\partial r} & \frac{\partial x_2}{\partial \varphi}
+\end{pmatrix}
+\right|
+= 
+\left|
+\begin{pmatrix}
+\cos(\varphi) & -r \sin(\varphi) \\
+\sin(\varphi) & r \cos(\varphi)
+\end{pmatrix}
+\right| = r (\cos^2(\varphi) + \sin^2(\varphi)) = r
+$$
+
+The following code snippet shows how to sample from the target
+distribution in unrestricted space $x_1$ and $x_2$ and how to correctly
+apply the Jacobian Determinant.
+
+``` r
+# Initial values
+set.seed(123)
+Steps = 10000
+plot_max = 500
+x1 = rep(NA, Steps)
+x2 = rep(NA, Steps)
+
+# Target distribution in r (up to a constant factor)
+p_r = function(r) {
+  return (dnorm(r, mean = 1, sd = 0.25))
+}
+
+# Proposal distribution standard deviations
+proposal_sd_x1 = 0.5
+proposal_sd_x2 = 0.5
+
+# Initial values for x1 and x2
+x1[1] = 1
+x2[1] = 0
+
+for (t in 2:Steps) {
+  # Propose new values in x1 and x2
+  x1_star = x1[t-1] + rnorm(1, mean = 0, sd = proposal_sd_x1)
+  x2_star = x2[t-1] + rnorm(1, mean = 0, sd = proposal_sd_x2)
+  
+  # Calculate r and r_star
+  r = sqrt(x1[t-1]^2 + x2[t-1]^2)
+  r_star = sqrt(x1_star^2 + x2_star^2)
+  
+  # Compute the Jacobian determinant
+  J = 1/r
+  J_star = 1/r_star
+  
+  # Compute the acceptance probability
+  if (r_star > 0) {  # Ensure r_star is within valid range
+    A = min(1, (p_r(r_star) * J_star) / (p_r(r) * J))
+  } else {
+    A = 0
+  }
+  
+  # Accept or reject the new values
+  if (runif(1) < A) {
+    x1[t] = x1_star
+    x2[t] = x2_star
+  } else {
+    x1[t] = x1[t-1]
+    x2[t] = x2[t-1]
+  }
+}
+
+# Plot the trace of the samples in x1
+plot(1:plot_max, x1[1:plot_max], type = "l", xlab = "Steps", ylab = "x1 and x2", main="Trace of the samples in x")
+lines(1:plot_max, x2[1:plot_max], type = "l", xlab = "Steps",  col='red')
+```
+
+![](MCMC_files/figure-commonmark/dount_x1x2-1.png)
+
+``` r
+
+par(mfrow=c(1,2))
+# Plot the histogram of r
+r_samples = sqrt(x1^2 + x2^2)
+hist(r_samples[200:Steps], main = paste0("Density of r, mean=",round(mean(r_samples),4)), freq=FALSE, breaks = 30)
+# Scatter plot of (x1, x2)
+plot(x1, x2, main = "Scatter plot of (x1, x2)", xlab = "x1", ylab = "x2", pch='.')
+```
+
+![](MCMC_files/figure-commonmark/dount_x1x2-2.png)
+
+``` r
+invisible(par(mfrow=c(1,1)))
+```
