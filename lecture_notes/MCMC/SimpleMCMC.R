@@ -101,13 +101,26 @@ df = rbind(df, data.frame(
   chain='Chain 2'
 ))
 
-library(ggplot2) 
+library(tidyverse) 
 ggplot(df, aes(x = t, y = theta, col=chain)) +
   geom_line() +
   labs(title = "Two Simple Monte Carlo Chains", x = "t", y = expression(theta)) +
   theme_minimal() + 
   theme(legend.position="none")
-ggsave("lecture_notes/MCMC/2chains.pdf", width = 6, height = 4, units = "in")
+ggsave("lecture_notes/MCMC/2chains.png", width = 6, height = 4, units = "in",  dpi = 300)
+
+##### Looking at the marginal from t = 250 ####
+df %>% filter(t > 250) %>%
+ggplot(aes(x = theta, fill=chain)) +
+  geom_density(alpha = 0.5) +
+  geom_rug(sides = "b") + 
+  labs(title = "Marginal Distributions of Two Chains", x = expression(theta), y = "Density") +
+  xlim(1, 3) +
+  theme_minimal() 
+ggsave("lecture_notes/MCMC/2chains-marginal.png", width = 6, height = 4, units = "in",  dpi = 300)
+
+
+
 #############################################
 
 
