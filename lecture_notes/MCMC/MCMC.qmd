@@ -11,7 +11,7 @@ format:
     code-fold: true
     code-tools: true
     mathjax: true
-    #self-contained: true
+    self-contained: true
   pdf:
     toc: true
     toc-title: "Table of Contents"
@@ -45,13 +45,13 @@ While in general in the lecture we will use the terms "density" and "probability
 
 A Markov chain is a sequence of random variables $\theta_1, \theta_2, \theta_3, \ldots$ which can be viewed as a time series where the next value depends only on the current value (Markov Property). In @fig-two-chains: we show two Markov chains, starting from different initial values. Note that after about 150 steps both chains fluctuate around the same value. This is the *stationary distribution* of the Markov chain. A Markov chain reaches a stationary distribution when the distribution of the states no longer changes as the chain progresses.
 
-[![Shown are two Markov chains for the scalar quantity \$\\theta\$. The chains start from different initial positions. After about 150 time steps the chains fluctate around the same value.](2chains.png){#fig-two-chains fig-align="center"}](https://github.com/oduerr/da/blob/master/lecture_notes/MCMC/SimpleMCMC.R)
+[![Shown are two Markov chains for the scalar quantity \$\\theta\$. The chains start from different initial positions. After about 150 time steps the chains fluctate around the same value.](images/2chains.png){#fig-two-chains fig-align="center"}](https://github.com/oduerr/da/blob/master/lecture_notes/MCMC/SimpleMCMC.R)
 
 In @fig-two-chain-dist, we show a histogram[^1] of the values of the two chains after from 250 steps onward. The histogram indicate that the values of the chains are distributed around the same distribution is the stationary distribution of the Markov chain.
 
 [^1]: Well actually its a density plot `plot(density(.))` and not `hist(.)`
 
-[![The Histogram (actually density estimates) for of the two chains after 250 steps](2chains-marginal.png){#fig-two-chain-dist fig-align="center"}](https://github.com/oduerr/da/blob/master/lecture_notes/MCMC/SimpleMCMC.R)
+[![The Histogram (actually density estimates) for of the two chains after 250 steps](images/2chains-marginal.png){#fig-two-chain-dist fig-align="center"}](https://github.com/oduerr/da/blob/master/lecture_notes/MCMC/SimpleMCMC.R)
 
 ::: callout-note
 The key idea of MCMC methods is to construct a Markov chain that has a stationary distribution equal to the target distribution $p(\theta)$. Once the Markov chain has converged to the stationary distribution, we can use the samples from the chain to approximate the target distribution.
@@ -81,7 +81,7 @@ $$
 
 @fig-db shows the detailed balance situation in a system with discrete states. Note that the detailed balence is between two states $i$ and $j$ and that other states $k$ are not taken into account.
 
-[![Illustration of the detailed balance condition in a Markov chain. The transition probabilities \$P\_{ij}\$ and \$P\_{ji}\$ between states \$j\$ and \$i\$ are shown, along with their respective stationary probabilities \$P_i\$ and \$P_j\$. The light gray dashed arrows indicate the presence of other states in the Markov chain, emphasizing that the detailed balance condition is specifically applied between states \$i\$ and \$j\$](img_sources/db.png){#fig-db fig-align="center" width="600"}](https://github.com/oduerr/da/blob/master/lecture_notes/MCMC/img_sources)
+[![Illustration of the detailed balance condition in a Markov chain. The transition probabilities \$P\_{ij}\$ and \$P\_{ji}\$ between states \$j\$ and \$i\$ are shown, along with their respective stationary probabilities \$P_i\$ and \$P_j\$. The light gray dashed arrows indicate the presence of other states in the Markov chain, emphasizing that the detailed balance condition is specifically applied between states \$i\$ and \$j\$](images/db.png){#fig-db fig-align="center" width="600"}](https://github.com/oduerr/da/blob/master/lecture_notes/MCMC/img_sources)
 
 It's quite illustrative a system with many particles. The detailed balance condition the probability $P_{ij}P_j$ (fraction of Kings/Particle) move from $j$ to $i$ is equal to the probability $P_{ji}P_i$ (fraction of Kings/Particle) move from $i$ to $j$.
 
@@ -97,7 +97,7 @@ $$
 
 Why is detailed balance fullfilled?
 
-![](images/db.png){width="504"}
+![](images/db_h.png){width="504"}
 
 If we know move a particle according to the Metropolis Hastings Acceptance rate. We start in state $\theta_0$ and propose a move to $\theta^*$ with $T(\theta^*|\theta_0)$. We accept the new state with a probability according to the MH Acceptance probability. If we repeat we get the following chain of moves.
 
@@ -166,14 +166,14 @@ There can be several problems when using the Metropolis-Hastings algorithm.
 ### 🛠️ Tools to inspect the chain
 First look at the trace of the chain(s), this is called traceplot. Simply plot the parameter values against the steps. Such a traceplot has been shown in @fig-two-chains. We clearly see that the 2 chains have converged to the same region (stationary distribution). Another traceplot is shown in @fig-traceplot. 
 
-![Traceplot of the parameter sigma inagainst the steps. While the Metropolis Algorithm provides valid samples, the samples are highly correlated compared to the more advanced Stan algorithm](traceplot_stan_vs_mh.png){#fig-traceplot fig-align="center"}
+![Traceplot of the parameter sigma inagainst the steps. While the Metropolis Algorithm provides valid samples, the samples are highly correlated compared to the more advanced Stan algorithm](images/traceplot_stan_vs_mh.png){#fig-traceplot fig-align="center"}
 
 
 This traceplot compares the parameter $a$ sampled with Stan (a more advanced MCMC algorithm) and the Metropolis-Hastings algorithm. We see that the Metropolis-Hastings algorithm moves slowly through the parameter space. In contrast, the Stan samples are less correlated and move more faster through the complete parameter space. This fast moving through the parameter space is called "efficient mixing" or a "hairy caterpillar". The effect of this "hairy caterpillar" is that the samples are less correlated and hence provide more information about the posterior distribution of the parameter. This can be quantified by the effective sample size (ESS), which is the number of independent samples that provide the same information as the correlated samples.
 
 Finally, in the case of bimodal distributions, MCMC algorithms can get stuck in one of the modes. This is shown in @fig-bimodal . Some chains of have converged to the one mode and it takes a long time to switch to the other mode. While the true bimodal distribution would be sampled for infinite times it practically takes a long time to sample from both modes and the respecitve modes are not sampled equally. 
 
-![Trace Plot of Samples from a Bimodal Distribution, all chains sample the repective mode quite successfully but stay too long in a mode before jumping to the next.](bimodal.png){#fig-bimodal. fig-align="center"}
+![Trace Plot of Samples from a Bimodal Distribution, all chains sample the repective mode quite successfully but stay too long in a mode before jumping to the next.](images/bimodal.png){#fig-bimodal. fig-align="center"}
 
 You can play around a bit with the overlap of the two modes and the standard deviation of the proposal distribution in [https://oduerr.github.io/anim/mcmc_mh.html](https://oduerr.github.io/anim/mcmc_mh.html)
 
