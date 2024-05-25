@@ -128,3 +128,4 @@ lecture_notes/marginal_intuition.toc
 *.nav
 *.toc
 /lecture_notes/MCMC/MCMC_files
+/website/_extensions
