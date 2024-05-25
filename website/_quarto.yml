@@ -10,6 +10,7 @@ website:
         text: Home
       - about.qmd
       - Stan_Primer_Full.qmd
+      - MCMC.qmd
 
 format:
   html:
