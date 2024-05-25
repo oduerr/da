@@ -84,7 +84,7 @@ log_posterior(initial_values, data$x, data$y, data$N)
 # Number of iterations
 n_iter <- 10000
 
-##### Generating figure for lecture note ####
+##### Initialization: Generating figure for lecture note ####
 set.seed(1)
 initial_values <- c(0, 0, 1)
 c1 <- metropolis_hastings(log_posterior, initial_values, data, 1000, proposal_sd)
@@ -181,12 +181,34 @@ lines(samples_df$sigma[1000:1200], type = "l", main = "Trace plot of sigma", col
 legend("topright", c("Stan", "Metropolis"), col=c("red", "blue"), lty=1)
 
 
+##### Initialization: Generating figure for lecture note ####
+library(ggplot2)
+
+# Create data frames for the subsets
+stan_data <- data.frame(Index = 1000:1200, a = samples_stan$a[1000:1200], Method = "Stan")
+metropolis_data <- data.frame(Index = 1000:1200, a = samples_df$a[1000:1200], Method = "Metropolis")
+
+# Combine the data frames
+combined_data <- rbind(stan_data, metropolis_data)
+
+# Plot with ggplot2
+ggplot(combined_data, aes(x = Index, y = a, color = Method)) +
+  geom_line() +
+  labs(title = "Trace plot of a", color = "Method") +
+  theme_minimal()
+ggsave("lecture_notes/MCMC/traceplot_stan_vs_mh.png", width = 6, height = 4, units = "in",  dpi = 300)
+##### Initialization: Generating figure for lecture note ####
+
+
+
 # Cacluation of the effective sample size
 library(coda)
 samples_mcmc <- as.mcmc(samples_df)
 coda::effectiveSize(samples_mcmc) / nrow(samples_df)
 coda::effectiveSize(samples_stan) / nrow(samples_stan)
 samples
+
+
 
 
 ########### Diagnostics ################
