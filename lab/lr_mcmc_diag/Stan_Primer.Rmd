@@ -19,7 +19,8 @@ output:
 
 ## MCMC with Stan / Simple diagnostics
 
-The following lab/exercise should guide you to work with stan. We implement Bayesian linear regression. Work on the parts that are marked with "Task".
+The following lab/exercise should guide you to work with stan. We implement Bayesian linear regression, 
+the focus is on the diagnostics of the chains. Work on the parts that are marked with "Task".
 
 You might find the following resources sheets helpful.
 
@@ -50,31 +51,13 @@ To define a model, you can add a string or create a `.stan` file.
 Try to understand the following model and compile it. The model can be found at https://github.com/oduerr/da/blob/master/lab/lr_mcmc_diag/linear_regression.stan
 
 
-```{r, warning=FALSE,message=FALSE, eval=FALSE,echo=TRUE}
-stan_code = "data{
-  int<lower=0> N;
-  vector[N] y;
-  vector[N] x;
-}
-
-parameters{
-  real a; //Instead of using e.g. half Gaussian
-  real b;
-  real<lower=0> sigma;
-}
-
-model{
-  //y ~ normal(mu, sigma);
-  y ~ normal(a * x + b, sigma);
-  a ~ normal(3, 10); 
-  b ~ normal(0, 10); 
-  sigma ~ normal(0,10);
-}"
+```{r, echo=lsg, eval=FALSE, code=readLines("/Users/oli/Documents/GitHub/da/lab/lr_mcmc_diag/linear_regression.stan"), collapse=TRUE}
+1
 ```
 
 Once the model is compiled the sampling is done. You can also compile and sample via
 
-```{r echo=TRUE, eval=FALSE, warning=FALSE, results="hide"}
+```{r echo=TRUE, eval=lsg, warning=FALSE, results="hide"}
   library(cmdstanr)
   m_rcmdstan <- cmdstan_model('~/Documents/GitHub/da/lab/lr_mcmc_diag/linear_regression.stan') #Compiling
   samples = m_rcmdstan$sample(data=list(N=N,x=x, y=y))
@@ -86,12 +69,22 @@ Once the model is compiled the sampling is done. You can also compile and sample
 
 Inspect the traceplot, do they look good?
 
-```{r bayesplot}
+```{r bayesplot, eval=lsg, echo=lsg}
 bayesplot::mcmc_trace(samples$draws())
 ```
 
+```{r, eval=FALSE, echo=FALSE}
+# Just to make slides
+library(bayesplot)
+library(ggplot2)
+samples = m_rcmdstan$sample(data=list(N=N,x=x, y=y), chains=1)
+d = bayesplot::mcmc_trace(samples$draws('a'))
+d + xlab('Iterations') + ylab('a')
+ggsave('trace_a.pdf',width=10,height=5)
+```
+
 ```{r, eval=lsg, echo=lsg}
-# They rapidly jump over all values. All chains are similar. The Hairy Capatiller
+# They rapidly jump over all values. All chains are similar. The Hairy Capatiller.
 ```
 
 #### Key Numbers
@@ -99,7 +92,7 @@ bayesplot::mcmc_trace(samples$draws())
 -   `Rhat` is something like the ratio of variation between the chains to withing the chains
 -   `n_eff` number of effective samples taking the autocorrelation into account
 
-```{r}
+```{r samples_print, eval=lsg, echo=lsg}
   samples
 ```
 
@@ -129,102 +122,4 @@ if (lsg){ #Only show plots in the solution
   hist(post$a,100, freq=F)
   lines(density(post$a),col='red')  
 }
-```
-
-### Posterior Predictive Plots
-
-#### Task: Use the samples to create the following posterior predictive plots
-
-Some background first: posterior predictive distribution: $$
-  p(y|x, D) =  \int p(y|x,\theta) p(\theta|D) \; d\theta
-$$ Instead of integration, we sample in two turns
-
--   $\theta_i \sim p(\theta|D)$
--   $y_{ix} \sim p(y|x,\theta_i)$ #We do this for many x in practice
-
-#### Creation of the posterior predictive samples by hand
-
-You can either do this part, or use stan to create the posterior predictive samples $y_{ix}$ from the samples $\theta_i$ by hand.
-
-Tip: Create two matrices `yix` and `muix` from the posterior samples of $a,b,\sigma$ with dimension (rows = number of posterior samples and cols = number of x positions).
-
-```{r echo=lsg, eval=TRUE}
-T = nrow(post)
-xs = -10:15 # The x-range 17 values from -1 to 15
-M = length(xs) 
-yix = matrix(nrow=T, ncol = M) #Matrix from samples (number of posterior draws vs number of xs)
-muix = matrix(nrow=T, ncol = M) #Matrix from mu (number of posterior draws vs number of xs)
-for (i in 1:T){ #Samples from the posterior
-  a = post$a[i] #Corresponds to samples from theta
-  b = post$b[i]
-  sigma = post$sigma[i]
-  for (j in 1:M){ #Different values of X
-    mu = a * xs[j] + b
-    muix[i,j] = a * xs[j] + b
-    yix[i,j] = rnorm(1, mu, sigma) # Single number drawn
-  }
-}
-
-if (TRUE){
-  plot(x, y, xlim=c(-10,15), ylim=c(-25,25), ylab='mu=a*x+b')
-  for (i in 1:100){
-    lines(xs, muix[i,],lwd=0.25,col='blue')
-  }
-  
-  plot(x, y, xlim=c(-10,15), ylim=c(-25,25), ylab='ys')
-  for (i in 1:100){
-    points(xs, yix[i,], pch='.',col='red')
-  }
-}
-```
-
-After you created the matrices `yix` and `muix` you can use the following function to draw the lines for the quantiles.
-
-```{r}
-plot(x, y, xlim=c(-10,15), ylim=c(-25,25), ylab='quantiles (y and mu)')
-quant_lines = function(x2, y_pred, col='blue'){
-  m = apply(y_pred, 2,quantile, probs=c(0.50))
-  lines(x2, m,col=col)
-  q05 = apply(y_pred, 2, quantile, probs=c(0.25))
-  q95 = apply(y_pred, 2, quantile, probs=c(0.75))
-  lines(x2, q05,col=col)
-  lines(x2, q95,col=col)  
-}
-
-quant_lines(xs,yix, col='red')
-quant_lines(xs,muix, col='blue')
-```
-
-#### Creation of the posterior predictive samples with Stan
-
-It's also possible to draw posterior predictive samples. One can use the `generated quantities` code block for that.
-
-    data{
-      int<lower=0> N;
-      vector[N] y;
-      vector[N] x;
-      //For the prediced distribution (new)
-      int<lower=0> N2;
-      vector[N2] x2;
-    }
-
-    generated quantities {
-      real Y_predict[N2]; 
-      for (i in 1:N2){
-        Y_predict = normal_rng(a * x2 + b, sigma);
-      }
-    }
-
-```{r, results='hide'}
-  x2 = -10:15
-  N2 = length(x2)
-  m2 <- cmdstan_model('~/Documents/GitHub/da/lab/lr_mcmc_diag/Stan_Primer_model_pred.stan') #Compiling
-  fit2 = m2$sample(data=list(N=N,x=x, y=y, N2=N2,x2=x2))
-```
-
-```{r}
-  y_pred = fit2$draws('Y_predict', format = 'df')[,1:26] #Only the ones starting with predicts
-  dim(y_pred)
-  plot(x, y, xlim=c(-10,15), ylim=c(-25,25), ylab='quantiles (y and mu)')
-  quant_lines(x2,y_pred, col='red')
 ```

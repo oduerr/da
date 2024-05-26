@@ -17,3 +17,4 @@ model{
   b ~ normal(0, 10); 
   sigma ~ uniform(0,100);
 }
+
