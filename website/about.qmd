@@ -6,7 +6,14 @@ title: "About"
 ### Internal Notes for the Author
 
 #### How to add a new page
-Put the quarto-file in website directory. Make sure that you have commented out `#self-contained: true` in the **qmd** file, otherwise file gets to large. 
+
+
+- Create a new quarto file in the root directory or subdirectory.
+** DONOT `self-contained: true`:
+Put the quarto-file in website directory (or subdirectory). 
+Make sure that you do not have `self-contained: true` in the **qmd** file, otherwise file gets to large. Commenting it out is fine.
+
+- Developing the new file
 
 
 - Render and move to docs folder

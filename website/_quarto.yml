@@ -8,12 +8,12 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
       - Stan_Primer_Full.qmd
       - text: Lecture Notes
         menu:
           - href: lecture_notes/MCMC/MCMC.qmd
             text: MCMC
+      - about.qmd
 
 format:
   html:

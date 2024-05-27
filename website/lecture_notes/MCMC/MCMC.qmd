@@ -11,10 +11,9 @@ format:
     code-fold: true
     code-tools: true
     mathjax: true
-    self-contained: true
-  pdf:
-    toc: true
-    toc-title: "Table of Contents"
+  # pdf:
+  #   toc: true
+  #   toc-title: "Table of Contents"
 filters:
   - webr
 ---
@@ -193,8 +192,8 @@ You can play around a bit with the overlap of the two modes and the standard dev
 
 
 
-## 🤔Continious case details\*
-\*This is and advanced topic, which might be well skipped in first reading.
+## 🤔 Continuous case details\*
+\*This is and advanced topic, which might be well skipped on first reading.
 
 Let's look at the continous case in more detail. We derived the Metropolis-Hastings algorithm for the discrete case, where we have probabilities and not densities. The MH acceptance probability is given by
 
@@ -210,7 +209,7 @@ $$ Note that the volume elements $d\theta_i$ and $d\theta_j$ cancel out. So we g
 
 $$
 A(\theta_i \leftarrow \theta_j) = \min \left(1, \frac{T(\theta_j|\theta_i) p(\theta_i)}{T(\theta_i|\theta_j) p(\theta_j) }\right)
-$$ {#eq-mh-acceptance} Which is the same as in the discrete case! However, there might be pitfalls when changing to the continous case, don't just replace the probabilities $P_i$ with densities $p(\theta)$! This is for example the case in the following.
+$$ {#eq-mh-acceptance} Which is the same as in the discrete case! However, there might be pitfalls when changing to the continuous case, don't just replace the probabilities $P_i$ with densities $p(\theta)$! This is for example the case in the following.
 
 ### ⚠️Sampling in a different space
 

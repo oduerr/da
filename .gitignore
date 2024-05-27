@@ -129,3 +129,4 @@ lecture_notes/marginal_intuition.toc
 *.toc
 /lecture_notes/MCMC/MCMC_files
 /website/_extensions
+website/lecture_notes/MCMC/MCMC.tex
