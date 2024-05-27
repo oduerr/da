@@ -123,6 +123,6 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site\n\n1 + 1 + 1\n\n[1] 3"
+    "text": "Internal Notes for the Author\n\nHow to add a new page\nPut the quarto-file in website directory. Make sure that you have commented out #self-contained: true in the qmd file, otherwise file gets to large.\n\nRender and move to docs folder\n\nquarto render _quarto.yml\n\nCheck in the changes in the docs folder"
   }
 ]

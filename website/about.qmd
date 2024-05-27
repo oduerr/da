@@ -2,8 +2,18 @@
 title: "About"
 ---
 
-About this site
 
-```{r}
-1 + 1 + 1
+### Internal Notes for the Author
+
+#### How to add a new page
+Put the quarto-file in website directory. Make sure that you have commented out `#self-contained: true` in the **qmd** file, otherwise file gets to large. 
+
+
+- Render and move to docs folder
+
+```bash
+quarto render _quarto.yml
 ```
+
+- Check in the changes in the docs folder
+

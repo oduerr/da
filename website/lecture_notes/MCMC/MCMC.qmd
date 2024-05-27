@@ -61,13 +61,27 @@ So how do we construct a Markov chain with a stationary distribution equal to th
 
 ### Statistical physics and detailed balance
 
-Consider a glass of water in which we add a drop of ink. The ink will spread out in the water until it is uniformly distributed. This is an example of a system that has reached equilibrium. Nearly every statistical system reaches the equilibrium state. Exceptions are periodic systems like a pendulum or a planet orbiting a star and systems that get trapped in a local minimum.
+Consider a glass of water in which we add a drop of ink. The ink will spread out in the water until it is uniformly distributed. This is an example of a system that has reached equilibrium. The the following ideas, are important inspirations for MCMC methods:
+
+**Ergodic Hypothesis**
+   - The diffusion process can be viewed as either a single particle or many particles. Initially concentrated in one region, a particle will eventually explore the entire space uniformly, regardless of its starting point. This idea, known as the Ergodic Hypothesis, was first proposed by Boltzmann.
+
+**The reaching of the stationary distribution**
+   - Over time, particles reach a stationary distribution (in physics is referred to as the equilibrium distribution). For example, ink in water eventually reaches a uniform distribution. However, not all distributions are uniform. For instance, the barometric height equation describes how particles in the air are more concentrated at the ground and decrease exponentially with height.
+
+**Detailed Balance**
+- At stationarity, the rate at which particles move from one point to another is equal to the rate at which they move in the opposite direction. This concept is known as detailed balance and is crucial for understanding the Metropolis-Hastings algorithm.
+
+From that, we can design the  MCMC Algorithms algorithms. Roughly as follows
+* Start with parameter of interest $\theta$ at certain position 
+* Mimics the diffusion process but with a stationary distribution of our choosing $p(\theta)$
+* Algorithm needs to obey the detailed balance condition, this allow us to define the transition probabiliy with which we go from one value to another. 
 
 ## ⚖️ Detailed balance
 
 For a Markov chain to be useful, it needs to convert to a stationary distribution and the stationary distribution needs to be the target distribution $p(\theta)$. The Metropolis-Hastings algorithm is a simple MCMC algorithm that ensures that the Markov chain converges to the desired stationary distribution. The Metropolis-Hastings algorithm is based on the principle of detailed balance. Also almost all other MCMC algorithms (such as Hamiltonian Monte Carlo, Slice Sampling, and Gibbs Sampling) are based on the principle of detailed balance. So what is detailed balance?
 
-Remember the example with the king visiting the islands? The king will visit the islands with a probability proportional to the number of people on the island. This was an example of detailed balance. Now consider N Kings, in order that the number of Kings on the islands have reached a stationary distribution, at each time step as many Kings need to move from one island to another as move in the opposite direction. This is the principle of detailed balance and if it is fullfilled the Markov chain has converge to the stationary distribution. The detailed balance condition is (a bit slopy) given by:
+For the ink particles, we have a uniforn distribution as stationary distribution. For the ink particles in the water glass the detailed balance condition is that the rate at which particles move from one point to another is equal to the rate at which they move in the opposite direction. Remember the example with the king visiting the islands? The king will visit the islands with a probability proportional to the size on the island. So the stationary distribution is not uniform anymore. The detailed balance condition can be used to determine the probability $P_{ji}$ of moving from island $i$ to island $j$. Now consider N Kings, in order that the number of Kings on the islands have reached a stationary distribution, at each time step as many Kings need to move from one island to another as move in the opposite direction. Otherwise the number of Kings on the islands would change over time and we have not yet reached the stationary distribution. The detailed balance condition is (a bit slopy) given by:
 
 $$
   P_{ij} N_j = P_{ji} N_i
@@ -79,11 +93,11 @@ $$
  P_{ij}\underbrace{P_{j}}_{N_j/N} = P_{ji}\underbrace{P_{i}}_{N_j/N}
 $$
 
-@fig-db shows the detailed balance situation in a system with discrete states. Note that the detailed balence is between two states $i$ and $j$ and that other states $k$ are not taken into account.
+@fig-db shows the detailed balance situation in a system with discrete states (such as kings). Note that the detailed balence is between two states $i$ and $j$ and that other states $k$ are not taken into account.
 
 [![Illustration of the detailed balance condition in a Markov chain. The transition probabilities \$P\_{ij}\$ and \$P\_{ji}\$ between states \$j\$ and \$i\$ are shown, along with their respective stationary probabilities \$P_i\$ and \$P_j\$. The light gray dashed arrows indicate the presence of other states in the Markov chain, emphasizing that the detailed balance condition is specifically applied between states \$i\$ and \$j\$](images/db.png){#fig-db fig-align="center" width="600"}](https://github.com/oduerr/da/blob/master/lecture_notes/MCMC/img_sources)
 
-It's quite illustrative a system with many particles. The detailed balance condition the probability $P_{ij}P_j$ (fraction of Kings/Particle) move from $j$ to $i$ is equal to the probability $P_{ji}P_i$ (fraction of Kings/Particle) move from $i$ to $j$.
+The detailed balance condition the probability $P_{ij}P_j$ (fraction of Kings/Particle) move from $j$ to $i$ is equal to the probability $P_{ji}P_i$ (fraction of Kings/Particle) move from $i$ to $j$.
 
 ### 🎛️Controling $P_{ij}$
 
@@ -173,7 +187,7 @@ This traceplot compares the parameter $a$ sampled with Stan (a more advanced MCM
 
 Finally, in the case of bimodal distributions, MCMC algorithms can get stuck in one of the modes. This is shown in @fig-bimodal . Some chains of have converged to the one mode and it takes a long time to switch to the other mode. While the true bimodal distribution would be sampled for infinite times it practically takes a long time to sample from both modes and the respecitve modes are not sampled equally. 
 
-![Trace Plot of Samples from a Bimodal Distribution, all chains sample the repective mode quite successfully but stay too long in a mode before jumping to the next.](images/bimodal.png){#fig-bimodal. fig-align="center"}
+![Trace Plot of Samples from a Bimodal Distribution, all chains sample the repective mode quite successfully but stay too long in a mode before jumping to the next.](images/bimodal.png){#fig-bimodal fig-align="center"}
 
 You can play around a bit with the overlap of the two modes and the standard deviation of the proposal distribution in [https://oduerr.github.io/anim/mcmc_mh.html](https://oduerr.github.io/anim/mcmc_mh.html)
 
