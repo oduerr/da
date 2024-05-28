@@ -57,8 +57,10 @@ metropolis_hastings <- function(log_posterior, initial_values, data, n_iter, pro
   return(samples)
 }
 
-set.seed(1)
-initial_values <- c(0, 0, 1)
-c1 <- metropolis_hastings(log_posterior, initial_values, data, 1000, proposal_sd)
+if (FALSE){
+  set.seed(1)
+  initial_values <- c(0, 0, 1)
+  c1 <- metropolis_hastings(log_posterior, initial_values, data, 1000, proposal_sd)
+}
 
 
