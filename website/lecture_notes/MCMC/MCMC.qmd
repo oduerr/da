@@ -18,6 +18,7 @@ filters:
   - webr
 ---
 
+
 In this lecture note, we will discuss the basics of Markov Chain Monte Carlo (MCMC) methods. MCMC methods are a class of algorithms that are used to sample from a probability distribution $p(\theta)$ such as the posterior $p(\theta|D) \propto p(D|\theta) p(\theta)$. While there are more advanced MCMC methods, we will focus on the Metropolis-Hastings algorithm, which is a simple and widely used MCMC algorithm and shows the principles of MCMC methods.
 
 ## 📝 A note on notation

@@ -20,7 +20,7 @@ output:
 
 ## Simple MCMC Algorithm
 
-a) Change the following "Metropolis King of the Archipelago" algorithm (code from https://oduerr.github.io/anim/mcmc_mh.html) so that the islands are visited proportional to the number of the island squared. Visualize the resulting chain (first 200 steps) and the distribution. 
+a) Change the following "Metropolis King of the Archipelago" algorithm (code from https://oduerr.github.io/anim/mcmc_mh.html) so that the size of the island $i$ is proportional to $i^2$. Visualize the resulting chain (first 200 steps) and the distribution. 
 
 ```{r, eval=lsg, echo=lsg, fig.height=3}
 num_weeks <- 1e5
