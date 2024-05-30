@@ -1,0 +1,73 @@
+---
+output:
+  pdf_document:
+    highlight: pygments
+  html_document: 
+    default
+params:
+  lsg: FALSE
+---
+```{r, echo=FALSE, eval=TRUE, message=FALSE}
+  #The variable lsg is used to control the visibility of the solutions and needs to be set
+  if (exists("lsg") == FALSE){ 
+    lsg <- params$lsg
+  }
+```
+
+
+## Simple MCMC Algorithm
+
+### a) Metropolis King of the Archipelago
+Change the following "Metropolis King of the Archipelago" algorithm (code from <https://oduerr.github.io/anim/mcmc_mh.html>) so that the size of the island $i$ is proportional to $i^2$. Visualize the resulting chain (first 200 steps) and the distribution. 
+
+```{r, eval=lsg, echo=lsg, fig.height=3}
+num_weeks <- 1e5
+positions <- rep(0, num_weeks)
+s = (1:10)^2 #Sizes of the islands in abitrary units
+current <- 10
+for (i in 1:num_weeks) {
+  ## record current position
+  positions[i] <- current
+  ## flip coin to generate proposal
+  proposal <- current + sample(c(-1, 1), size = 1)
+  ## now make sure he loops around the archipelago
+  if (proposal < 1) proposal <- 10
+  if (proposal > 10) proposal <- 1
+  ## move?
+  prob_move <- s[proposal] / s[current]
+  current <- ifelse(runif(1) < prob_move, proposal, current)
+}
+plot(1:100, positions[1:100])
+plot(table(positions)/num_weeks, type = "h", xlab = "Island", ylab = "Probability")
+```
+
+### b) Metropolis Algorithm (continuous case)
+For the Metropolis Algorithm (continuous case) given in <https://oduerr.github.io/anim/mcmc_mh.html> change the proposal distribution so that larger jumps are more likely. What do you observe? 
+
+```{r, eval=lsg, echo=lsg, fig.height=3}
+### We observe that the chain moves larger distances, but the acceptance rate is lower (many horizonal lines)
+
+Steps = 10000
+plot_max = 500
+thetas = rep(NA, Steps)
+
+# Some target distribution (only up to a constant factor)
+p = function(theta){
+  return (dexp(theta, rate=1/10)*42)
+}
+
+theta = 60 #Initial value
+for (t in 1:Steps) {
+  theta_star = rnorm(1, theta, 30)  # Propose a new value
+  A = min(1, p(theta_star)/p(theta)) #Acceptance probability
+  # Accept or reject the new value
+  if (runif(1) < A) { # Accept with probability A
+    thetas[t] = theta_star
+    theta = theta_star 
+  } 
+  thetas[t] = theta
+}
+plot(1:plot_max, thetas[1:plot_max], type = "l", xlab = "Steps", ylab = "Theta", main="Trace of the samples")
+```
+ 
+

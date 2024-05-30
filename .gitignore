@@ -132,3 +132,5 @@ lecture_notes/marginal_intuition.toc
 website/lecture_notes/MCMC/MCMC.tex
 /lab/lr_1_MH_vs_Stan/MH_Stan_files
 lab/lr_1_MH_vs_Stan/MH_Stan.html
+/lab/king_markov/MCMC_simple_files
+lab/king_markov/MCMC_simple.html
