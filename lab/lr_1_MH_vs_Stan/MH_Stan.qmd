@@ -1,0 +1,83 @@
+---
+output:
+  pdf_document:
+    highlight: pygments
+  html_document: default
+---
+
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE}
+  #The variable lsg is used to control the visibility of the solutions and needs to be set
+  if (exists("lsg") == FALSE){ 
+    lsg <- TRUE  
+  }
+```
+
+## Linear Regression with Metropolis-Hastings and Stan
+
+We compare a simple Metropolis-Hastings algorithm with Stan for a real simple linear regression problem. 
+
+
+a) Loading of data. You can load the data via:
+
+```{r, echo=TRUE, eval=TRUE}
+  df = read.csv("https://raw.githubusercontent.com/tensorchiefs/data/main/data/sbp.csv")
+```
+
+b)  The code for the Metropolis-Hastings algorithm can be found at https://github.com/oduerr/da/blob/master/code/MCMC_MH.R you can use via
+
+```{r, echo=lsg, eval=lsg, warning=FALSE}
+  #source('https://raw.githubusercontent.com/oduerr/da/master/code/MCMC_MH.R') #Load the Metropolis-Hastings code
+  source('~/Documents/GitHub/da/code/MCMC_MH.R') #Load the Metropolis-Hastings code
+  proposal_sd <- c(0.1, 5, 5)
+  data = list(N=33, x=df$x, y=df$y, K=1)
+  n_iter = 10000
+  initial_values <- c(0, 0, 1)
+  # Run the Metropolis-Hastings algorithm
+  samples_hm <- metropolis_hastings(log_posterior, initial_values, data, n_iter, proposal_sd)
+```
+
+What does the code do, what is the meaning of the variables `proposal_sd`,`n_iter`, `initial_values` and `samples`? Make a trace plot of the slope from the samples.
+
+```{R, echo=lsg, eval=FALSE, fig.height=3}
+#The code runs a Metropolis-Hastings algorithm to sample from the posterior distribution of a linear regression model. The variables have the following meaning: `proposal_sd` is the standard deviation of the proposal distribution, `data` contains the data, `n_iter` is the number of iterations, `initial_values` are the initial values for the parameters and `samples` contains the samples from the posterior distribution.
+```
+
+
+```{r, echo=lsg, eval=lsg, fig.height=3}
+  plot(samples_hm[,1], type = "l", xlab = "Iteration", ylab = "Slope")
+```
+
+c) Formulate the same problem in Stan, have a lock at the code to come up with the complete code including the priors.
+Sample one chain from the posterior.
+
+```{r, echo=lsg, eval=FALSE, code=readLines('~/Documents/GitHub/da/lab/lr_1_MH_vs_Stan/linear_regression.stan'), collapse=TRUE}
+# print the Stan model
+#m_rcmdstan
+```
+
+
+```{r, eval=lsg, echo=TRUE, warning=FALSE}
+library(cmdstanr)
+#Reading the model definition 
+m_rcmdstan <- cmdstan_model('~/Documents/GitHub/da/lab/lr_1_MH_vs_Stan/linear_regression.stan')
+samples_stan = m_rcmdstan$sample(data=data, chains=1, iter_sampling = 10000)
+samples_stan = samples_stan$draws(format = 'df')
+```
+
+Compare the trace plots of the slope from the Metropolis-Hastings algorithm and Stan. Also compare the posterior plots. Which of the two algorithms has a larger $n_eff$? 
+
+```{r, echo=lsg, eval=lsg, fig.height=3}
+  par(mfrow=c(1,2))
+  plot(samples_stan$a[1000:1200], type = "l", xlab = "Iteration", ylab = "Slope") 
+  lines(samples_hm[1000:1200,1], col='blue')
+  legend("topright", legend=c("Stan", "MH"), col=c("black", "blue"), lty=1)
+  
+  plot(density(samples_stan$a), main = "Posterior", xlab = "Slope", ylab = "Density")
+  lines(density(samples_hm[,1]), col='blue')
+  legend("topright", legend=c("Stan", "MH"), col=c("black", "blue"), lty=1)
+  
+```
+
+
+
