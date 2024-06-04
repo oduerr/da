@@ -134,3 +134,8 @@ website/lecture_notes/MCMC/MCMC.tex
 lab/lr_1_MH_vs_Stan/MH_Stan.html
 /lab/king_markov/MCMC_simple_files
 lab/king_markov/MCMC_simple.html
+lab/lr_1_MH_vs_Stan/linear_regression
+
+
+stan/logreg_challenger/animation_*.mp4
+stan/logreg_challenger/log_reg_no_prior
