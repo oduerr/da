@@ -18,6 +18,7 @@ A quick summary of commands (for a more details see below).
 
 ```{r cmdstan minimal, eval=FALSE}
 library(cmdstanr)
+options(mc.cores = parallel::detectCores()) #Make it faster
 m_rcmdstan <- cmdstan_model(file_stan) #Compiling
 s_rcmdstan = m_rcmdstan$sample(data = data) #Sampling
 df = s_rcmdstan$draws(format = "df") #Extracting Samples as data.frame
@@ -61,6 +62,13 @@ s_rstan = sampling(m_rstan, data=data) #Sampling from file
 sampling(model_1, data=dat, algorithm="Fixed_param", chain=1, iter=1) 
 ```
 
+# Stan Syntax
+See <https://mc-stan.org/docs/stan-users-guide/index.html>
+
+Note that in newer version, we need
+`int<lower=0,upper=1> y[N];` instead of
+`array[N] int<lower=0, upper=1> y;`
+
 
 
 # In a more detail
@@ -102,7 +110,7 @@ To define a model, you can add a string or create a `.stan` file. Another option
 
 ```{r, warning=FALSE,message=FALSE, eval=TRUE,echo=TRUE}
 stan_code = "data{
-  int<lower=0> N;
+  int<lower=0> N; 
   vector[N] y;
   vector[N] x;
 }

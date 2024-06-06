@@ -3,7 +3,7 @@ title: "About"
 ---
 
 
-### Internal Notes for the Author
+### Internal Notes for authoring the website
 
 #### How to add a new page
 
@@ -19,8 +19,13 @@ Make sure that you do not have `self-contained: true` in the **qmd** file, other
 - Render and move to docs folder
 
 ```bash
-quarto render _quarto.yml
+quarto render 
 ```
 
 - Check in the changes in the docs folder
 
+#### Development
+
+```bash
+quarto preview lecture_notes/MCMC/MCMC.qmd
+```

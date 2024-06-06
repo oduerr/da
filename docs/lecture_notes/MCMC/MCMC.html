@@ -306,7 +306,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"id":1,"code":"set.seed(123)\nSteps = 10000\nplot_max = 500\nthetas = rep(NA, Steps)\n\n# Some target distribution (only up to a constant factor)\np = function(theta){\n  return (dexp(theta, rate=1/10)*42)\n}\n\ntheta = 60 #Initial value\nfor (t in 1:Steps) {\n  theta_star = rnorm(1, theta, 15)  # Propose a new value\n  A = min(1, p(theta_star)/p(theta)) #Acceptance probability\n  # Accept or reject the new value\n  if (runif(1) < A) { # Accept (typical trick)\n    thetas[t] = theta_star\n    theta = theta_star \n  } \n  thetas[t] = theta\n}\nplot(1:plot_max, thetas[1:plot_max], type = \"l\", xlab = \"Steps\", ylab = \"Theta\", main=\"Trace of the samples\")\nhist(thetas[200:Steps], main = \"Density of the samples\", freq=FALSE, 30)","options":{"fig-cap":"","editor-font-scale":1,"warning":"true","dpi":72,"label":"unnamed-chunk-1","out-width":"700px","output":"true","fig-width":7,"context":"interactive","fig-height":5,"autorun":"false","out-height":"","message":"true","editor-quick-suggestions":"false","results":"markup","comment":"","read-only":"false","classes":"","editor-max-height":""}},{"id":2,"code":"# Initial values\nset.seed(123)\nSteps = 10000\nplot_max = 500\nx1 = rep(NA, Steps)\nx2 = rep(NA, Steps)\n\n# Target distribution in r (up to a constant factor)\np_r = function(r) {\n  return (dnorm(r, mean = 1, sd = 0.25))\n}\n\n# Proposal distribution standard deviations\nproposal_sd_x1 = 0.5\nproposal_sd_x2 = 0.5\n\n# Initial values for x1 and x2\nx1[1] = 1\nx2[1] = 0\n\nfor (t in 2:Steps) {\n  # Propose new values in x1 and x2\n  x1_star = x1[t-1] + rnorm(1, mean = 0, sd = proposal_sd_x1)\n  x2_star = x2[t-1] + rnorm(1, mean = 0, sd = proposal_sd_x2)\n  \n  # Calculate r and r_star\n  r = sqrt(x1[t-1]^2 + x2[t-1]^2)\n  r_star = sqrt(x1_star^2 + x2_star^2)\n  \n  # Compute the Jacobian determinant\n  J = 1/r\n  J_star = 1/r_star\n  \n  # Compute the acceptance probability\n  if (r_star > 0) {  # Ensure r_star is within valid range\n    A = min(1, (p_r(r_star) * J_star) / (p_r(r) * J))\n  } else {\n    A = 0\n  }\n  \n  # Accept or reject the new values\n  if (runif(1) < A) {\n    x1[t] = x1_star\n    x2[t] = x2_star\n  } else {\n    x1[t] = x1[t-1]\n    x2[t] = x2[t-1]\n  }\n}\n\n# Plot the trace of the samples in x1\nplot(1:plot_max, x1[1:plot_max], type = \"l\", xlab = \"Steps\", ylab = \"x1 and x2\", main=\"Trace of the samples in x\")\nlines(1:plot_max, x2[1:plot_max], type = \"l\", xlab = \"Steps\",  col='red')\n\npar(mfrow=c(1,2))\n# Plot the histogram of r\nr_samples = sqrt(x1^2 + x2^2)\nhist(r_samples[200:Steps], main = paste0(\"Density of r, mean=\",round(mean(r_samples),4)), freq=FALSE, breaks = 30)\n# Scatter plot of (x1, x2)\nplot(x1, x2, main = \"Scatter plot of (x1, x2)\", xlab = \"x1\", ylab = \"x2\", pch='.')\ninvisible(par(mfrow=c(1,1)))","options":{"fig-cap":"","editor-font-scale":1,"warning":"true","dpi":72,"label":"unnamed-chunk-2","out-width":"700px","output":"true","fig-width":7,"context":"interactive","fig-height":5,"autorun":"false","out-height":"","message":"true","editor-quick-suggestions":"false","results":"markup","comment":"","read-only":"false","classes":"","editor-max-height":""}}];
+globalThis.qwebrCellDetails = [{"code":"set.seed(123)\nSteps = 10000\nplot_max = 500\nthetas = rep(NA, Steps)\n\n# Some target distribution (only up to a constant factor)\np = function(theta){\n  return (dexp(theta, rate=1/10)*42)\n}\n\ntheta = 60 #Initial value\nfor (t in 1:Steps) {\n  theta_star = rnorm(1, theta, 15)  # Propose a new value\n  A = min(1, p(theta_star)/p(theta)) #Acceptance probability\n  # Accept or reject the new value\n  if (runif(1) < A) { # Accept (typical trick)\n    thetas[t] = theta_star\n    theta = theta_star \n  } \n  thetas[t] = theta\n}\nplot(1:plot_max, thetas[1:plot_max], type = \"l\", xlab = \"Steps\", ylab = \"Theta\", main=\"Trace of the samples\")\nhist(thetas[200:Steps], main = \"Density of the samples\", freq=FALSE, 30)","id":1,"options":{"fig-cap":"","editor-font-scale":1,"editor-max-height":"","fig-height":5,"warning":"true","classes":"","output":"true","label":"unnamed-chunk-1","dpi":72,"results":"markup","autorun":"false","context":"interactive","editor-quick-suggestions":"false","message":"true","comment":"","fig-width":7,"out-height":"","read-only":"false","out-width":"700px"}},{"code":"# Initial values\nset.seed(123)\nSteps = 10000\nplot_max = 500\nx1 = rep(NA, Steps)\nx2 = rep(NA, Steps)\n\n# Target distribution in r (up to a constant factor)\np_r = function(r) {\n  return (dnorm(r, mean = 1, sd = 0.25))\n}\n\n# Proposal distribution standard deviations\nproposal_sd_x1 = 0.5\nproposal_sd_x2 = 0.5\n\n# Initial values for x1 and x2\nx1[1] = 1\nx2[1] = 0\n\nfor (t in 2:Steps) {\n  # Propose new values in x1 and x2\n  x1_star = x1[t-1] + rnorm(1, mean = 0, sd = proposal_sd_x1)\n  x2_star = x2[t-1] + rnorm(1, mean = 0, sd = proposal_sd_x2)\n  \n  # Calculate r and r_star\n  r = sqrt(x1[t-1]^2 + x2[t-1]^2)\n  r_star = sqrt(x1_star^2 + x2_star^2)\n  \n  # Compute the Jacobian determinant\n  J = 1/r\n  J_star = 1/r_star\n  \n  # Compute the acceptance probability\n  if (r_star > 0) {  # Ensure r_star is within valid range\n    A = min(1, (p_r(r_star) * J_star) / (p_r(r) * J))\n  } else {\n    A = 0\n  }\n  \n  # Accept or reject the new values\n  if (runif(1) < A) {\n    x1[t] = x1_star\n    x2[t] = x2_star\n  } else {\n    x1[t] = x1[t-1]\n    x2[t] = x2[t-1]\n  }\n}\n\n# Plot the trace of the samples in x1\nplot(1:plot_max, x1[1:plot_max], type = \"l\", xlab = \"Steps\", ylab = \"x1 and x2\", main=\"Trace of the samples in x\")\nlines(1:plot_max, x2[1:plot_max], type = \"l\", xlab = \"Steps\",  col='red')\n\npar(mfrow=c(1,2))\n# Plot the histogram of r\nr_samples = sqrt(x1^2 + x2^2)\nhist(r_samples[200:Steps], main = paste0(\"Density of r, mean=\",round(mean(r_samples),4)), freq=FALSE, breaks = 30)\n# Scatter plot of (x1, x2)\nplot(x1, x2, main = \"Scatter plot of (x1, x2)\", xlab = \"x1\", ylab = \"x2\", pch='.')\ninvisible(par(mfrow=c(1,1)))","id":2,"options":{"fig-cap":"","editor-font-scale":1,"editor-max-height":"","fig-height":5,"warning":"true","classes":"","output":"true","label":"unnamed-chunk-2","dpi":72,"results":"markup","autorun":"false","context":"interactive","editor-quick-suggestions":"false","message":"true","comment":"","fig-width":7,"out-height":"","read-only":"false","out-width":"700px"}}];
 
 </script>
 <script type="module">
@@ -1253,6 +1253,7 @@ window.Quarto = {
   <li><a href="#continuous-case-details" id="toc-continuous-case-details" class="nav-link" data-scroll-target="#continuous-case-details">🤔 Continuous case details*</a>
   <ul class="collapse">
   <li><a href="#sampling-in-a-different-space" id="toc-sampling-in-a-different-space" class="nav-link" data-scroll-target="#sampling-in-a-different-space">⚠️Sampling in a different space</a></li>
+  <li><a href="#likelihood-in-different-space" id="toc-likelihood-in-different-space" class="nav-link" data-scroll-target="#likelihood-in-different-space">⚠ Likelihood in different space</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -1716,6 +1717,19 @@ A(\theta_i \leftarrow \theta_j) = \min \left(1, \frac{d\theta_j T(\theta_j|\thet
 <p><span id="eq-mh-acceptance"><span class="math display">\[
 A(\theta_i \leftarrow \theta_j) = \min \left(1, \frac{T(\theta_j|\theta_i) p(\theta_i)}{T(\theta_i|\theta_j) p(\theta_j) }\right)
 \tag{1}\]</span></span> Which is the same as in the discrete case! However, there might be pitfalls when changing to the continuous case, don’t just replace the probabilities <span class="math inline">\(P_i\)</span> with densities <span class="math inline">\(p(\theta)\)</span>! This is for example the case in the following.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The MH Criterion is the same in the continuous case as in the discrete case. Just replace the probabilities with densities.</p>
+</div>
+</div>
 <section id="sampling-in-a-different-space" class="level3">
 <h3 class="anchored" data-anchor-id="sampling-in-a-different-space">⚠️Sampling in a different space</h3>
 <p>There are several reasons, to sample in a different space, then the space where the target distribution <span class="math inline">\(p(\theta)\)</span> is defined. It might be hard to sample in <span class="math inline">\(\theta\)</span>, but it’s easy to sample in another space <span class="math inline">\(x\)</span>. For example in <span class="math inline">\(\theta\)</span> the probability landscape might have very narrow regions, but in <span class="math inline">\(x\)</span> it’s much nicer behaved. We will encounter this in the famous Neal’s funnel example later. Another reason is that <span class="math inline">\(\theta\)</span> is in a restricted space. We will use the following example in spherical coordinates to illustrate this. Suppose we have a problem where we have a good idea that the radius <span class="math inline">\(r\)</span> is around 1, but we have no idea about the angle <span class="math inline">\(\varphi\)</span>. We can express this in the following prior</p>
@@ -1750,6 +1764,26 @@ J^{-1} =
 \]</span> The Jacobian Determinant is then <span class="math inline">\(J = 1/r\)</span>. We can now sample in the unrestricted space <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> and apply the Jacobian Determinant. The following code snippet shows how to sample from the target distribution in unrestricted space <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> and how to correctly apply the Jacobian Determinant.</p>
 <div id="qwebr-insertion-location-2"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="likelihood-in-different-space" class="level3">
+<h3 class="anchored" data-anchor-id="likelihood-in-different-space">⚠ Likelihood in different space</h3>
+<p>Consider the where are in a parameter space <span class="math inline">\(\theta\)</span> and we have in that space the likelihood <span class="math inline">\(p_\theta(D|\theta)\)</span> and prior <span class="math inline">\(p_\theta(\theta))\)</span> and thus the posterior is</p>
+<p><span class="math display">\[
+p_\theta(\theta|D) \propto p_\theta(D|\theta) p_\theta(\theta)
+\]</span></p>
+<p>We now transform in an different space <span class="math inline">\(\varphi\)</span> with the transformation <span class="math inline">\(\theta = f(\varphi)\)</span>. The likelihood in the new space is then given by <span class="math inline">\(p_\varphi(D|\varphi)\)</span> and the prior by <span class="math inline">\(p_\varphi(\varphi)\)</span> and hence the posterior is</p>
+<p><span class="math display">\[
+p_\varphi(\varphi|D) \propto p_\varphi(D|\varphi) p_\varphi(\varphi)
+\]</span></p>
+<p>Of course we can sample, evaluate the likelihood and prior in either space and get the same result. What happens if we sample in the <span class="math inline">\(\varphi\)</span> space</p>
+<ol type="1">
+<li>Start with <span class="math inline">\(\varphi_0\)</span></li>
+<li>Propose <span class="math inline">\(\varphi^*\)</span> from <span class="math inline">\(\varphi_0\)</span> with <span class="math inline">\(T(\varphi^*|\varphi_0)\)</span></li>
+<li>Calculate the unnormalized posterior in the <span class="math inline">\(\varphi\)</span> space <span class="math inline">\(p_\varphi(D|\varphi^*) p_\varphi(\varphi^*)\)</span></li>
+<li>Assuming a symetric proposal distribution <span class="math inline">\(T(\varphi^*|\varphi_0) = T(\varphi_0|\varphi^*)\)</span> we get the Metropolis-Hastings acceptance probability from the ratio <span class="math inline">\(p_\varphi(D|\varphi^*) p_\varphi(\varphi^*)/p_\varphi(D|\varphi_0) p_\varphi(\varphi_0)\)</span>.</li>
+</ol>
+<p>Is it OK to calculate the likelihood in the <span class="math inline">\(\theta\)</span> space by the transformed <span class="math inline">\(\varphi\)</span>? For that the ratio of the likelihoods <span class="math inline">\(p_\theta(D|f(\varphi^*)) /p_\theta(D|f(\varphi_0)) \overbrace{=}^{!}  p_\varphi(D|\varphi^*) /p_\varphi(D|\varphi_0)\)</span> needs to be the same.</p>
+<p>Let’s make a concrete Example. <strong>TODO…</strong></p>
 
 
 <!-- -->
@@ -2244,304 +2278,343 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">  - webr</span></span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>In this lecture note, we will discuss the basics of Markov Chain Monte Carlo (MCMC) methods. MCMC methods are a class of algorithms that are used to sample from a probability distribution $p(\theta)$ such as the posterior $p(\theta|D) \propto p(D|\theta) p(\theta)$. While there are more advanced MCMC methods, we will focus on the Metropolis-Hastings algorithm, which is a simple and widely used MCMC algorithm and shows the principles of MCMC methods.</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📝 A note on notation</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>In this lecture note, we will use the following notation:</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$\theta$ is a parameter of interest. This could be a scalar or a vector.</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$D$ is the data.</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$p(\theta)$ is the prior distribution of $\theta$ and</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$p(D|\theta)$ is the likelihood of the data given $\theta$.</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$p(\theta|D)$ is the posterior distribution of $\theta$ given the data $D$</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>All expressions are read right to left, e.g. $p(\theta|D)$ is the posterior distribution of $\theta$ given the data $D$ and $P_{ij}$ is the probability of moving from state $j$ to state $i$.</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="fu">### Using $p(\theta)$ instead of $p(\theta|D)$</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>Since the MCMC methods works with any probability distribution, we will use $p(\theta)$ to denote the target distribution that we want to sample from. In the context of Bayesian inference, $p(\theta)$ is the posterior distribution $p(\theta|D)$ without explicitly stating the data $D$. You can also think of it as the posterior when you have no data (the prior).</span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="fu">### 📊 Densities vs. 📉 probabilities</span></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>While in general in the lecture we will use the terms "density" and "probability" interchangeably. However, in the context of MCMC methods, we will use the term "density" to refer to the probability density function of a continuous distribution and "probability" to refer to the probability mass function of a discrete distribution. In case the destinction is crucial, we will use the terms $P(\cdot)$ for probabilities and $p(\cdot)$ for densities.</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="fu">## 🔭 A high level overview of Markov Chains.</span></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>A Markov chain is a sequence of random variables $\theta_1, \theta_2, \theta_3, \ldots$ which can be viewed as a time series where the next value depends only on the current value (Markov Property). In @fig-two-chains: we show two Markov chains, starting from different initial values. Note that after about 150 steps both chains fluctuate around the same value. This is the *stationary distribution* of the Markov chain. A Markov chain reaches a stationary distribution when the distribution of the states no longer changes as the chain progresses.</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="al">![Shown are two Markov chains for the scalar quantity \$\\theta\$. The chains start from different initial positions. After about 150 time steps the chains fluctate around the same value.](images/2chains.png)</span><span class="ot">{#fig-two-chains fig-align="center"}</span><span class="co">](https://github.com/oduerr/da/blob/master/lecture_notes/MCMC/SimpleMCMC.R)</span></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>In @fig-two-chain-dist, we show a histogram<span class="ot">[^1]</span> of the values of the two chains after from 250 steps onward. The histogram indicate that the values of the chains are distributed around the same distribution is the stationary distribution of the Markov chain.</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="ot">[^1]: </span>Well actually its a density plot <span class="in">`plot(density(.))`</span> and not <span class="in">`hist(.)`</span></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="al">![The Histogram (actually density estimates) for of the two chains after 250 steps](images/2chains-marginal.png)</span><span class="ot">{#fig-two-chain-dist fig-align="center"}</span><span class="co">](https://github.com/oduerr/da/blob/master/lecture_notes/MCMC/SimpleMCMC.R)</span></span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>The key idea of MCMC methods is to construct a Markov chain that has a stationary distribution equal to the target distribution $p(\theta)$. Once the Markov chain has converged to the stationary distribution, we can use the samples from the chain to approximate the target distribution.</span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>So how do we construct a Markov chain with a stationary distribution equal to the target distribution $p(\theta)$? To do so, we draw insights from statistical physics.</span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="fu">### Statistical physics and detailed balance</span></span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>Consider a glass of water in which we add a drop of ink. The ink will spread out in the water until it is uniformly distributed. This is an example of a system that has reached equilibrium. The the following ideas, are important inspirations for MCMC methods:</span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>**Ergodic Hypothesis**</span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="ss">   - </span>The diffusion process can be viewed as either a single particle or many particles. Initially concentrated in one region, a particle will eventually explore the entire space uniformly, regardless of its starting point. This idea, known as the Ergodic Hypothesis, was first proposed by Boltzmann.</span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>**The reaching of the stationary distribution**</span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="ss">   - </span>Over time, particles reach a stationary distribution (in physics is referred to as the equilibrium distribution). For example, ink in water eventually reaches a uniform distribution. However, not all distributions are uniform. For instance, the barometric height equation describes how particles in the air are more concentrated at the ground and decrease exponentially with height.</span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>**Detailed Balance**</span>
-<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>At stationarity, the rate at which particles move from one point to another is equal to the rate at which they move in the opposite direction. This concept is known as detailed balance and is crucial for understanding the Metropolis-Hastings algorithm.</span>
-<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>From that, we can design the  MCMC Algorithms algorithms. Roughly as follows</span>
-<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Start with parameter of interest $\theta$ at certain position </span>
-<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Mimics the diffusion process but with a stationary distribution of our choosing $p(\theta)$</span>
-<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Algorithm needs to obey the detailed balance condition, this allow us to define the transition probabiliy with which we go from one value to another. </span>
-<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="fu">## ⚖️ Detailed balance</span></span>
-<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>For a Markov chain to be useful, it needs to convert to a stationary distribution and the stationary distribution needs to be the target distribution $p(\theta)$. The Metropolis-Hastings algorithm is a simple MCMC algorithm that ensures that the Markov chain converges to the desired stationary distribution. The Metropolis-Hastings algorithm is based on the principle of detailed balance. Also almost all other MCMC algorithms (such as Hamiltonian Monte Carlo, Slice Sampling, and Gibbs Sampling) are based on the principle of detailed balance. So what is detailed balance?</span>
-<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>For the ink particles, we have a uniforn distribution as stationary distribution. For the ink particles in the water glass the detailed balance condition is that the rate at which particles move from one point to another is equal to the rate at which they move in the opposite direction. Remember the example with the king visiting the islands? The king will visit the islands with a probability proportional to the size on the island. So the stationary distribution is not uniform anymore. The detailed balance condition can be used to determine the probability $P_{ji}$ of moving from island $i$ to island $j$. Now consider N Kings, in order that the number of Kings on the islands have reached a stationary distribution, at each time step as many Kings need to move from one island to another as move in the opposite direction. Otherwise the number of Kings on the islands would change over time and we have not yet reached the stationary distribution. The detailed balance condition is (a bit slopy) given by:</span>
-<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>  P_{ij} N_j = P_{ji} N_i</span>
-<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a>with $P_{ij}$ the probability of moving from island $i$ to island $j$ and $N_i$ the number of Kings on island $i$. Let's divide both sides by $N$</span>
-<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a> P_{ij}\underbrace{P_{j}}_{N_j/N} = P_{ji}\underbrace{P_{i}}_{N_j/N}</span>
-<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>@fig-db shows the detailed balance situation in a system with discrete states (such as kings). Note that the detailed balence is between two states $i$ and $j$ and that other states $k$ are not taken into account.</span>
-<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="al">![Illustration of the detailed balance condition in a Markov chain. The transition probabilities \$P\_{ij}\$ and \$P\_{ji}\$ between states \$j\$ and \$i\$ are shown, along with their respective stationary probabilities \$P_i\$ and \$P_j\$. The light gray dashed arrows indicate the presence of other states in the Markov chain, emphasizing that the detailed balance condition is specifically applied between states \$i\$ and \$j\$](images/db.png)</span><span class="ot">{#fig-db fig-align="center" width="600"}</span><span class="co">](https://github.com/oduerr/da/blob/master/lecture_notes/MCMC/img_sources)</span></span>
-<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>The detailed balance condition the probability $P_{ij}P_j$ (fraction of Kings/Particle) move from $j$ to $i$ is equal to the probability $P_{ji}P_i$ (fraction of Kings/Particle) move from $i$ to $j$.</span>
-<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a><span class="fu">### 🎛️Controling $P_{ij}$</span></span>
-<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>Let's choose $P_{ij}$ in our favor, so that in equilibrium the distribution $P_i$ is the distribution we want. We can do this by proposing a move from $i$ to $j$ with a probability $T_{ij}$ and then accept the move with an acceptance probability $A_{ij}$. The cool idea that physicists had in the 1950's is to choose the acceptence probability $A_{ij}$ as:</span>
-<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Metropolis-Hastings acceptance probability</span></span>
-<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a>A_{ij} = \min (1, \frac{T_{ji}P_i}{T_{ij} P_j})</span>
-<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a>Why is detailed balance fullfilled?</span>
-<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a><span class="al">![](images/db_h.png)</span>{width="504"}</span>
-<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>If we know move a particle according to the Metropolis Hastings Acceptance rate. We start in state $\theta_0$ and propose a move to $\theta^*$ with $T(\theta^*|\theta_0)$. We accept the new state with a probability according to the MH Acceptance probability. If we repeat we get the following chain of moves.</span>
-<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Initialize**: Start with an initial value $\theta_0$.</span>
-<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Propose**: new state $\theta^*$ from old state $\theta_t$ with a proposal distribution $T(\theta^* | \theta_t)$.</span>
-<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Calculate Acceptance Probability**: Compute the acceptance probability $$</span>
-<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a>      A  = \min \left(1, \frac{T(\theta_t | \theta^*) p(\theta^*)}{T(\theta^* | \theta_t) p(\theta_t)}\right)</span>
-<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a>    $$</span>
-<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Accept** proposed state: With probability $A$, set $\theta_{t+1} = \theta^*$. Otherwise, continue with old state, $\theta_{t+1} = \theta_t$.</span>
-<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>**Iterate**: Repeat steps 2-4 for a large number of iterations to ensure convergence to the stationary distribution.</span>
-<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a><span class="fu">#### A short note on the continuous case</span></span>
-<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>So far we have discussed the Metropolis-Hastings algorithm in the context of discrete states. However, the Metropolis-Hastings algorithm can be extended to continuous states, easily. There might be pitfalls when changing to the continuous case, don't just replace the probabilities $P_i$ with densities $p(\theta)$! However here the Metropolis-Hastings algorithm is the same as in the discrete case. Just exchange the probabilities with densities.</span>
-<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a>For the acceptance rate $p(\theta)$ is needed only up to a constant factor, this makes it ideal for Bayesian inference, where we just need $p(\theta|D) \propto p(D|\theta)p(\theta)$.</span>
-<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a>This process ensures that the Markov chain will converge to the target distribution $p(\theta)$, allowing us to approximate the distribution through the samples obtained from the chain. Let's give it a try, we assume symetric proposal distribution $T(\theta^*|\theta) = T(\theta|\theta^*)$ and we want to sample from the $p(\theta) \propto Exp(\lambda = 1/10)$.</span>
-<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a><span class="in">```{webr-r}</span></span>
-<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a><span class="in">set.seed(123)</span></span>
-<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a><span class="in">Steps = 10000</span></span>
-<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a><span class="in">plot_max = 500</span></span>
-<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a><span class="in">thetas = rep(NA, Steps)</span></span>
-<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a><span class="in"># Some target distribution (only up to a constant factor)</span></span>
-<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a><span class="in">p = function(theta){</span></span>
-<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a><span class="in">  return (dexp(theta, rate=1/10)*42)</span></span>
-<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a><span class="in">theta = 60 #Initial value</span></span>
-<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a><span class="in">for (t in 1:Steps) {</span></span>
-<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a><span class="in">  theta_star = rnorm(1, theta, 15)  # Propose a new value</span></span>
-<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a><span class="in">  A = min(1, p(theta_star)/p(theta)) #Acceptance probability</span></span>
-<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a><span class="in">  # Accept or reject the new value</span></span>
-<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a><span class="in">  if (runif(1) &lt; A) { # Accept (typical trick)</span></span>
-<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a><span class="in">    thetas[t] = theta_star</span></span>
-<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a><span class="in">    theta = theta_star </span></span>
-<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a><span class="in">  } </span></span>
-<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a><span class="in">  thetas[t] = theta</span></span>
-<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a><span class="in">plot(1:plot_max, thetas[1:plot_max], type = "l", xlab = "Steps", ylab = "Theta", main="Trace of the samples")</span></span>
-<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a><span class="in">hist(thetas[200:Steps], main = "Density of the samples", freq=FALSE, 30)</span></span>
-<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a><span class="fu">### 📝 Exercise (Simple MCMC Algorithm)</span></span>
-<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a><span class="fu">### 📝 Exercise (Simple MCMC Algorithm)</span></span>
-<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>Play around with the code above.</span>
-<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>a) What do you observe if you change the standard deviation of the proposal distribution?</span>
-<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>b) Change the target distribution to $p(\theta) \propto \exp(-\theta^2/2)$.</span>
-<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a><span class="fu">## 🐛The hairy caterpillar</span></span>
-<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>There can be several problems when using the Metropolis-Hastings algorithm. </span>
-<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Slow mixing**: The Markov chain takes a long time to converge to the stationary distribution. </span>
-<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Random walk behavior**: Too small steps in the proposal distribution can lead to a behavior, where the chain moves slowly through the parameter space and many samples are correlated.</span>
-<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Trap in local minima**: The chain gets trapped in a local minimum and does not explore the parameter space properly</span>
-<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a><span class="fu">### 🛠️ Tools to inspect the chain</span></span>
-<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>First look at the trace of the chain(s), this is called traceplot. Simply plot the parameter values against the steps. Such a traceplot has been shown in @fig-two-chains. We clearly see that the 2 chains have converged to the same region (stationary distribution). Another traceplot is shown in @fig-traceplot. </span>
-<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a><span class="al">![Traceplot of the parameter sigma inagainst the steps. While the Metropolis Algorithm provides valid samples, the samples are highly correlated compared to the more advanced Stan algorithm](images/traceplot_stan_vs_mh.png)</span>{#fig-traceplot fig-align="center"}</span>
-<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>In this lecture note, we will discuss the basics of Markov Chain Monte Carlo (MCMC) methods. MCMC methods are a class of algorithms that are used to sample from a probability distribution $p(\theta)$ such as the posterior $p(\theta|D) \propto p(D|\theta) p(\theta)$. While there are more advanced MCMC methods, we will focus on the Metropolis-Hastings algorithm, which is a simple and widely used MCMC algorithm and shows the principles of MCMC methods.</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## 📝 A note on notation</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>In this lecture note, we will use the following notation:</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$\theta$ is a parameter of interest. This could be a scalar or a vector.</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$D$ is the data.</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$p(\theta)$ is the prior distribution of $\theta$ and</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$p(D|\theta)$ is the likelihood of the data given $\theta$.</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$p(\theta|D)$ is the posterior distribution of $\theta$ given the data $D$</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>All expressions are read right to left, e.g. $p(\theta|D)$ is the posterior distribution of $\theta$ given the data $D$ and $P_{ij}$ is the probability of moving from state $j$ to state $i$.</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="fu">### Using $p(\theta)$ instead of $p(\theta|D)$</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>Since the MCMC methods works with any probability distribution, we will use $p(\theta)$ to denote the target distribution that we want to sample from. In the context of Bayesian inference, $p(\theta)$ is the posterior distribution $p(\theta|D)$ without explicitly stating the data $D$. You can also think of it as the posterior when you have no data (the prior).</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="fu">### 📊 Densities vs. 📉 probabilities</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>While in general in the lecture we will use the terms "density" and "probability" interchangeably. However, in the context of MCMC methods, we will use the term "density" to refer to the probability density function of a continuous distribution and "probability" to refer to the probability mass function of a discrete distribution. In case the destinction is crucial, we will use the terms $P(\cdot)$ for probabilities and $p(\cdot)$ for densities.</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## 🔭 A high level overview of Markov Chains.</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>A Markov chain is a sequence of random variables $\theta_1, \theta_2, \theta_3, \ldots$ which can be viewed as a time series where the next value depends only on the current value (Markov Property). In @fig-two-chains: we show two Markov chains, starting from different initial values. Note that after about 150 steps both chains fluctuate around the same value. This is the *stationary distribution* of the Markov chain. A Markov chain reaches a stationary distribution when the distribution of the states no longer changes as the chain progresses.</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="al">![Shown are two Markov chains for the scalar quantity \$\\theta\$. The chains start from different initial positions. After about 150 time steps the chains fluctate around the same value.](images/2chains.png)</span><span class="ot">{#fig-two-chains fig-align="center"}</span><span class="co">](https://github.com/oduerr/da/blob/master/lecture_notes/MCMC/SimpleMCMC.R)</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>In @fig-two-chain-dist, we show a histogram<span class="ot">[^1]</span> of the values of the two chains after from 250 steps onward. The histogram indicate that the values of the chains are distributed around the same distribution is the stationary distribution of the Markov chain.</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="ot">[^1]: </span>Well actually its a density plot <span class="in">`plot(density(.))`</span> and not <span class="in">`hist(.)`</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="al">![The Histogram (actually density estimates) for of the two chains after 250 steps](images/2chains-marginal.png)</span><span class="ot">{#fig-two-chain-dist fig-align="center"}</span><span class="co">](https://github.com/oduerr/da/blob/master/lecture_notes/MCMC/SimpleMCMC.R)</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>The key idea of MCMC methods is to construct a Markov chain that has a stationary distribution equal to the target distribution $p(\theta)$. Once the Markov chain has converged to the stationary distribution, we can use the samples from the chain to approximate the target distribution.</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>So how do we construct a Markov chain with a stationary distribution equal to the target distribution $p(\theta)$? To do so, we draw insights from statistical physics.</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="fu">### Statistical physics and detailed balance</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>Consider a glass of water in which we add a drop of ink. The ink will spread out in the water until it is uniformly distributed. This is an example of a system that has reached equilibrium. The the following ideas, are important inspirations for MCMC methods:</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>**Ergodic Hypothesis**</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="ss">   - </span>The diffusion process can be viewed as either a single particle or many particles. Initially concentrated in one region, a particle will eventually explore the entire space uniformly, regardless of its starting point. This idea, known as the Ergodic Hypothesis, was first proposed by Boltzmann.</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>**The reaching of the stationary distribution**</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="ss">   - </span>Over time, particles reach a stationary distribution (in physics is referred to as the equilibrium distribution). For example, ink in water eventually reaches a uniform distribution. However, not all distributions are uniform. For instance, the barometric height equation describes how particles in the air are more concentrated at the ground and decrease exponentially with height.</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>**Detailed Balance**</span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>At stationarity, the rate at which particles move from one point to another is equal to the rate at which they move in the opposite direction. This concept is known as detailed balance and is crucial for understanding the Metropolis-Hastings algorithm.</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>From that, we can design the  MCMC Algorithms algorithms. Roughly as follows</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Start with parameter of interest $\theta$ at certain position </span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Mimics the diffusion process but with a stationary distribution of our choosing $p(\theta)$</span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Algorithm needs to obey the detailed balance condition, this allow us to define the transition probabiliy with which we go from one value to another. </span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="fu">## ⚖️ Detailed balance</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>For a Markov chain to be useful, it needs to convert to a stationary distribution and the stationary distribution needs to be the target distribution $p(\theta)$. The Metropolis-Hastings algorithm is a simple MCMC algorithm that ensures that the Markov chain converges to the desired stationary distribution. The Metropolis-Hastings algorithm is based on the principle of detailed balance. Also almost all other MCMC algorithms (such as Hamiltonian Monte Carlo, Slice Sampling, and Gibbs Sampling) are based on the principle of detailed balance. So what is detailed balance?</span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>For the ink particles, we have a uniforn distribution as stationary distribution. For the ink particles in the water glass the detailed balance condition is that the rate at which particles move from one point to another is equal to the rate at which they move in the opposite direction. Remember the example with the king visiting the islands? The king will visit the islands with a probability proportional to the size on the island. So the stationary distribution is not uniform anymore. The detailed balance condition can be used to determine the probability $P_{ji}$ of moving from island $i$ to island $j$. Now consider N Kings, in order that the number of Kings on the islands have reached a stationary distribution, at each time step as many Kings need to move from one island to another as move in the opposite direction. Otherwise the number of Kings on the islands would change over time and we have not yet reached the stationary distribution. The detailed balance condition is (a bit slopy) given by:</span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>  P_{ij} N_j = P_{ji} N_i</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>with $P_{ij}$ the probability of moving from island $i$ to island $j$ and $N_i$ the number of Kings on island $i$. Let's divide both sides by $N$</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a> P_{ij}\underbrace{P_{j}}_{N_j/N} = P_{ji}\underbrace{P_{i}}_{N_j/N}</span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>@fig-db shows the detailed balance situation in a system with discrete states (such as kings). Note that the detailed balence is between two states $i$ and $j$ and that other states $k$ are not taken into account.</span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="al">![Illustration of the detailed balance condition in a Markov chain. The transition probabilities \$P\_{ij}\$ and \$P\_{ji}\$ between states \$j\$ and \$i\$ are shown, along with their respective stationary probabilities \$P_i\$ and \$P_j\$. The light gray dashed arrows indicate the presence of other states in the Markov chain, emphasizing that the detailed balance condition is specifically applied between states \$i\$ and \$j\$](images/db.png)</span><span class="ot">{#fig-db fig-align="center" width="600"}</span><span class="co">](https://github.com/oduerr/da/blob/master/lecture_notes/MCMC/img_sources)</span></span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>The detailed balance condition the probability $P_{ij}P_j$ (fraction of Kings/Particle) move from $j$ to $i$ is equal to the probability $P_{ji}P_i$ (fraction of Kings/Particle) move from $i$ to $j$.</span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a><span class="fu">### 🎛️Controling $P_{ij}$</span></span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>Let's choose $P_{ij}$ in our favor, so that in equilibrium the distribution $P_i$ is the distribution we want. We can do this by proposing a move from $i$ to $j$ with a probability $T_{ij}$ and then accept the move with an acceptance probability $A_{ij}$. The cool idea that physicists had in the 1950's is to choose the acceptence probability $A_{ij}$ as:</span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Metropolis-Hastings acceptance probability</span></span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>A_{ij} = \min (1, \frac{T_{ji}P_i}{T_{ij} P_j})</span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a>Why is detailed balance fullfilled?</span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a><span class="al">![](images/db_h.png)</span>{width="504"}</span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a>If we know move a particle according to the Metropolis Hastings Acceptance rate. We start in state $\theta_0$ and propose a move to $\theta^*$ with $T(\theta^*|\theta_0)$. We accept the new state with a probability according to the MH Acceptance probability. If we repeat we get the following chain of moves.</span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Initialize**: Start with an initial value $\theta_0$.</span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Propose**: new state $\theta^*$ from old state $\theta_t$ with a proposal distribution $T(\theta^* | \theta_t)$.</span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Calculate Acceptance Probability**: Compute the acceptance probability $$</span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a>      A  = \min \left(1, \frac{T(\theta_t | \theta^*) p(\theta^*)}{T(\theta^* | \theta_t) p(\theta_t)}\right)</span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a>    $$</span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Accept** proposed state: With probability $A$, set $\theta_{t+1} = \theta^*$. Otherwise, continue with old state, $\theta_{t+1} = \theta_t$.</span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>**Iterate**: Repeat steps 2-4 for a large number of iterations to ensure convergence to the stationary distribution.</span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a><span class="fu">#### A short note on the continuous case</span></span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a>So far we have discussed the Metropolis-Hastings algorithm in the context of discrete states. However, the Metropolis-Hastings algorithm can be extended to continuous states, easily. There might be pitfalls when changing to the continuous case, don't just replace the probabilities $P_i$ with densities $p(\theta)$! However here the Metropolis-Hastings algorithm is the same as in the discrete case. Just exchange the probabilities with densities.</span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>For the acceptance rate $p(\theta)$ is needed only up to a constant factor, this makes it ideal for Bayesian inference, where we just need $p(\theta|D) \propto p(D|\theta)p(\theta)$.</span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a>This process ensures that the Markov chain will converge to the target distribution $p(\theta)$, allowing us to approximate the distribution through the samples obtained from the chain. Let's give it a try, we assume symetric proposal distribution $T(\theta^*|\theta) = T(\theta|\theta^*)$ and we want to sample from the $p(\theta) \propto Exp(\lambda = 1/10)$.</span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a><span class="in">```{webr-r}</span></span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a><span class="in">set.seed(123)</span></span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a><span class="in">Steps = 10000</span></span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a><span class="in">plot_max = 500</span></span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a><span class="in">thetas = rep(NA, Steps)</span></span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a><span class="in"># Some target distribution (only up to a constant factor)</span></span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a><span class="in">p = function(theta){</span></span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a><span class="in">  return (dexp(theta, rate=1/10)*42)</span></span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a><span class="in">theta = 60 #Initial value</span></span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a><span class="in">for (t in 1:Steps) {</span></span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a><span class="in">  theta_star = rnorm(1, theta, 15)  # Propose a new value</span></span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a><span class="in">  A = min(1, p(theta_star)/p(theta)) #Acceptance probability</span></span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a><span class="in">  # Accept or reject the new value</span></span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a><span class="in">  if (runif(1) &lt; A) { # Accept (typical trick)</span></span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a><span class="in">    thetas[t] = theta_star</span></span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a><span class="in">    theta = theta_star </span></span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a><span class="in">  } </span></span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a><span class="in">  thetas[t] = theta</span></span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a><span class="in">plot(1:plot_max, thetas[1:plot_max], type = "l", xlab = "Steps", ylab = "Theta", main="Trace of the samples")</span></span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a><span class="in">hist(thetas[200:Steps], main = "Density of the samples", freq=FALSE, 30)</span></span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a><span class="fu">### 📝 Exercise (Simple MCMC Algorithm)</span></span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a><span class="fu">### 📝 Exercise (Simple MCMC Algorithm)</span></span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a>Play around with the code above.</span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>a) What do you observe if you change the standard deviation of the proposal distribution?</span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>b) Change the target distribution to $p(\theta) \propto \exp(-\theta^2/2)$.</span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a><span class="fu">## 🐛The hairy caterpillar</span></span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>There can be several problems when using the Metropolis-Hastings algorithm. </span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Slow mixing**: The Markov chain takes a long time to converge to the stationary distribution. </span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Random walk behavior**: Too small steps in the proposal distribution can lead to a behavior, where the chain moves slowly through the parameter space and many samples are correlated.</span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Trap in local minima**: The chain gets trapped in a local minimum and does not explore the parameter space properly</span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a><span class="fu">### 🛠️ Tools to inspect the chain</span></span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>First look at the trace of the chain(s), this is called traceplot. Simply plot the parameter values against the steps. Such a traceplot has been shown in @fig-two-chains. We clearly see that the 2 chains have converged to the same region (stationary distribution). Another traceplot is shown in @fig-traceplot. </span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a><span class="al">![Traceplot of the parameter sigma inagainst the steps. While the Metropolis Algorithm provides valid samples, the samples are highly correlated compared to the more advanced Stan algorithm](images/traceplot_stan_vs_mh.png)</span>{#fig-traceplot fig-align="center"}</span>
 <span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a>This traceplot compares the parameter $a$ sampled with Stan (a more advanced MCMC algorithm) and the Metropolis-Hastings algorithm. We see that the Metropolis-Hastings algorithm moves slowly through the parameter space. In contrast, the Stan samples are less correlated and move more faster through the complete parameter space. This fast moving through the parameter space is called "efficient mixing" or a "hairy caterpillar". The effect of this "hairy caterpillar" is that the samples are less correlated and hence provide more information about the posterior distribution of the parameter. This can be quantified by the effective sample size (ESS), which is the number of independent samples that provide the same information as the correlated samples.</span>
-<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a>Finally, in the case of bimodal distributions, MCMC algorithms can get stuck in one of the modes. This is shown in @fig-bimodal . Some chains of have converged to the one mode and it takes a long time to switch to the other mode. While the true bimodal distribution would be sampled for infinite times it practically takes a long time to sample from both modes and the respecitve modes are not sampled equally. </span>
-<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a><span class="al">![Trace Plot of Samples from a Bimodal Distribution, all chains sample the repective mode quite successfully but stay too long in a mode before jumping to the next.](images/bimodal.png)</span>{#fig-bimodal fig-align="center"}</span>
-<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>You can play around a bit with the overlap of the two modes and the standard deviation of the proposal distribution in <span class="co">[</span><span class="ot">https://oduerr.github.io/anim/mcmc_mh.html</span><span class="co">](https://oduerr.github.io/anim/mcmc_mh.html)</span></span>
-<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>This traceplot compares the parameter $a$ sampled with Stan (a more advanced MCMC algorithm) and the Metropolis-Hastings algorithm. We see that the Metropolis-Hastings algorithm moves slowly through the parameter space. In contrast, the Stan samples are less correlated and move more faster through the complete parameter space. This fast moving through the parameter space is called "efficient mixing" or a "hairy caterpillar". The effect of this "hairy caterpillar" is that the samples are less correlated and hence provide more information about the posterior distribution of the parameter. This can be quantified by the effective sample size (ESS), which is the number of independent samples that provide the same information as the correlated samples.</span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>Finally, in the case of bimodal distributions, MCMC algorithms can get stuck in one of the modes. This is shown in @fig-bimodal . Some chains of have converged to the one mode and it takes a long time to switch to the other mode. While the true bimodal distribution would be sampled for infinite times it practically takes a long time to sample from both modes and the respecitve modes are not sampled equally. </span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a><span class="al">![Trace Plot of Samples from a Bimodal Distribution, all chains sample the repective mode quite successfully but stay too long in a mode before jumping to the next.](images/bimodal.png)</span>{#fig-bimodal fig-align="center"}</span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>You can play around a bit with the overlap of the two modes and the standard deviation of the proposal distribution in <span class="co">[</span><span class="ot">https://oduerr.github.io/anim/mcmc_mh.html</span><span class="co">](https://oduerr.github.io/anim/mcmc_mh.html)</span></span>
 <span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a><span class="fu">## 🤔 Continuous case details\*</span></span>
-<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a><span class="sc">\*</span>This is and advanced topic, which might be well skipped on first reading.</span>
-<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>Let's look at the continous case in more detail. We derived the Metropolis-Hastings algorithm for the discrete case, where we have probabilities and not densities. The MH acceptance probability is given by</span>
-<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>A_{ij} = \min (1, \frac{T_{ji}P_i}{T_{ij} P_j})</span>
-<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>The probability $P_i$ for the state $\theta_i$ is replaced by the density $p(\theta_i)$ times the infinitisimal volume element $d\theta_i$. The transition probability $T_{ji}$ that starting in $i$ we move to $j$ is replaced by the proposal density $T(\theta_j|\theta_i)$ times the infinitisimal volume element $d\theta_j$. Note we have a probability in the target volumne $d\theta_j$ and not in the "from" volume $d\theta_i$. So altogether we get</span>
-<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>A(\theta_i \leftarrow \theta_j) = \min \left(1, \frac{d\theta_j T(\theta_j|\theta_i) p(\theta_i) d\theta_i}{d\theta_i T(\theta_i|\theta_j) p(\theta_j) d\theta_j}\right)</span>
-<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a>$$ Note that the volume elements $d\theta_i$ and $d\theta_j$ cancel out. So we get</span>
-<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a>A(\theta_i \leftarrow \theta_j) = \min \left(1, \frac{T(\theta_j|\theta_i) p(\theta_i)}{T(\theta_i|\theta_j) p(\theta_j) }\right)</span>
-<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a>$$ {#eq-mh-acceptance} Which is the same as in the discrete case! However, there might be pitfalls when changing to the continuous case, don't just replace the probabilities $P_i$ with densities $p(\theta)$! This is for example the case in the following.</span>
-<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a><span class="fu">### ⚠️Sampling in a different space</span></span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a><span class="fu">## 🤔 Continuous case details\*</span></span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a><span class="sc">\*</span>This is and advanced topic, which might be well skipped on first reading.</span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a>Let's look at the continous case in more detail. We derived the Metropolis-Hastings algorithm for the discrete case, where we have probabilities and not densities. The MH acceptance probability is given by</span>
+<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>A_{ij} = \min (1, \frac{T_{ji}P_i}{T_{ij} P_j})</span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a>The probability $P_i$ for the state $\theta_i$ is replaced by the density $p(\theta_i)$ times the infinitisimal volume element $d\theta_i$. The transition probability $T_{ji}$ that starting in $i$ we move to $j$ is replaced by the proposal density $T(\theta_j|\theta_i)$ times the infinitisimal volume element $d\theta_j$. Note we have a probability in the target volumne $d\theta_j$ and not in the "from" volume $d\theta_i$. So altogether we get</span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a>A(\theta_i \leftarrow \theta_j) = \min \left(1, \frac{d\theta_j T(\theta_j|\theta_i) p(\theta_i) d\theta_i}{d\theta_i T(\theta_i|\theta_j) p(\theta_j) d\theta_j}\right)</span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a>$$ Note that the volume elements $d\theta_i$ and $d\theta_j$ cancel out. So we get</span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a>A(\theta_i \leftarrow \theta_j) = \min \left(1, \frac{T(\theta_j|\theta_i) p(\theta_i)}{T(\theta_i|\theta_j) p(\theta_j) }\right)</span>
+<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a>$$ {#eq-mh-acceptance} Which is the same as in the discrete case! However, there might be pitfalls when changing to the continuous case, don't just replace the probabilities $P_i$ with densities $p(\theta)$! This is for example the case in the following.</span>
+<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a>There are several reasons, to sample in a different space, then the space where the target distribution $p(\theta)$ is defined. It might be hard to sample in $\theta$, but it's easy to sample in another space $x$. For example in $\theta$ the probability landscape might have very narrow regions, but in $x$ it's much nicer behaved. We will encounter this in the famous Neal's funnel example later. Another reason is that $\theta$ is in a restricted space. We will use the following example in spherical coordinates to illustrate this. Suppose we have a problem where we have a good idea that the radius $r$ is around 1, but we have no idea about the angle $\varphi$. We can express this in the following prior</span>
-<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a>p(\theta) = p(r,\varphi) = p(r)p(\varphi) = N(r|1,0.1) \cdot U(\varphi|0,2\pi) </span>
-<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a>$$ Assume, we have no data, then the Target Distribution is then given by $p(r,\varphi) \propto N(r|1,0.1)$. Note that in this space, we have restrictions on the parameters $r &gt; 0$ and $0 \le \varphi &lt; 2\pi$. We have to design the proposal density $T(\theta^*|\theta)$ such that these restrictions are intact. While this is possible in the Metropolis-Hastings algorithm, it's really hard to enforce this in more advanced algorithms like Hamiltonian Monte Carlo, where we need an unrestricted space. To solve this we transform the problem in a difference space $x$, where we have no restrictions. The acceptance probability is then @eq-mh-acceptance with $\theta$ replaced by $x$.</span>
+<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a>::: callout-note </span>
+<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a>The MH Criterion is the same in the continuous case as in the discrete case. Just replace the probabilities with densities. </span>
+<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a><span class="fu">### ⚠️Sampling in a different space</span></span>
 <span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a>A(x_i \leftarrow x_j) = \min \left(1, \frac{T(x_j|x_i) p(x_i)}{T(x_i|x_j) p(x_j) }\right)</span>
-<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a>$$ {#eq-mh-acceptanceX}</span>
-<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a>So what is missing is $p(x)$. Be careful and consider probabilities:</span>
+<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a>There are several reasons, to sample in a different space, then the space where the target distribution $p(\theta)$ is defined. It might be hard to sample in $\theta$, but it's easy to sample in another space $x$. For example in $\theta$ the probability landscape might have very narrow regions, but in $x$ it's much nicer behaved. We will encounter this in the famous Neal's funnel example later. Another reason is that $\theta$ is in a restricted space. We will use the following example in spherical coordinates to illustrate this. Suppose we have a problem where we have a good idea that the radius $r$ is around 1, but we have no idea about the angle $\varphi$. We can express this in the following prior</span>
+<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a>p(\theta) = p(r,\varphi) = p(r)p(\varphi) = N(r|1,0.1) \cdot U(\varphi|0,2\pi) </span>
+<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a>$$ Assume, we have no data, then the Target Distribution is then given by $p(r,\varphi) \propto N(r|1,0.1)$. Note that in this space, we have restrictions on the parameters $r &gt; 0$ and $0 \le \varphi &lt; 2\pi$. We have to design the proposal density $T(\theta^*|\theta)$ such that these restrictions are intact. While this is possible in the Metropolis-Hastings algorithm, it's really hard to enforce this in more advanced algorithms like Hamiltonian Monte Carlo, where we need an unrestricted space. To solve this we transform the problem in a difference space $x$, where we have no restrictions. The acceptance probability is then @eq-mh-acceptance with $\theta$ replaced by $x$.</span>
 <span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a>  p(x) dx = p(\theta) d\theta \quad \Rightarrow \quad p(x) = p(\theta) \left| \frac{d \theta}{d x} \right|</span>
-<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a>$$ With the Jacobian Determinant $J = \left| \frac{d\theta}{dx} \right|$, e.g. @eq-mh-acceptance becomes:</span>
-<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a>A(\theta_i \leftarrow \theta_j) = \min \left(1, \frac{T(\theta_j|\theta_i) p(\theta_i)}{T(\theta_i|\theta_j) p(\theta_j)} \right) = \min \left(1, \frac{T(x_j|x_i) p(x_i) J_i}{T(x_i|x_j) p(x_j) J_j} \right)</span>
+<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a>A(x_i \leftarrow x_j) = \min \left(1, \frac{T(x_j|x_i) p(x_i)}{T(x_i|x_j) p(x_j) }\right)</span>
+<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a>$$ {#eq-mh-acceptanceX}</span>
+<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a>So what is missing is $p(x)$. Be careful and consider probabilities:</span>
+<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a>We have $x_1 = r \cos(\varphi)$ and $x_2 = r \sin(\varphi)$, so calculation of $\frac{d x}{d \theta}$ would be simple, so we calculate the inverse of the Jacobian Determinant:</span>
-<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a>J^{-1} = </span>
-<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a>\left|</span>
-<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a>\begin{pmatrix}</span>
-<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a>\frac{\partial x_1}{\partial r} &amp; \frac{\partial x_1}{\partial \varphi} <span class="sc">\\</span></span>
-<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>\frac{\partial x_2}{\partial r} &amp; \frac{\partial x_2}{\partial \varphi}</span>
-<span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a>\end{pmatrix}</span>
-<span id="cb1-245"><a href="#cb1-245" aria-hidden="true" tabindex="-1"></a>\right|</span>
-<span id="cb1-246"><a href="#cb1-246" aria-hidden="true" tabindex="-1"></a>= </span>
-<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a>\left|</span>
-<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a>\begin{pmatrix}</span>
-<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a>\cos(\varphi) &amp; -r \sin(\varphi) <span class="sc">\\</span></span>
-<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>\sin(\varphi) &amp; r \cos(\varphi)</span>
-<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a>\end{pmatrix}</span>
-<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a>\right| = r (\cos^2(\varphi) + \sin^2(\varphi)) = r</span>
-<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a>The Jacobian Determinant is then $J = 1/r$. We can now sample in the unrestricted space $x_1$ and $x_2$ and apply the Jacobian Determinant. The following code snippet shows how to sample from the target distribution in unrestricted space $x_1$ and $x_2$ and how to correctly apply the Jacobian Determinant.</span>
-<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a><span class="in">```{webr-r}</span></span>
-<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a><span class="in"># Initial values</span></span>
-<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a><span class="in">set.seed(123)</span></span>
-<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a><span class="in">Steps = 10000</span></span>
-<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a><span class="in">plot_max = 500</span></span>
-<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a><span class="in">x1 = rep(NA, Steps)</span></span>
-<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a><span class="in">x2 = rep(NA, Steps)</span></span>
-<span id="cb1-263"><a href="#cb1-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a><span class="in"># Target distribution in r (up to a constant factor)</span></span>
-<span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a><span class="in">p_r = function(r) {</span></span>
-<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a><span class="in">  return (dnorm(r, mean = 1, sd = 0.25))</span></span>
-<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-269"><a href="#cb1-269" aria-hidden="true" tabindex="-1"></a><span class="in"># Proposal distribution standard deviations</span></span>
-<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a><span class="in">proposal_sd_x1 = 0.5</span></span>
-<span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a><span class="in">proposal_sd_x2 = 0.5</span></span>
-<span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-273"><a href="#cb1-273" aria-hidden="true" tabindex="-1"></a><span class="in"># Initial values for x1 and x2</span></span>
-<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a><span class="in">x1[1] = 1</span></span>
-<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a><span class="in">x2[1] = 0</span></span>
-<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a><span class="in">for (t in 2:Steps) {</span></span>
-<span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a><span class="in">  # Propose new values in x1 and x2</span></span>
-<span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a><span class="in">  x1_star = x1[t-1] + rnorm(1, mean = 0, sd = proposal_sd_x1)</span></span>
-<span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a><span class="in">  x2_star = x2[t-1] + rnorm(1, mean = 0, sd = proposal_sd_x2)</span></span>
-<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
-<span id="cb1-282"><a href="#cb1-282" aria-hidden="true" tabindex="-1"></a><span class="in">  # Calculate r and r_star</span></span>
-<span id="cb1-283"><a href="#cb1-283" aria-hidden="true" tabindex="-1"></a><span class="in">  r = sqrt(x1[t-1]^2 + x2[t-1]^2)</span></span>
-<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a><span class="in">  r_star = sqrt(x1_star^2 + x2_star^2)</span></span>
-<span id="cb1-285"><a href="#cb1-285" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
-<span id="cb1-286"><a href="#cb1-286" aria-hidden="true" tabindex="-1"></a><span class="in">  # Compute the Jacobian determinant</span></span>
-<span id="cb1-287"><a href="#cb1-287" aria-hidden="true" tabindex="-1"></a><span class="in">  J = 1/r</span></span>
-<span id="cb1-288"><a href="#cb1-288" aria-hidden="true" tabindex="-1"></a><span class="in">  J_star = 1/r_star</span></span>
-<span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
-<span id="cb1-290"><a href="#cb1-290" aria-hidden="true" tabindex="-1"></a><span class="in">  # Compute the acceptance probability</span></span>
-<span id="cb1-291"><a href="#cb1-291" aria-hidden="true" tabindex="-1"></a><span class="in">  if (r_star &gt; 0) {  # Ensure r_star is within valid range</span></span>
-<span id="cb1-292"><a href="#cb1-292" aria-hidden="true" tabindex="-1"></a><span class="in">    A = min(1, (p_r(r_star) * J_star) / (p_r(r) * J))</span></span>
-<span id="cb1-293"><a href="#cb1-293" aria-hidden="true" tabindex="-1"></a><span class="in">  } else {</span></span>
-<span id="cb1-294"><a href="#cb1-294" aria-hidden="true" tabindex="-1"></a><span class="in">    A = 0</span></span>
-<span id="cb1-295"><a href="#cb1-295" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
-<span id="cb1-296"><a href="#cb1-296" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
-<span id="cb1-297"><a href="#cb1-297" aria-hidden="true" tabindex="-1"></a><span class="in">  # Accept or reject the new values</span></span>
-<span id="cb1-298"><a href="#cb1-298" aria-hidden="true" tabindex="-1"></a><span class="in">  if (runif(1) &lt; A) {</span></span>
-<span id="cb1-299"><a href="#cb1-299" aria-hidden="true" tabindex="-1"></a><span class="in">    x1[t] = x1_star</span></span>
-<span id="cb1-300"><a href="#cb1-300" aria-hidden="true" tabindex="-1"></a><span class="in">    x2[t] = x2_star</span></span>
-<span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a><span class="in">  } else {</span></span>
-<span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a><span class="in">    x1[t] = x1[t-1]</span></span>
-<span id="cb1-303"><a href="#cb1-303" aria-hidden="true" tabindex="-1"></a><span class="in">    x2[t] = x2[t-1]</span></span>
-<span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
-<span id="cb1-305"><a href="#cb1-305" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb1-306"><a href="#cb1-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-307"><a href="#cb1-307" aria-hidden="true" tabindex="-1"></a><span class="in"># Plot the trace of the samples in x1</span></span>
-<span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a><span class="in">plot(1:plot_max, x1[1:plot_max], type = "l", xlab = "Steps", ylab = "x1 and x2", main="Trace of the samples in x")</span></span>
-<span id="cb1-309"><a href="#cb1-309" aria-hidden="true" tabindex="-1"></a><span class="in">lines(1:plot_max, x2[1:plot_max], type = "l", xlab = "Steps",  col='red')</span></span>
-<span id="cb1-310"><a href="#cb1-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-311"><a href="#cb1-311" aria-hidden="true" tabindex="-1"></a><span class="in">par(mfrow=c(1,2))</span></span>
-<span id="cb1-312"><a href="#cb1-312" aria-hidden="true" tabindex="-1"></a><span class="in"># Plot the histogram of r</span></span>
-<span id="cb1-313"><a href="#cb1-313" aria-hidden="true" tabindex="-1"></a><span class="in">r_samples = sqrt(x1^2 + x2^2)</span></span>
-<span id="cb1-314"><a href="#cb1-314" aria-hidden="true" tabindex="-1"></a><span class="in">hist(r_samples[200:Steps], main = paste0("Density of r, mean=",round(mean(r_samples),4)), freq=FALSE, breaks = 30)</span></span>
-<span id="cb1-315"><a href="#cb1-315" aria-hidden="true" tabindex="-1"></a><span class="in"># Scatter plot of (x1, x2)</span></span>
-<span id="cb1-316"><a href="#cb1-316" aria-hidden="true" tabindex="-1"></a><span class="in">plot(x1, x2, main = "Scatter plot of (x1, x2)", xlab = "x1", ylab = "x2", pch='.')</span></span>
-<span id="cb1-317"><a href="#cb1-317" aria-hidden="true" tabindex="-1"></a><span class="in">invisible(par(mfrow=c(1,1)))</span></span>
-<span id="cb1-318"><a href="#cb1-318" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a>  p(x) dx = p(\theta) d\theta \quad \Rightarrow \quad p(x) = p(\theta) \left| \frac{d \theta}{d x} \right|</span>
+<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a>$$ With the Jacobian Determinant $J = \left| \frac{d\theta}{dx} \right|$, e.g. @eq-mh-acceptance becomes:</span>
+<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a>A(\theta_i \leftarrow \theta_j) = \min \left(1, \frac{T(\theta_j|\theta_i) p(\theta_i)}{T(\theta_i|\theta_j) p(\theta_j)} \right) = \min \left(1, \frac{T(x_j|x_i) p(x_i) J_i}{T(x_i|x_j) p(x_j) J_j} \right)</span>
+<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>We have $x_1 = r \cos(\varphi)$ and $x_2 = r \sin(\varphi)$, so calculation of $\frac{d x}{d \theta}$ would be simple, so we calculate the inverse of the Jacobian Determinant:</span>
+<span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-245"><a href="#cb1-245" aria-hidden="true" tabindex="-1"></a>J^{-1} = </span>
+<span id="cb1-246"><a href="#cb1-246" aria-hidden="true" tabindex="-1"></a>\left|</span>
+<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a>\begin{pmatrix}</span>
+<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a>\frac{\partial x_1}{\partial r} &amp; \frac{\partial x_1}{\partial \varphi} <span class="sc">\\</span></span>
+<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a>\frac{\partial x_2}{\partial r} &amp; \frac{\partial x_2}{\partial \varphi}</span>
+<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>\end{pmatrix}</span>
+<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a>\right|</span>
+<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a>= </span>
+<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a>\left|</span>
+<span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a>\begin{pmatrix}</span>
+<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a>\cos(\varphi) &amp; -r \sin(\varphi) <span class="sc">\\</span></span>
+<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a>\sin(\varphi) &amp; r \cos(\varphi)</span>
+<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a>\end{pmatrix}</span>
+<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a>\right| = r (\cos^2(\varphi) + \sin^2(\varphi)) = r</span>
+<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a>The Jacobian Determinant is then $J = 1/r$. We can now sample in the unrestricted space $x_1$ and $x_2$ and apply the Jacobian Determinant. The following code snippet shows how to sample from the target distribution in unrestricted space $x_1$ and $x_2$ and how to correctly apply the Jacobian Determinant.</span>
+<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a><span class="in">```{webr-r}</span></span>
+<span id="cb1-263"><a href="#cb1-263" aria-hidden="true" tabindex="-1"></a><span class="in"># Initial values</span></span>
+<span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a><span class="in">set.seed(123)</span></span>
+<span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a><span class="in">Steps = 10000</span></span>
+<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a><span class="in">plot_max = 500</span></span>
+<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a><span class="in">x1 = rep(NA, Steps)</span></span>
+<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a><span class="in">x2 = rep(NA, Steps)</span></span>
+<span id="cb1-269"><a href="#cb1-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a><span class="in"># Target distribution in r (up to a constant factor)</span></span>
+<span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a><span class="in">p_r = function(r) {</span></span>
+<span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a><span class="in">  return (dnorm(r, mean = 1, sd = 0.25))</span></span>
+<span id="cb1-273"><a href="#cb1-273" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a><span class="in"># Proposal distribution standard deviations</span></span>
+<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a><span class="in">proposal_sd_x1 = 0.5</span></span>
+<span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a><span class="in">proposal_sd_x2 = 0.5</span></span>
+<span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a><span class="in"># Initial values for x1 and x2</span></span>
+<span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a><span class="in">x1[1] = 1</span></span>
+<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a><span class="in">x2[1] = 0</span></span>
+<span id="cb1-282"><a href="#cb1-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-283"><a href="#cb1-283" aria-hidden="true" tabindex="-1"></a><span class="in">for (t in 2:Steps) {</span></span>
+<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a><span class="in">  # Propose new values in x1 and x2</span></span>
+<span id="cb1-285"><a href="#cb1-285" aria-hidden="true" tabindex="-1"></a><span class="in">  x1_star = x1[t-1] + rnorm(1, mean = 0, sd = proposal_sd_x1)</span></span>
+<span id="cb1-286"><a href="#cb1-286" aria-hidden="true" tabindex="-1"></a><span class="in">  x2_star = x2[t-1] + rnorm(1, mean = 0, sd = proposal_sd_x2)</span></span>
+<span id="cb1-287"><a href="#cb1-287" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb1-288"><a href="#cb1-288" aria-hidden="true" tabindex="-1"></a><span class="in">  # Calculate r and r_star</span></span>
+<span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a><span class="in">  r = sqrt(x1[t-1]^2 + x2[t-1]^2)</span></span>
+<span id="cb1-290"><a href="#cb1-290" aria-hidden="true" tabindex="-1"></a><span class="in">  r_star = sqrt(x1_star^2 + x2_star^2)</span></span>
+<span id="cb1-291"><a href="#cb1-291" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb1-292"><a href="#cb1-292" aria-hidden="true" tabindex="-1"></a><span class="in">  # Compute the Jacobian determinant</span></span>
+<span id="cb1-293"><a href="#cb1-293" aria-hidden="true" tabindex="-1"></a><span class="in">  J = 1/r</span></span>
+<span id="cb1-294"><a href="#cb1-294" aria-hidden="true" tabindex="-1"></a><span class="in">  J_star = 1/r_star</span></span>
+<span id="cb1-295"><a href="#cb1-295" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb1-296"><a href="#cb1-296" aria-hidden="true" tabindex="-1"></a><span class="in">  # Compute the acceptance probability</span></span>
+<span id="cb1-297"><a href="#cb1-297" aria-hidden="true" tabindex="-1"></a><span class="in">  if (r_star &gt; 0) {  # Ensure r_star is within valid range</span></span>
+<span id="cb1-298"><a href="#cb1-298" aria-hidden="true" tabindex="-1"></a><span class="in">    A = min(1, (p_r(r_star) * J_star) / (p_r(r) * J))</span></span>
+<span id="cb1-299"><a href="#cb1-299" aria-hidden="true" tabindex="-1"></a><span class="in">  } else {</span></span>
+<span id="cb1-300"><a href="#cb1-300" aria-hidden="true" tabindex="-1"></a><span class="in">    A = 0</span></span>
+<span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
+<span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb1-303"><a href="#cb1-303" aria-hidden="true" tabindex="-1"></a><span class="in">  # Accept or reject the new values</span></span>
+<span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a><span class="in">  if (runif(1) &lt; A) {</span></span>
+<span id="cb1-305"><a href="#cb1-305" aria-hidden="true" tabindex="-1"></a><span class="in">    x1[t] = x1_star</span></span>
+<span id="cb1-306"><a href="#cb1-306" aria-hidden="true" tabindex="-1"></a><span class="in">    x2[t] = x2_star</span></span>
+<span id="cb1-307"><a href="#cb1-307" aria-hidden="true" tabindex="-1"></a><span class="in">  } else {</span></span>
+<span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a><span class="in">    x1[t] = x1[t-1]</span></span>
+<span id="cb1-309"><a href="#cb1-309" aria-hidden="true" tabindex="-1"></a><span class="in">    x2[t] = x2[t-1]</span></span>
+<span id="cb1-310"><a href="#cb1-310" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
+<span id="cb1-311"><a href="#cb1-311" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb1-312"><a href="#cb1-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-313"><a href="#cb1-313" aria-hidden="true" tabindex="-1"></a><span class="in"># Plot the trace of the samples in x1</span></span>
+<span id="cb1-314"><a href="#cb1-314" aria-hidden="true" tabindex="-1"></a><span class="in">plot(1:plot_max, x1[1:plot_max], type = "l", xlab = "Steps", ylab = "x1 and x2", main="Trace of the samples in x")</span></span>
+<span id="cb1-315"><a href="#cb1-315" aria-hidden="true" tabindex="-1"></a><span class="in">lines(1:plot_max, x2[1:plot_max], type = "l", xlab = "Steps",  col='red')</span></span>
+<span id="cb1-316"><a href="#cb1-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-317"><a href="#cb1-317" aria-hidden="true" tabindex="-1"></a><span class="in">par(mfrow=c(1,2))</span></span>
+<span id="cb1-318"><a href="#cb1-318" aria-hidden="true" tabindex="-1"></a><span class="in"># Plot the histogram of r</span></span>
+<span id="cb1-319"><a href="#cb1-319" aria-hidden="true" tabindex="-1"></a><span class="in">r_samples = sqrt(x1^2 + x2^2)</span></span>
+<span id="cb1-320"><a href="#cb1-320" aria-hidden="true" tabindex="-1"></a><span class="in">hist(r_samples[200:Steps], main = paste0("Density of r, mean=",round(mean(r_samples),4)), freq=FALSE, breaks = 30)</span></span>
+<span id="cb1-321"><a href="#cb1-321" aria-hidden="true" tabindex="-1"></a><span class="in"># Scatter plot of (x1, x2)</span></span>
+<span id="cb1-322"><a href="#cb1-322" aria-hidden="true" tabindex="-1"></a><span class="in">plot(x1, x2, main = "Scatter plot of (x1, x2)", xlab = "x1", ylab = "x2", pch='.')</span></span>
+<span id="cb1-323"><a href="#cb1-323" aria-hidden="true" tabindex="-1"></a><span class="in">invisible(par(mfrow=c(1,1)))</span></span>
+<span id="cb1-324"><a href="#cb1-324" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-325"><a href="#cb1-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-326"><a href="#cb1-326" aria-hidden="true" tabindex="-1"></a><span class="fu">### ⚠ Likelihood in different space</span></span>
+<span id="cb1-327"><a href="#cb1-327" aria-hidden="true" tabindex="-1"></a>Consider the where are in a parameter space $\theta$ and we have in that space the likelihood $p_\theta(D|\theta)$ and prior $p_\theta(\theta))$ and thus the posterior is </span>
+<span id="cb1-328"><a href="#cb1-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-329"><a href="#cb1-329" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-330"><a href="#cb1-330" aria-hidden="true" tabindex="-1"></a>p_\theta(\theta|D) \propto p_\theta(D|\theta) p_\theta(\theta)</span>
+<span id="cb1-331"><a href="#cb1-331" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-332"><a href="#cb1-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-333"><a href="#cb1-333" aria-hidden="true" tabindex="-1"></a>We now transform in an different space $\varphi$ with the transformation $\theta = f(\varphi)$. The likelihood in the new space is then given by $p_\varphi(D|\varphi)$ and the prior by $p_\varphi(\varphi)$ and hence the posterior is</span>
+<span id="cb1-334"><a href="#cb1-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-335"><a href="#cb1-335" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-336"><a href="#cb1-336" aria-hidden="true" tabindex="-1"></a>p_\varphi(\varphi|D) \propto p_\varphi(D|\varphi) p_\varphi(\varphi)</span>
+<span id="cb1-337"><a href="#cb1-337" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-338"><a href="#cb1-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-339"><a href="#cb1-339" aria-hidden="true" tabindex="-1"></a>Of course we can sample, evaluate the likelihood and prior in either space and get the same result. What happens if we sample in the $\varphi$ space </span>
+<span id="cb1-340"><a href="#cb1-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-341"><a href="#cb1-341" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Start with $\varphi_0$</span>
+<span id="cb1-342"><a href="#cb1-342" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Propose $\varphi^*$ from $\varphi_0$ with $T(\varphi^*|\varphi_0)$</span>
+<span id="cb1-343"><a href="#cb1-343" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Calculate the unnormalized posterior in the $\varphi$ space $p_\varphi(D|\varphi^*) p_\varphi(\varphi^*)$ </span>
+<span id="cb1-344"><a href="#cb1-344" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Assuming a symetric proposal distribution $T(\varphi^*|\varphi_0) = T(\varphi_0|\varphi^*)$ we get the Metropolis-Hastings acceptance probability from the ratio $p_\varphi(D|\varphi^*) p_\varphi(\varphi^*)/p_\varphi(D|\varphi_0) p_\varphi(\varphi_0)$.</span>
+<span id="cb1-345"><a href="#cb1-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-346"><a href="#cb1-346" aria-hidden="true" tabindex="-1"></a>Is it OK to calculate the likelihood in the $\theta$ space by the transformed $\varphi$? For that the ratio of the likelihoods $p_\theta(D|f(\varphi^*)) /p_\theta(D|f(\varphi_0)) \overbrace{=}^{!}  p_\varphi(D|\varphi^*) /p_\varphi(D|\varphi_0)$ needs to be the same.</span>
+<span id="cb1-347"><a href="#cb1-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-348"><a href="#cb1-348" aria-hidden="true" tabindex="-1"></a>Let's make a concrete Example. **TODO...**</span>
+<span id="cb1-349"><a href="#cb1-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-350"><a href="#cb1-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-351"><a href="#cb1-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-352"><a href="#cb1-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-353"><a href="#cb1-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-354"><a href="#cb1-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-355"><a href="#cb1-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-356"><a href="#cb1-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-357"><a href="#cb1-357" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <script type="module">

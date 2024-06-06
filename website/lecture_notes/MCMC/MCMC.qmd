@@ -212,6 +212,11 @@ $$
 A(\theta_i \leftarrow \theta_j) = \min \left(1, \frac{T(\theta_j|\theta_i) p(\theta_i)}{T(\theta_i|\theta_j) p(\theta_j) }\right)
 $$ {#eq-mh-acceptance} Which is the same as in the discrete case! However, there might be pitfalls when changing to the continuous case, don't just replace the probabilities $P_i$ with densities $p(\theta)$! This is for example the case in the following.
 
+
+::: callout-note 
+The MH Criterion is the same in the continuous case as in the discrete case. Just replace the probabilities with densities. 
+:::
+
 ### ⚠️Sampling in a different space
 
 There are several reasons, to sample in a different space, then the space where the target distribution $p(\theta)$ is defined. It might be hard to sample in $\theta$, but it's easy to sample in another space $x$. For example in $\theta$ the probability landscape might have very narrow regions, but in $x$ it's much nicer behaved. We will encounter this in the famous Neal's funnel example later. Another reason is that $\theta$ is in a restricted space. We will use the following example in spherical coordinates to illustrate this. Suppose we have a problem where we have a good idea that the radius $r$ is around 1, but we have no idea about the angle $\varphi$. We can express this in the following prior
@@ -317,3 +322,37 @@ hist(r_samples[200:Steps], main = paste0("Density of r, mean=",round(mean(r_samp
 plot(x1, x2, main = "Scatter plot of (x1, x2)", xlab = "x1", ylab = "x2", pch='.')
 invisible(par(mfrow=c(1,1)))
 ```
+
+### ⚠ Likelihood in different space
+Consider the where are in a parameter space $\theta$ and we have in that space the likelihood $p_\theta(D|\theta)$ and prior $p_\theta(\theta))$ and thus the posterior is 
+
+$$
+p_\theta(\theta|D) \propto p_\theta(D|\theta) p_\theta(\theta)
+$$
+
+We now transform in an different space $\varphi$ with the transformation $\theta = f(\varphi)$. The likelihood in the new space is then given by $p_\varphi(D|\varphi)$ and the prior by $p_\varphi(\varphi)$ and hence the posterior is
+
+$$
+p_\varphi(\varphi|D) \propto p_\varphi(D|\varphi) p_\varphi(\varphi)
+$$
+
+Of course we can sample, evaluate the likelihood and prior in either space and get the same result. What happens if we sample in the $\varphi$ space 
+
+1. Start with $\varphi_0$
+1. Propose $\varphi^*$ from $\varphi_0$ with $T(\varphi^*|\varphi_0)$
+1. Calculate the unnormalized posterior in the $\varphi$ space $p_\varphi(D|\varphi^*) p_\varphi(\varphi^*)$ 
+1. Assuming a symetric proposal distribution $T(\varphi^*|\varphi_0) = T(\varphi_0|\varphi^*)$ we get the Metropolis-Hastings acceptance probability from the ratio $p_\varphi(D|\varphi^*) p_\varphi(\varphi^*)/p_\varphi(D|\varphi_0) p_\varphi(\varphi_0)$.
+
+Is it OK to calculate the likelihood in the $\theta$ space by the transformed $\varphi$? For that the ratio of the likelihoods $p_\theta(D|f(\varphi^*)) /p_\theta(D|f(\varphi_0)) \overbrace{=}^{!}  p_\varphi(D|\varphi^*) /p_\varphi(D|\varphi_0)$ needs to be the same.
+
+Let's make a concrete Example. **TODO...**
+
+
+
+
+
+
+
+
+
+
