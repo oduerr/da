@@ -9,13 +9,33 @@ title: "About"
 
 
 - Create a new quarto file in the root directory or subdirectory.
-** DONOT `self-contained: true`:
 Put the quarto-file in website directory (or subdirectory). 
-Make sure that you do not have `self-contained: true` in the **qmd** file, otherwise file gets to large. Commenting it out is fine.
+Make sure that you do not have `self-contained: true` in the **qmd** file, otherwise file gets to large. An example is `website/lecture_notes/MCMC/MCMC.qmd`
 
-- Developing the new file
+```{r, eval=FALSE}
+---
+title: "Lecture Notes on MCMC"
+author: "Oliver Dürr"
+format: 
+  html:
+    toc: true
+    toc-title: "Table of Contents"
+    toc-depth: 3
+    fig-width: 6
+    fig-height: 3
+    code-fold: true
+    code-tools: true
+    mathjax: true
+  #  self-contained: true <------ NEEDS TO BE COMMENTED OUT (or not there at all)
+  # pdf:
+  #   toc: true
+  #   toc-title: "Table of Contents"
+filters:
+  - webr
+---
+```
 
-
+#### How to render the website
 - Render and move to docs folder
 
 ```bash
@@ -24,8 +44,12 @@ quarto render
 
 - Check in the changes in the docs folder
 
-#### Development
+#### Development (in da/website)
 
 ```bash
-quarto preview lecture_notes/MCMC/MCMC.qmd
+quarto preview lecture_notes/MCMC/MCMC.qmd #For a single file
+```
+
+```bash
+quarto preview #For the complete website
 ```

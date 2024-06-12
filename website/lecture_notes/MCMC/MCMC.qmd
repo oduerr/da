@@ -217,7 +217,7 @@ $$ {#eq-mh-acceptance} Which is the same as in the discrete case! However, there
 The MH Criterion is the same in the continuous case as in the discrete case. Just replace the probabilities with densities. 
 :::
 
-### ⚠️Sampling in a different space
+### ⚠️ Sampling in a different space
 
 There are several reasons, to sample in a different space, then the space where the target distribution $p(\theta)$ is defined. It might be hard to sample in $\theta$, but it's easy to sample in another space $x$. For example in $\theta$ the probability landscape might have very narrow regions, but in $x$ it's much nicer behaved. We will encounter this in the famous Neal's funnel example later. Another reason is that $\theta$ is in a restricted space. We will use the following example in spherical coordinates to illustrate this. Suppose we have a problem where we have a good idea that the radius $r$ is around 1, but we have no idea about the angle $\varphi$. We can express this in the following prior
 
@@ -345,7 +345,7 @@ Of course we can sample, evaluate the likelihood and prior in either space and g
 
 Is it OK to calculate the likelihood in the $\theta$ space by the transformed $\varphi$? For that the ratio of the likelihoods $p_\theta(D|f(\varphi^*)) /p_\theta(D|f(\varphi_0)) \overbrace{=}^{!}  p_\varphi(D|\varphi^*) /p_\varphi(D|\varphi_0)$ needs to be the same.
 
-Let's make a concrete Example. **TODO...**
+Let's make a concrete Example. 
 
 
 

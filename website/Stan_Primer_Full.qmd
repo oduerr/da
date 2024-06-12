@@ -24,10 +24,6 @@ s_rcmdstan = m_rcmdstan$sample(data = data) #Sampling
 df = s_rcmdstan$draws(format = "df") #Extracting Samples as data.frame
 ```
 
-Printing the model in markdown 
-
-| {r, echo=lsg, eval=FALSE, code=readLines(“../world.stan”), collapse=TRUE}
-
 ## Tidy Bayes
 
 Works with rstan and cmdstanr
@@ -46,6 +42,16 @@ Works with rstan and cmdstanr
   s = s_rcmdstan$draws() #We need to call draws() 2023
   bayesplot::mcmc_trace(s)
 ```
+
+## Rendering Quarto for exercises
+
+Printing the model in markdown files (only important for rendering exercise sheets), see e.g. [around here](https://github.com/oduerr/da/blob/master/lab/lr_1_MH_vs_Stan/MH_Stan.qmd#L55)
+
+| {r, echo=lsg, eval=FALSE, code=readLines(“../world.stan”), collapse=TRUE}
+
+Not showing the many details in MCMC simulation with Stan. 
+| ```{r, echo=lsg, eval=lsg, message=FALSE, warning=FALSE,  results="hide"}
+
 
 ## Stan
 

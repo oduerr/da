@@ -16,3 +16,10 @@
 "/Users/oli/Documents/GitHub/da/stan/logreg_challenger/logistic_regression.R" # Logistic Regression for slides
 "/Users/oli/Library/CloudStorage/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_04_Bayes_4/bayes_4_compile.R"
 "/Users/oli/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_04_Bayes_4/bayes_corona_adapted.qmd"
+
+#### Bayes Woche 5 ###
+"/Users/oli/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_05_Bayes_5/bayes_5_compile.R" # Arbeitsblatt
+"/Users/oli/Documents/GitHub/da/lab/robust_regression/robust_regression.qmd" #Aufgabe
+
+#### Bayes Woche 6 ###
+"/Users/oli/Documents/GitHub/da/lab/football1/Hierarchical.Rmd"
