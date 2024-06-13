@@ -24,7 +24,8 @@ We compare a simple Metropolis-Hastings algorithm with Stan for a real simple li
 You can load the data via:
 
 ```{r, echo=TRUE, eval=TRUE}
-  df = read.csv("https://raw.githubusercontent.com/tensorchiefs/data/main/data/sbp.csv")
+  #df = read.csv("https://raw.githubusercontent.com/tensorchiefs/data/main/data/sbp.csv")
+  df = edudat::load_data('sbp.csv')
 ```
 
 #### b) Metropolis-Hastings algorithm in R
@@ -32,8 +33,8 @@ You can load the data via:
 The code for the Metropolis-Hastings algorithm can be found at <https://github.com/oduerr/da/blob/master/code/MCMC_MH.R> you can use via
 
 ```{r, echo=TRUE, eval=TRUE, warning=FALSE}
-  source('https://raw.githubusercontent.com/oduerr/da/master/code/MCMC_MH.R') #Load the Metropolis-Hastings code
-  #source('~/Documents/GitHub/da/code/MCMC_MH.R') #Load the Metropolis-Hastings code
+  #source('https://raw.githubusercontent.com/oduerr/da/master/code/MCMC_MH.R') #Load the Metropolis-Hastings code
+  source('~/Documents/GitHub/da/code/MCMC_MH.R') #Load the Metropolis-Hastings code
   proposal_sd <- c(0.1, 5, 5)
   data = list(N=33, x=df$x, y=df$y, K=1)
   n_iter = 10000
@@ -65,7 +66,7 @@ Formulate the same problem in Stan, have a lock at the code to come up with the 
 library(cmdstanr)
 #Reading the model definition, change the path to the correct one 
 m_rcmdstan <- cmdstan_model('~/Documents/GitHub/da/lab/lr_1_MH_vs_Stan/linear_regression.stan')
-samples_stan = m_rcmdstan$sample(data=data, chains=1, iter_sampling = 10000)
+samples_stan = m_rcmdstan$sample(data=data, chains=10, iter_sampling = 10000)
 samples_stan = samples_stan$draws(format = 'df')
 ```
 
