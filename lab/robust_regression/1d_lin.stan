@@ -24,3 +24,4 @@ generated quantities {
     log_lik[n] = normal_lpdf(y[n] | a * x[n] + b, sigma);
   }
 }
+
