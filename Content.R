@@ -22,8 +22,9 @@
 "/Users/oli/Documents/GitHub/da/lab/robust_regression/robust_regression.qmd" #Aufgabe
 
 #### Bayes Woche 6 (Multilevel) ###
-"/Users/oli/Documents/GitHub/da/lab/football1/Hierarchical.Rmd"
+"/Users/oli/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_06_Bayes_6/bayes_6_compile.R"
+"/Users/oli/Documents/GitHub/da/lab/kn_rent/rent_kn_cmdrstan.Rmd"
 
 
 #### Bayes Woche 7 (Multilevel 2) ###
-"/Users/oli/Documents/GitHub/da/lab/kn_rent/rent_kn_cmdrstan.Rmd"
+"/Users/oli/Documents/GitHub/da/lab/football1/Hierarchical.Rmd"

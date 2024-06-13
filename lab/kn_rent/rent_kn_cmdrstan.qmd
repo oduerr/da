@@ -1,10 +1,35 @@
 ---
-  output:
-    github_document
+output:
+  pdf_document:
+    highlight: pygments
+  html_document: 
+    default
+params:
+  lsg: TRUE
 ---
 
+```{r, echo=FALSE, eval=TRUE, message=FALSE}
+  #The variable lsg is used to control the visibility of the solutions and needs to be set
+  if (exists("lsg") == FALSE){ 
+    lsg <- params$lsg
+  }
+```
+
 ## Rents in Konstanz
-The following cell loads the rent prices for the county (Landkreis) of Konstanz. It has been processed from data provided by Immoscout24 / Kaggle see  https://www.kaggle.com/datasets/corrieaar/apartment-rental-offers-in-germany the data is from 2018 / 2019. Some preprocessing has been done in the beginning of https://github.com/oduerr/da/blob/master/stan/kn_rent/KN_Immodata.R
+The following cell loads the rent prices for the county (Landkreis) of Konstanz. It has been processed from data provided by Immoscout24 / Kaggle see  <https://www.kaggle.com/datasets/corrieaar/apartment-rental-offers-in-germany> the data is from 2018 / 2019. Some preprocessing has been done in the beginning of <https://github.com/oduerr/da/blob/master/stan/kn_rent/KN_Immodata.R>
+
+## Task 1
+The goal is to predict the rent based on the living space. There is stan code provided in the following files:
+
+
+- lab/kn_rent/kn_hier.stan
+- lab/kn_rent/kn_no_pooling.stan
+- lab/kn_rent/kn_comp_pooling.stan
+
+Maybe make a table in e.g. Powerpoint and copy the results from here. Try to understand the differences between the models predictive results, estimated with the `LOO` and with the the test data. 
+
+There are also some tasks to be solved at the end. 
+ 
 
 ### Data Proprocessing
 ```{r data}
@@ -29,6 +54,8 @@ The following cell loads the rent prices for the county (Landkreis) of Konstanz.
     labs(subtitle = 'Rental Prices in Konstanz County (Training Data)') +
     ggthemes::theme_hc(base_size = 12) 
 ```
+
+### Overview (No pooling, all cities individually)
 
 We see that the rent is linear depended on the `livinigSpace`, but there there is some considerable spread. Let's have a look at the different cities in the county.
 
@@ -55,6 +82,7 @@ Here we add a city identifier, $j=1,2,\ldots,J$ and split the data into a traini
   KN_Kreis = KN_Kreis %>% right_join(cities_numbers, by='regio3')
   KN_train = KN_Kreis %>% filter(training)
   KN_test = KN_Kreis %>% filter(!training)
+  print(paste0("Number of cities : ", J))
 ```
 
 It's always a good idea to scale your data before regression. For this example not doing so will cause some divergent transitions. Since we are not allowed to know anything about the testdata, we just use the training data for scaling and prepare a list for stan.
@@ -72,7 +100,7 @@ kn_stan_dat = list(
   #y = KN_train$baseRent,
   #x = KN_train$livingSpace,
   j = KN_train$id,
-  
+  ##### Test Data
   N_t = nrow(KN_test),
   y_t = (KN_test$baseRent - y_mean)/y_sd,
   x_t = (KN_test$livingSpace - x_mean)/x_sd,
@@ -86,22 +114,58 @@ kn_stan_dat = list(
 ```
 
 ### Fitting the model in Stan
-Definitiomn of the model.
+Definition of the model.
 
 
 
-```{r sampling, results="hide", warning=FALSE}
+```{r sampling, results="hide",  message=FALSE, warning=FALSE,  results="hide"}
 library(cmdstanr)
+library(here)
 options(mc.cores = parallel::detectCores())
-kn_s.model <- cmdstan_model('kn_hier.stan')
+kn_s.model <- cmdstan_model('/Users/oli/Documents/GitHub/da/lab/kn_rent/kn_hier.stan')
+#kn_s.model <- cmdstan_model('/Users/oli/Documents/GitHub/da/lab/kn_rent/kn_no_pooling.stan')
+#kn_s.model <- cmdstan_model('/Users/oli/Documents/GitHub/da/lab/kn_rent/kn_comp_pooling.stan')
+
 kn_s = kn_s.model$sample(data=kn_stan_dat) 
+print(kn_s$summary()[1:10, ])
+bayesplot::mcmc_trace(kn_s$draws('lp__'))
 ```
+## Estimation of the predictive Performance
+
+```{r pred, warning=FALSE,message=FALSE}
+log_lik = kn_s$draws('log_lik') #extract the log likelihood of the training data
+res = loo::loo(log_lik)
+# Create Table with LOO results
+res$elpd_loo
+NLL = -res$elpd_loo / dim(log_lik)[3]
+res$p_loo
+# NLL of the test test
+NLL_test = -mean(kn_s$draws('log_lik_t')) #samples, chains, data points
+y_t_pred <- kn_s$draws('y_t_pred')
+Pred_mean <- apply(y_t_pred, 3, mean) #Take the mean over the samples and chains
+RMSE = sqrt(mean((Pred_mean - kn_stan_dat$y_t)^2))
+
+print(kn_s$code()[[1]])
+df = data.frame(
+  name = kn_s$code()[[1]],
+  NLL_est = NLL,
+  NLL_test = NLL_test,
+  RMSE_test = RMSE,
+  peff = res$p_loo,
+  elpd_loo = res$elpd_loo
+)
+df
+#df_all = rbind(df_all, df)
+```
+
+
 ### Base costs
 ```{r joy_intercept, warning=FALSE,message=FALSE}
 library(tidybayes)
 library(bayesplot)
 library(ggridges)
-spread_draws(kn_s, u[i,j]) %>%
+#Does not work in the complete pooling case
+spread_draws(kn_s, u[j,i]) %>%
   filter(i == 1) %>% #looking at the intercept
   right_join(cities_numbers, by = c("j" = "id")) %>% 
   ggplot(aes(x=u, y=regio3)) + 
@@ -117,7 +181,7 @@ spread_draws(kn_s, u[i,j]) %>%
 library(tidybayes)
 library(bayesplot)
 library(ggridges)
-spread_draws(kn_s, u[i,j]) %>%
+spread_draws(kn_s, u[j,i]) %>%
   filter(i == 2) %>% #looking at the scope
   right_join(cities_numbers, by = c("j" = "id")) %>% 
   ggplot(aes(x=u, y=regio3)) + 
@@ -134,7 +198,7 @@ Discuss the difference between Konstanz and Aach in the intercept and Slope.
 # you also observe that Konstanz has a smaller spread than Aach. This is due to the fact that there are more data in Konstanz compared to Aach.
 ```
 
-### Task 2 increase of rent in Konstanz city
+### Task 2 Increase in rent in with living space for Konstanz city
 Repaet the plot from a above using unscaled variable. You may focuss on Konstanz only. Konstanz has the following id (variable j in the posterior)
 ```{r}
   cities_numbers %>% kableExtra::kable()
@@ -142,7 +206,7 @@ Repaet the plot from a above using unscaled variable. You may focuss on Konstanz
 
 
 ```{r post_slope_kn, eval=lsg, echo=lsg, warning=FALSE,message=FALSE}
-  slope_kn_scaled = spread_draws(kn_s, u[i,j]) %>%
+  slope_kn_scaled = spread_draws(kn_s, u[j,i]) %>%
    filter(i == 2) %>%  filter(j == 11) 
   slope_kn_scaled_unscaled = y_sd / x_sd * slope_kn_scaled 
   ggplot(slope_kn_scaled_unscaled) + 
@@ -152,8 +216,12 @@ Repaet the plot from a above using unscaled variable. You may focuss on Konstanz
   quantile(slope_kn_scaled_unscaled$u, c(0.05,0.5,0.95))
 ```
 
+### Task 3 How probable is it that the increase in rent is larger than 13 Euro/sqm?
 
+How probable is it that the increase in rent is larger than 13 Euro/sqm in Konstanz?
 
-
+```{r Task3, echo=lsg, eval=lsg, warning=FALSE,message=FALSE}
+  mean(slope_kn_scaled_unscaled > 13)
+```
 
 
