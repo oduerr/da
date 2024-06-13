@@ -1,57 +1,55 @@
+// Hierarchical model
+// Hierarchical model with random intercept and slope for each city
 data {
-  int<lower=1> N;            //number of observations (in training)
-  real y[N];                 //outcomes (in training)
-  real x[N];                 //x (living space)
-  // grouping factors
-  int<lower=1> J;                   //number of subjects
-  int<lower=1,upper=J> j[N];        //subject id
+  int<lower=1> N;            // number of observations (in training)
+  array[N] real y;           // outcomes (in training)
+  array[N] real x;           // x (living space)
+  int<lower=1> J;            // number of subjects
+  array[N] int<lower=1, upper=J> j; // subject id
   
-  //Test data
   int<lower=1> N_t; 
-  real y_t[N_t];   
-  real x_t[N_t];   
-  int<lower=1,upper=J> j_t[N_t];
+  array[N_t] real y_t;   
+  array[N_t] real x_t;   
+  array[N_t] int<lower=1, upper=J> j_t;
 }
 
 parameters {
-  real<lower=0> sigma_e;               // residual std
-  matrix[2,J] u;                       // City level intercept (1) and slope (2)
-  vector[2] pu;                        // County level intercept and slope (mean)
-  vector[2] ps;                        // County level intercept and slope (sd)
+  real<lower=0> sigma_e;     // residual std
+  array[J, 2] real u;        // City level intercept (1) and slope (2)
+  vector[2] pu;              // County level intercept and slope (mean)
+  vector<lower=0>[2] ps;     // County level intercept and slope (sd)
 }
 
 model {
-  real mu; 
-  //Hyperprior
-  //Spread to the means
-  pu ~ normal(0, 1);    //Intercept and slope mean
-  //Uncertainty the means
-  ps ~ exponential(1.);
-  //prior 
-  u[1,] ~ normal(pu[1],ps[1]);  //Intercept for the individual cities
-  u[2,] ~ normal(pu[2],ps[2]);  //Slope for the individual cities
-  //priors
-  sigma_e ~ exponential(1.);        // prior for residual standard deviation
- 
-  //likelihood
-  for (i in 1:N){
-    mu = u[1,j[i]] + (u[2,j[i]])*x[i];
-    y[i] ~ normal(mu, sigma_e);
+  real mu;
+
+  // Hyperpriors
+  pu ~ normal(0, 1);          // Intercept and slope mean
+  ps ~ exponential(1.0);      // Uncertainty of the means
+
+  // Priors for city-level parameters
+  u[:, 1] ~ normal(pu[1], ps[1]);  // Intercept for the individual cities
+  u[:, 2] ~ normal(pu[2], ps[2]);  // Slope for the individual cities
+  sigma_e ~ exponential(1.0);   // Prior for residual standard deviation
+
+  // Likelihood
+  for (i in 1:N) {
+    mu = u[j[i], 1] + u[j[i], 2] * x[i];
+    y[i] ~ normal(mu, sigma_e + 1e-8);
   }
 }
 
 generated quantities {
-  vector[N] log_lik;
-  vector[N_t] log_lik_t;
-  vector[N_t] y_t_pred;
+  array[N] real log_lik;
+  array[N_t] real log_lik_t;
+  array[N_t] real y_t_pred;
   
-  for (n in 1:N){
-    log_lik[n] = normal_lpdf(y[n] |   u[1,j[n]] + ( u[2,j[n]])*x[n], sigma_e);
+  for (n in 1:N) {
+    log_lik[n] = normal_lpdf(y[n] | u[j[n], 1] + u[j[n], 2] * x[n], sigma_e);
   }
   
-  for (n in 1:N_t){
-    log_lik_t[n] = normal_lpdf(y_t[n] | u[1,j[n]] + (u[2,j[n]])*x[n], sigma_e);
-    y_t_pred[n] = normal_rng( u[1,j[n]] + (u[2,j[n]])*x[n], sigma_e);
+  for (n in 1:N_t) {
+    log_lik_t[n] = normal_lpdf(y_t[n] | u[j_t[n], 1] + u[j_t[n], 2] * x_t[n], sigma_e);
+    y_t_pred[n] = normal_rng(u[j_t[n], 1] + u[j_t[n], 2] * x_t[n], sigma_e);
   }
 }
-
