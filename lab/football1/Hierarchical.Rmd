@@ -11,7 +11,15 @@ This notebook compares a non-hierarchical model and a hierarchical model to pred
 
 ## Your tasks
 
-Step through the notebook and try to understand it.
+Step through the notebook and try to understand it. Try to answer the following questions:
+
+- Why the $log$ in $log(theta_g2) = att_at + def_ht$?
+- For 15 games and for 200 games in the training set. Answer the following questions:
+  - What are the effective number of parameters in the hierarchical model and non-hierarchical model (use the output of the `loo` function)?
+  - What is the average score (for definition see below) and  
+  
+- What is the home advantage in the non-hierarchical model and the hierarchical model?
+
 
 ### Background
 
@@ -23,7 +31,7 @@ Modifications include:
 
 -   Removing the fixed prior for home advantage (which has a std of about 1e-4)
 
-    -   Nevertheless, it appears necessary, as mentioned in the paper, to implement a sum-to-zero restriction for both the defense and offense. This stems from the fact that teams compete against one another, making these abilities dependent on each other. For further details, please refer to the aforementioned paper and its associated references.
+-   Nevertheless, it appears necessary, as mentioned in the paper, to implement a sum-to-zero restriction for both the defense and offense. This stems from the fact that teams compete against one another, making these abilities dependent on each other. For further details, please refer to the aforementioned paper and its associated references.
 
 ```{r}
 lsg = TRUE #Set to FALSE before submitting
@@ -60,6 +68,7 @@ cat('We have T = ', nt, 'teams \n')
 Now convert team names for each match into numbers (for the lookup)
 
 ```{r}
+#Some R-Magic to convert the team names to numbers, no need to understand this
 teams = unique(data$Home)
 ht = unlist(sapply(1:ng, function(g) which(teams == data$Home[g])))
 at = unlist(sapply(1:ng, function(g) which(teams == data$Away[g])))
@@ -67,8 +76,9 @@ at = unlist(sapply(1:ng, function(g) which(teams == data$Away[g])))
 
 ```{r}
 # we will save the last np games to predict
-np=30
-ngob = ng-np #number of games to fit
+np=300
+ngob = ng-np #ngames obsered ngob = number of games to fit
+print(paste0("Using the first ", ngob, " games to fit the model and ", np, " games to predict"))
 my_data = list(
   nt = nt, 
   ng = ngob,
@@ -98,10 +108,13 @@ Assuming a log-linear random effect model
 
 Where home is a constant for the advantage for the team hosting the game att and def are the attack and defense abilities of the teams where the indices at,ht correspond to the t=1-20 teams.
 
-```{r, results="hide", warning=FALSE}
-nhmodel <- cmdstan_model('non_hier_model.stan')
+```{r, results="hide",  message=FALSE, warning=FALSE,  results="hide"}
+library(here)
+library(cmdstanr)
+nhmodel <- cmdstan_model(here('lab/football1/non_hier_model.stan'))
 nhfit = nhmodel$sample(data = my_data)
-#nhfit_stan = stan(file = 'non_hier_model.stan', data = my_data)
+d = loo::loo(nhfit$draws("log_lik"))
+print(d)
 ```
 
 #### Non-Hierarchical model predicted scores of the unseen
@@ -118,6 +131,15 @@ abline(a=0,  b=1, lty='dashed')
 sqrt(mean((pred_scores - true_scores)^2))
 cor(pred_scores, true_scores)
 ```
+Below is a function to calculate the score of the model. Using the following rules:
+
+1. Exact Score Prediction:
+	3 Points are awarded if both the predicted home and away scores match the actual scores exactly.
+1.	Draw Prediction:
+	1 Point is awarded if the predicted result is a draw (both teams score the same number of goals) and the actual result is also a draw.
+1.	Correct Outcome Prediction:
+	1 Point is awarded if the predicted outcome (win/loss) matches the actual outcome, even if the exact scores do not match.
+
 
 ```{r, eval=lsg, show=lsg}
 get_score = function(s1new, s2new, data){
@@ -187,16 +209,21 @@ In a hierarchical model, the parameters of interest, in our case the attack and 
 
 Instead we define priors on the population, known as the hyperpriors.
 
-```{r hmodel, results="hide", warning=FALSE}
-hmodel <- cmdstan_model('hier_model.stan')
+```{r hmodel, results="hide", message=FALSE, warning=FALSE,  results="hide"}
+hmodel <- cmdstan_model(here('lab/football1/hier_model.stan')) 
 hfit = hmodel$sample(data = my_data)
-#hfit = stan(file = 'hier_model.stan', data = my_data)
 ```
 
 ## Checking the chain
 
 ```{r }
-hfit 
+hfit
+bayesplot::mcmc_trace(hfit$draws(c("mu_att", "lp__")))
+```
+
+```{r }
+loo::loo(hfit$draws("log_lik"))
+loo::loo(nhfit$draws("log_lik"))
 ```
 
 ## Prediction of Hierarchical Model
