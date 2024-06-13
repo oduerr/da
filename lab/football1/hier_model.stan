@@ -1,75 +1,53 @@
 data {
-  int<lower=0> nt; //number of teams
-  int<lower=0> ng; //number of games
-  int<lower=0> ht[ng]; //home team index
-  int<lower=0> at[ng]; //away team index
-  int<lower=0> s1[ng]; //score home team
-  int<lower=0> s2[ng]; //score away team
-  int<lower=0> np; //number of predicted games
-  int<lower=0> htnew[np]; //home team index for prediction
-  int<lower=0> atnew[np]; //away team index for prediction
+  int<lower=1> N;            // number of observations (in training)
+  array[N] real y;           // outcomes (in training)
+  array[N] real x;           // x (living space)
+  int<lower=1> J;            // number of subjects
+  array[N] int<lower=1, upper=J> j; // subject id
+  
+  int<lower=1> N_t; 
+  array[N_t] real y_t;   
+  array[N_t] real x_t;   
+  array[N_t] int<lower=1, upper=J> j_t;
 }
 
 parameters {
-  real home; //home advantage
-  //See paper https://discovery.ucl.ac.uk/id/eprint/16040/1/16040.pdf using a sum-to-zero constraint
-  vector[nt - 1] att_raw; //attack ability of each team
-  vector[nt - 1] def_raw; //defence ability of each team
-  
-  //hyper parameters <-- New in Hierachical Model
-  real mu_att;
-  real<lower=0> tau_att;
-  real mu_def;
-  real<lower=0> tau_def;
-}
-
-transformed parameters {
-  vector[ng] theta1; //score probability of home team
-  vector[ng] theta2; //score probability of away team
-
-  //See https://mc-stan.org/docs/2_18/stan-users-guide/parameterizing-centered-vectors.html
-  vector[nt] att = append_row(att_raw, -sum(att_raw));
-  vector[nt] def = append_row(def_raw, -sum(def_raw));
-  
-  theta1 = exp(home + att[ht] - def[at]);
-  theta2 = exp(att[at] - def[ht]);
+  real<lower=0> sigma_e;     // residual std
+  array[J, 2] real u;        // City level intercept (1) and slope (2)
+  vector[2] pu;              // County level intercept and slope (mean)
+  vector<lower=0>[2] ps;     // County level intercept and slope (sd)
 }
 
 model {
-//hyper priors  <-- New in Hierachical Model
-mu_att ~ normal(0,0.1);
-tau_att ~ normal(0,1);
-mu_def ~ normal(0,0.1);
-tau_def ~ normal(0,1);
+  real mu;
 
-//priors
-att ~ normal(mu_att, tau_att);
-def ~ normal(mu_def, tau_def);
-home ~ normal(0,1);
+  // Hyperpriors
+  pu ~ normal(0, 1);          // Intercept and slope mean
+  ps ~ exponential(1.0);      // Uncertainty of the means
 
+  // Priors for city-level parameters
+  u[:, 1] ~ normal(pu[1], ps[1]);  // Intercept for the individual cities
+  u[:, 2] ~ normal(pu[2], ps[2]);  // Slope for the individual cities
+  sigma_e ~ exponential(1.0);   // Prior for residual standard deviation
 
-//likelihood
-s1 ~ poisson(theta1);
-s2 ~ poisson(theta2);
-}
-
-generated quantities {
-//generate predictions
-  vector[np] theta1new; //score probability of home team
-  vector[np] theta2new; //score probability of away team
-  real s1new[np]; //predicted score
-  real s2new[np]; //predicted score
-  vector[ng] log_lik;
-
-  theta1new = exp(home + att[htnew] - def[atnew]);
-  theta2new = exp(att[atnew] - def[htnew]);
-
-  s1new = poisson_rng(theta1new);
-  s2new = poisson_rng(theta2new);
-  
-  for (n in 1:ng){
-    //log_lik[n] = normal_lpdf(y[n] | a * x[n] + b, sigma);
-    log_lik[n] = poisson_lpmf(s1[n] | theta1) + poisson_lpmf(s2[n] | theta2);
+  // Likelihood
+  for (i in 1:N) {
+    mu = u[j[i], 1] + u[j[i], 2] * x[i];
+    y[i] ~ normal(mu, sigma_e);
   }
 }
 
+generated quantities {
+  array[N] real log_lik;
+  array[N_t] real log_lik_t;
+  array[N_t] real y_t_pred;
+  
+  for (n in 1:N) {
+    log_lik[n] = normal_lpdf(y[n] | u[j[n], 1] + u[j[n], 2] * x[n], sigma_e);
+  }
+  
+  for (n in 1:N_t) {
+    log_lik_t[n] = normal_lpdf(y_t[n] | u[j_t[n], 1] + u[j_t[n], 2] * x_t[n], sigma_e);
+    y_t_pred[n] = normal_rng(u[j_t[n], 1] + u[j_t[n], 2] * x_t[n], sigma_e);
+  }
+}

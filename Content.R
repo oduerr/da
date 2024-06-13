@@ -21,5 +21,9 @@
 "/Users/oli/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_05_Bayes_5/bayes_5_compile.R" # Arbeitsblatt
 "/Users/oli/Documents/GitHub/da/lab/robust_regression/robust_regression.qmd" #Aufgabe
 
-#### Bayes Woche 6 ###
+#### Bayes Woche 6 (Multilevel) ###
 "/Users/oli/Documents/GitHub/da/lab/football1/Hierarchical.Rmd"
+
+
+#### Bayes Woche 7 (Multilevel 2) ###
+"/Users/oli/Documents/GitHub/da/lab/kn_rent/rent_kn_cmdrstan.Rmd"

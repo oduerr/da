@@ -53,6 +53,13 @@ Not showing the many details in MCMC simulation with Stan.
 | ```{r, echo=lsg, eval=lsg, message=FALSE, warning=FALSE,  results="hide"}
 
 
+# Stan Syntax
+See <https://mc-stan.org/docs/stan-users-guide/index.html>
+
+Note that in newer version, we need `array[N] int<lower=0, upper=1> y;`
+ instead of `int<lower=0,upper=1> y[N];`, see <https://mc-stan.org/docs/reference-manual/removals.html#postfix-brackets-array-syntax>
+
+
 ## Stan
 
 ```{r rstan_minimal, eval=FALSE}
@@ -67,14 +74,6 @@ s_rstan = sampling(m_rstan, data=data) #Sampling from file
 #No MCMC just evaluating parameters
 sampling(model_1, data=dat, algorithm="Fixed_param", chain=1, iter=1) 
 ```
-
-# Stan Syntax
-See <https://mc-stan.org/docs/stan-users-guide/index.html>
-
-Note that in newer version, we need
-`int<lower=0,upper=1> y[N];` instead of
-`array[N] int<lower=0, upper=1> y;`
-
 
 
 # In a more detail

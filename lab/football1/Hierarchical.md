@@ -6,7 +6,16 @@ to predict the scores of English premier league matches.
 
 ## Your tasks
 
-Step through the notebook and try to understand it.
+Step through the notebook and try to understand it. Try to answer the
+following questions:
+
+- Why the $log$ in $log(theta_g2) = att_at + def_ht$?
+- What are the effective number of parameters in the hierarchical model
+  and non-hierarchical model (use the output of the `loo` function)?
+- What is the home advantage in the non-hierarchical model and the
+  hierarchical model?
+- Change the number of games for training. How does the performance of
+  the models change?
 
 ### Background
 
@@ -23,31 +32,31 @@ Modifications include:
 - Removing the fixed prior for home advantage (which has a std of about
   1e-4)
 
-  - Nevertheless, it appears necessary, as mentioned in the paper, to
-    implement a sum-to-zero restriction for both the defense and
-    offense. This stems from the fact that teams compete against one
-    another, making these abilities dependent on each other. For further
-    details, please refer to the aforementioned paper and its associated
-    references.
+- Nevertheless, it appears necessary, as mentioned in the paper, to
+  implement a sum-to-zero restriction for both the defense and offense.
+  This stems from the fact that teams compete against one another,
+  making these abilities dependent on each other. For further details,
+  please refer to the aforementioned paper and its associated
+  references.
 
 ``` r
-lsg = FALSE #Set to FALSE before submitting
+lsg = TRUE #Set to FALSE before submitting
 #require(rstan)
 #set.seed(1) #set seed 
 library(cmdstanr)
 ```
 
-    ## This is cmdstanr version 0.5.3
+    ## This is cmdstanr version 0.8.0.9000
 
     ## - CmdStanR documentation and vignettes: mc-stan.org/cmdstanr
 
-    ## - CmdStan path: /Users/oli/.cmdstan/cmdstan-2.32.0
+    ## - CmdStan path: /Users/oli/.cmdstan/cmdstan-2.34.1
 
-    ## - CmdStan version: 2.32.0
+    ## - CmdStan version: 2.34.1
 
     ## 
     ## A newer version of CmdStan is available. See ?install_cmdstan() to install it.
-    ## To disable this check set option or environment variable CMDSTANR_NO_VER_CHECK=TRUE.
+    ## To disable this check set option or environment variable cmdstanr_no_ver_check=TRUE.
 
 ``` r
 options(mc.cores = parallel::detectCores())
@@ -92,6 +101,7 @@ cat('We have T = ', nt, 'teams \n')
 Now convert team names for each match into numbers (for the lookup)
 
 ``` r
+#Some R-Magic to convert the team names to numbers, no need to understand this
 teams = unique(data$Home)
 ht = unlist(sapply(1:ng, function(g) which(teams == data$Home[g])))
 at = unlist(sapply(1:ng, function(g) which(teams == data$Away[g])))
@@ -99,8 +109,14 @@ at = unlist(sapply(1:ng, function(g) which(teams == data$Away[g])))
 
 ``` r
 # we will save the last np games to predict
-np=50
-ngob = ng-np #number of games to fit
+np=200
+ngob = ng-np #ngames obsered ngob = number of games to fit
+print(paste0("Using the first ", ngob, " games to fit the model and ", np, " games to predict"))
+```
+
+    ## [1] "Using the first 128 games to fit the model and 200 games to predict"
+
+``` r
 my_data = list(
   nt = nt, 
   ng = ngob,
@@ -133,9 +149,12 @@ att and def are the attack and defense abilities of the teams where the
 indices at,ht correspond to the t=1-20 teams.
 
 ``` r
-nhmodel <- cmdstan_model('non_hier_model.stan')
+library(here)
+library(cmdstanr)
+nhmodel <- cmdstan_model(here('lab/football1/non_hier_model.stan'))
 nhfit = nhmodel$sample(data = my_data)
-#nhfit_stan = stan(file = 'non_hier_model.stan', data = my_data)
+d = loo::loo(nhfit$draws("log_lik"))
+print(d)
 ```
 
 #### Non-Hierarchical model predicted scores of the unseen
@@ -147,7 +166,7 @@ library(tidyverse)
     ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
     ## ✔ dplyr     1.1.1     ✔ readr     2.1.4
     ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
-    ## ✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+    ## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
     ## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
     ## ✔ purrr     1.0.1     
     ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
@@ -180,13 +199,25 @@ abline(a=0,  b=1, lty='dashed')
 sqrt(mean((pred_scores - true_scores)^2))
 ```
 
-    ## [1] 1.188831
+    ## [1] 1.203396
 
 ``` r
 cor(pred_scores, true_scores)
 ```
 
-    ## [1] 0.4449657
+    ## [1] 0.3170073
+
+Below is a function to calculate the score of the model. Using the
+following rules:
+
+1.  Exact Score Prediction: 3 Points are awarded if both the predicted
+    home and away scores match the actual scores exactly.
+2.  Draw Prediction: 1 Point is awarded if the predicted result is a
+    draw (both teams score the same number of goals) and the actual
+    result is also a draw.
+3.  Correct Outcome Prediction: 1 Point is awarded if the predicted
+    outcome (win/loss) matches the actual outcome, even if the exact
+    scores do not match.
 
 ``` r
 get_score = function(s1new, s2new, data){
@@ -214,6 +245,8 @@ get_score = function(s1new, s2new, data){
 }
 get_score(s1new, s2new, data)
 ```
+
+    ## [1] 144
 
 #### Defense / Attack Non-Hierachical
 
@@ -246,6 +279,19 @@ text(attack,defense, labels=teams, cex=0.7, pos=4)
 
 Plot the posterior of the variable `home`
 
+``` r
+library(tidybayes)
+#home_adv = rstan::extract(nhfit)$home
+#hist(home_adv, 100, freq = FALSE, main=paste0("Home Adv, mean: ", round(mean(home_adv),2)))
+#lines(density(home_adv))
+
+tidy_draws(nhfit) %>% 
+  select(home) %>% 
+  ggplot(aes(x=home)) + geom_density() 
+```
+
+![](Hierarchical_files/figure-gfm/home_adv_non_hier-1.png)<!-- -->
+
 # Hierarchical model
 
 In a hierarchical model, the parameters of interest, in our case the
@@ -258,56 +304,94 @@ attack and defense ability are drawn from the population distribution.
 Instead we define priors on the population, known as the hyperpriors.
 
 ``` r
-hmodel <- cmdstan_model('hier_model.stan')
+hmodel <- cmdstan_model(here('lab/football1/hier_model.stan')) 
 hfit = hmodel$sample(data = my_data)
-```
-
-    ## Chain 2 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-
-    ## Chain 2 Exception: normal_lpdf: Scale parameter is 0, but must be positive! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 47, column 0 to column 30)
-
-    ## Chain 2 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-
-    ## Chain 2 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-
-    ## Chain 2
-
-    ## Chain 3 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-
-    ## Chain 3 Exception: normal_lpdf: Scale parameter is 0, but must be positive! (in '/var/folders/bk/0vv7sh9n43n3dm4fth1qw93r0000gq/T/Rtmp0xSV3f/model-1382437a7c926.stan', line 46, column 0 to column 30)
-
-    ## Chain 3 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
-
-    ## Chain 3 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
-
-    ## Chain 3
-
-    ## Warning: 49 of 4000 (1.0%) transitions ended with a divergence.
-    ## See https://mc-stan.org/misc/warnings for details.
-
-``` r
-#hfit = stan(file = 'hier_model.stan', data = my_data)
 ```
 
 ## Checking the chain
 
 ``` r
-hfit 
+hfit
 ```
 
     ##    variable    mean  median   sd  mad      q5     q95 rhat ess_bulk ess_tail
-    ##  lp__       -450.84 -450.65 5.95 5.46 -460.48 -441.40 1.02      468      203
-    ##  home          0.35    0.35 0.05 0.05    0.26    0.43 1.00     4932     3220
-    ##  att_raw[1]   -0.03   -0.03 0.15 0.15   -0.28    0.20 1.00     6912     2962
-    ##  att_raw[2]   -0.10   -0.10 0.15 0.14   -0.35    0.13 1.00     6628     3294
-    ##  att_raw[3]   -0.30   -0.30 0.17 0.16   -0.60   -0.05 1.00     5691     2281
-    ##  att_raw[4]   -0.23   -0.23 0.15 0.16   -0.50    0.01 1.00     4840     2807
-    ##  att_raw[5]   -0.22   -0.22 0.15 0.15   -0.47    0.02 1.00     5834     2851
-    ##  att_raw[6]    0.17    0.17 0.14 0.14   -0.06    0.39 1.00     5910     2846
-    ##  att_raw[7]    0.30    0.30 0.13 0.13    0.08    0.51 1.00     1792      584
-    ##  att_raw[8]   -0.31   -0.31 0.17 0.17   -0.62   -0.04 1.00     2617     2481
+    ##  lp__       -183.71 -184.99 8.91 6.89 -195.55 -164.59 1.04       97       39
+    ##  home          0.35    0.35 0.08 0.08    0.23    0.47 1.00     2144     2906
+    ##  att_raw[1]   -0.09   -0.09 0.20 0.20   -0.42    0.22 1.00     1107     2142
+    ##  att_raw[2]    0.07    0.07 0.19 0.18   -0.25    0.37 1.00     4287     2839
+    ##  att_raw[3]   -0.30   -0.28 0.22 0.21   -0.66    0.06 1.00     4560     2603
+    ##  att_raw[4]   -0.48   -0.47 0.24 0.23   -0.90   -0.11 1.00     3265     2946
+    ##  att_raw[5]   -0.10   -0.09 0.20 0.20   -0.45    0.22 1.01     3989     2864
+    ##  att_raw[6]    0.12    0.11 0.19 0.19   -0.19    0.43 1.00     3760     2655
+    ##  att_raw[7]    0.48    0.48 0.18 0.18    0.19    0.77 1.00     3342     2800
+    ##  att_raw[8]   -0.27   -0.26 0.24 0.24   -0.70    0.10 1.01      559      190
     ## 
-    ##  # showing 10 of 1118 rows (change via 'max_rows' argument or 'cmdstanr_max_rows' option)
+    ##  # showing 10 of 1268 rows (change via 'max_rows' argument or 'cmdstanr_max_rows' option)
+
+``` r
+bayesplot::mcmc_trace(hfit$draws(c("mu_att", "lp__")))
+```
+
+![](Hierarchical_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+``` r
+loo::loo(hfit$draws("log_lik"))
+```
+
+    ## Warning: Relative effective sample sizes ('r_eff' argument) not specified.
+    ## For models fit with MCMC, the reported PSIS effective sample sizes and 
+    ## MCSE estimates will be over-optimistic.
+
+    ## Warning: Some Pareto k diagnostic values are slightly high. See help('pareto-k-diagnostic') for details.
+
+    ## 
+    ## Computed from 4000 by 128 log-likelihood matrix
+    ## 
+    ##          Estimate   SE
+    ## elpd_loo   -386.0 13.3
+    ## p_loo        23.0  3.5
+    ## looic       772.0 26.6
+    ## ------
+    ## Monte Carlo SE of elpd_loo is 0.1.
+    ## 
+    ## Pareto k diagnostic values:
+    ##                          Count Pct.    Min. n_eff
+    ## (-Inf, 0.5]   (good)     126   98.4%   655       
+    ##  (0.5, 0.7]   (ok)         2    1.6%   309       
+    ##    (0.7, 1]   (bad)        0    0.0%   <NA>      
+    ##    (1, Inf)   (very bad)   0    0.0%   <NA>      
+    ## 
+    ## All Pareto k estimates are ok (k < 0.7).
+    ## See help('pareto-k-diagnostic') for details.
+
+``` r
+loo::loo(nhfit$draws("log_lik"))
+```
+
+    ## Warning: Relative effective sample sizes ('r_eff' argument) not specified.
+    ## For models fit with MCMC, the reported PSIS effective sample sizes and 
+    ## MCSE estimates will be over-optimistic.
+    ## Warning: Some Pareto k diagnostic values are slightly high. See help('pareto-k-diagnostic') for details.
+
+    ## 
+    ## Computed from 4000 by 128 log-likelihood matrix
+    ## 
+    ##          Estimate   SE
+    ## elpd_loo   -392.3 11.8
+    ## p_loo        35.4  3.6
+    ## looic       784.7 23.6
+    ## ------
+    ## Monte Carlo SE of elpd_loo is 0.2.
+    ## 
+    ## Pareto k diagnostic values:
+    ##                          Count Pct.    Min. n_eff
+    ## (-Inf, 0.5]   (good)     122   95.3%   239       
+    ##  (0.5, 0.7]   (ok)         6    4.7%   502       
+    ##    (0.7, 1]   (bad)        0    0.0%   <NA>      
+    ##    (1, Inf)   (very bad)   0    0.0%   <NA>      
+    ## 
+    ## All Pareto k estimates are ok (k < 0.7).
+    ## See help('pareto-k-diagnostic') for details.
 
 ## Prediction of Hierarchical Model
 
@@ -336,17 +420,19 @@ abline(a=0,  b=1, lty='dashed')
 sqrt(mean((pred_scores - true_scores)^2))
 ```
 
-    ## [1] 1.182217
+    ## [1] 1.108828
 
 ``` r
 cor(pred_scores, true_scores)
 ```
 
-    ## [1] 0.4740927
+    ## [1] 0.3403446
 
 ``` r
  get_score(s1new, s2new, data)
 ```
+
+    ## [1] 147
 
 ### Mean attack and dense abilities
 
@@ -374,3 +460,11 @@ text(attack,defense, labels=teams, cex=0.7, pos=4)
 ![](Hierarchical_files/figure-gfm/attack_defense_hier-1.png)<!-- -->
 
 #### Home Advantage h-model you job!
+
+``` r
+tidy_draws(hfit) %>% 
+  select(home) %>% 
+  ggplot(aes(x=home)) + geom_density() 
+```
+
+![](Hierarchical_files/figure-gfm/home_adv_hier-1.png)<!-- -->
