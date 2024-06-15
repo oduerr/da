@@ -42,14 +42,15 @@ print(paste0("Loaded : ", nrow(all_games), " games"))
 
 ```{r }
 # Define the list of teams
-teams <- c("Germany", "France", "Italy", "Spain", "Portugal", "Netherlands", 
-           "Belgium", "England", "Croatia", "Switzerland", "Denmark", "Sweden", 
-           "Poland", "Austria", "Ukraine", "Turkey", "Wales", "Scotland", 
-           "Czech Republic", "Russia", "Norway", "Finland", "Slovakia", "Hungary")
+# Define the list of teams that qualified for Euro 2024
+teams <- c("Germany", "France", "Spain", "Netherlands", "Italy", "Croatia", 
+                   "Belgium", "Portugal", "Switzerland", "Poland", "Denmark", 
+                   "Austria", "Turkey", "Czechia", "Hungary", "England", "Scotland", 
+                   "Serbia", "Romania", "Albania", "Slovenia", "Slovakia", "Finland", "Georgia")
 
 # Create a lookup table with all country names and their corresponding codes (if needed)
 lookup <- data.frame(
-  Code = c("de", "fr", "it", "es", "pt", "nl", "be", "gb", "hr", "ch", "dk", "se", "pl", "at", "ua", "tr", "gb", "gb", "cz", "ru", "no", "fi", "sk", "hu"),
+ Code = c("de", "fr", "es", "nl", "it", "hr", "be", "pt", "ch", "pl", "dk", "at", "tr", "cz", "hu", "gb", "gb", "rs", "ro", "al", "si", "sk", "fi", "ge"),
   Name = teams
 )
 
