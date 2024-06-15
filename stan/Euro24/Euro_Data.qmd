@@ -1,0 +1,98 @@
+---
+title: "Euro Data"
+format: 
+  gfm: 
+    toc: false
+---
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+  library(tidyverse)
+```
+To make predictions for the Euro 2024, we need to have data on the performance of the teams in the past. For that we load the data using the worldfootballR package. For the following:
+
+- the Qualifying matches for the Euro 2024
+- friendly matches from 2022 to 2024
+- the 2022 World Cup 
+- the 2021 Euro Cup
+
+The cleaned data includes results of all matches of teams taking part in the Euro 2024.
+
+## Loading the data 
+Loading of the data and saving it to a csv file.
+
+```{r load_data, echo=TRUE, eval=FALSE}
+library(worldfootballR)
+df_euro_qual_24 <- fb_match_results(country = "", gender = "M", season_end_year = 2024, non_dom_league_url = 'https://fbref.com/en/comps/678/history/UEFA-Euro-Qualifying-Seasons')
+df_friendlys_24 <- fb_match_results(country = "", gender = "M", season_end_year = 2024, non_dom_league_url='https://fbref.com/en/comps/218/history/Friendlies-M-Seasons')
+df_friendlys_23 <- fb_match_results(country = "", gender = "M", season_end_year = 2023, non_dom_league_url='https://fbref.com/en/comps/218/history/Friendlies-M-Seasons')
+df_friendlys_22 <- fb_match_results(country = "", gender = "M", season_end_year = 2022, non_dom_league_url='https://fbref.com/en/comps/218/history/Friendlies-M-Seasons')
+df_wc_22 <- fb_match_results(country = "", gender = "M", season_end_year = 2022, non_dom_league_url='https://fbref.com/en/comps/1/history/World-Cup-Seasons')
+df_euro_21 <- fb_match_results(country = "", gender = "M", season_end_year = 2021, tier = "", non_dom_league_url = "https://fbref.com/en/comps/676/history/European-Championship-Seasons")
+nrow(df_euro_qual_24) + nrow(df_friendlys_24) + nrow(df_friendlys_23) + nrow(df_friendlys_22) + nrow(df_wc_22) + nrow(df_euro_21) #1062
+games_raw = bind_rows(df_euro_qual_24, df_friendlys_24, df_friendlys_23, df_friendlys_22, df_wc_22, df_euro_21)
+print(paste0("Loaded :, ", nrow(games_raw), " games"))
+write.csv(games_raw, file = "all_games.csv", row.names = FALSE)
+```
+
+
+```{r }
+all_games = read.csv("all_games.csv")
+print(paste0("Loaded : ", nrow(all_games), " games"))
+```
+
+```{r }
+# Define the list of teams
+teams <- c("Germany", "France", "Italy", "Spain", "Portugal", "Netherlands", 
+           "Belgium", "England", "Croatia", "Switzerland", "Denmark", "Sweden", 
+           "Poland", "Austria", "Ukraine", "Turkey", "Wales", "Scotland", 
+           "Czech Republic", "Russia", "Norway", "Finland", "Slovakia", "Hungary")
+
+# Create a lookup table with all country names and their corresponding codes (if needed)
+lookup <- data.frame(
+  Code = c("de", "fr", "it", "es", "pt", "nl", "be", "gb", "hr", "ch", "dk", "se", "pl", "at", "ua", "tr", "gb", "gb", "cz", "ru", "no", "fi", "sk", "hu"),
+  Name = teams
+)
+
+# Function to extract and standardize country names
+extract_country_names <- function(df) {
+  df %>%
+    rowwise() %>%
+    mutate(
+      Home = {
+        home_parts <- strsplit(Home, " ")[[1]]
+        home_name <- ifelse(home_parts[2] %in% lookup$Code, lookup$Name[lookup$Code == home_parts[2]], home_parts[1])
+        home_name
+      },
+      Away = {
+        away_parts <- strsplit(Away, " ")[[1]]
+        away_name <- ifelse(away_parts[1] %in% lookup$Code, lookup$Name[lookup$Code == away_parts[1]], away_parts[2])
+        away_name
+      }
+    ) %>%
+    ungroup()
+}
+
+# Apply the function to extract and standardize country names
+games_with_names <- extract_country_names(all_games)
+
+# Function to filter rows based on the country names
+filter_games <- function(df, teams) {
+  df %>%
+    filter(Home %in% teams & Away %in% teams)
+}
+
+# Apply the filter function
+filtered_games <- filter_games(games_with_names, teams)
+
+out = filtered_games %>% select(Home, HomeGoals, AwayGoals, Away, Date, Competition_Name, MatchURL)
+write.csv(out , file = "games_before_euro24.csv", row.names = FALSE)
+```
+
+
+Total number of games between teams taking part in the Euro 2024: `r nrow(filtered_games)`
+
+```{r, message=FALSE}
+library(kableExtra)
+kableExtra::kable(out, align = "rlrlrrrr", caption = "Games between teams taking part in the Euro 2024")
+```
+
