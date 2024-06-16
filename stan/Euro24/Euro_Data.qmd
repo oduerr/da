@@ -43,14 +43,11 @@ print(paste0("Loaded : ", nrow(all_games), " games"))
 ```{r }
 # Define the list of teams
 # Define the list of teams that qualified for Euro 2024
-teams <- c("Germany", "France", "Spain", "Netherlands", "Italy", "Croatia", 
-                   "Belgium", "Portugal", "Switzerland", "Poland", "Denmark", 
-                   "Austria", "Turkey", "Czechia", "Hungary", "England", "Scotland", 
-                   "Serbia", "Romania", "Albania", "Slovenia", "Slovakia", "Finland", "Georgia")
+teams <- c("Germany", "Scotland", "France", "Italy", "Spain", "England", "Hungary", "Switzerland", "Croatia", "Albania", "Poland", "Netherlands", "Slovenia", "Denmark", "Serbia", "Romania", "Ukraine", "Belgium", "Slovakia", "Türkiye", "Georgia", "Portugal", "Czechia", "Austria")
 
 # Create a lookup table with all country names and their corresponding codes (if needed)
 lookup <- data.frame(
- Code = c("de", "fr", "es", "nl", "it", "hr", "be", "pt", "ch", "pl", "dk", "at", "tr", "cz", "hu", "gb", "gb", "rs", "ro", "al", "si", "sk", "fi", "ge"),
+  Code <- c("de", "sct", "fr", "it", "es", "eng", "hu", "ch", "hr", "al", "pl", "nl", "si", "dk", "rs", "ro", "ua", "be", "sk", "tr", "ge", "pt", "cz", "at"),
   Name = teams
 )
 
@@ -89,8 +86,23 @@ out = filtered_games %>% select(Home, HomeGoals, AwayGoals, Away, Date, Competit
 write.csv(out , file = "games_before_euro24.csv", row.names = FALSE)
 ```
 
+## Summary of the data
+```{r goals_hist}
+# Histogram of scored goals by different turnaments. 
 
-Total number of games between teams taking part in the Euro 2024: `r nrow(filtered_games)`
+filtered_games %>% 
+  ggplot(aes(x = HomeGoals)) +
+  geom_histogram(binwidth = 1) +
+  geom_histogram(aes(x = AwayGoals), binwidth = 1) +
+  labs(title = "Histogram of scored goals per team by different turnaments", x = "Goals", y = "Frequency") +
+  theme_minimal()
+
+```
+
+
+
+
+Total number of games between the `r length(unique(c(out$Home, out$Away)))` teams taking part in the Euro 2024: `r nrow(filtered_games)`
 
 ```{r, message=FALSE}
 library(kableExtra)
