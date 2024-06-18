@@ -10,12 +10,14 @@ Step through the notebook and try to understand it. Try to answer the
 following questions:
 
 - Why the $log$ in $log(theta_g2) = att_at + def_ht$?
-- What are the effective number of parameters in the hierarchical model
-  and non-hierarchical model (use the output of the `loo` function)?
+- For 15 games and for 200 games in the training set. Answer the
+  following questions:
+  - What are the effective number of parameters in the hierarchical
+    model and non-hierarchical model (use the output of the `loo`
+    function)?
+  - What is the average score (for definition see below) and
 - What is the home advantage in the non-hierarchical model and the
   hierarchical model?
-- Change the number of games for training. How does the performance of
-  the models change?
 
 ### Background
 
@@ -67,34 +69,38 @@ options(mc.cores = parallel::detectCores())
 First we read in the data
 
 ``` r
-data = read.csv('https://raw.githubusercontent.com/MaggieLieu/STAN_tutorials/master/Hierarchical/premiereleague.csv',col.names = c('Home','score1', 'score2', 'Away'), stringsAsFactors = FALSE)
+#data = read.csv('https://raw.githubusercontent.com/MaggieLieu/STAN_tutorials/master/Hierarchical/premiereleague.csv',col.names = c('Home','score1', 'score2', 'Away'), stringsAsFactors = FALSE)
+
+# Uncomment the following line to read the data for the Euro 24
+data = read.csv('../../stan/Euro24/games_before_euro24.csv', stringsAsFactors = FALSE)[,1:4]
+colnames(data) = c('Home','score1', 'score2', 'Away')
 ```
 
 ``` r
 head(data)
 ```
 
-    ##                Home score1 score2                   Away
-    ## 1   West Ham United      0      5        Manchester City
-    ## 2           Burnley      3      0            Southampton
-    ## 3    Crystal Palace      0      0                Everton
-    ## 4           Watford      0      3 Brighton & Hove Albion
-    ## 5   AFC Bournemouth      1      1       Sheffield United
-    ## 6 Tottenham Hotspur      3      1            Aston Villa
+    ##      Home score1 score2        Away
+    ## 1 Denmark      3      1     Finland
+    ## 2   Italy      1      2     England
+    ## 3  France      4      0 Netherlands
+    ## 4 Czechia      3      1      Poland
+    ## 5   Spain      3      1     Georgia
+    ## 6 Romania      1      0 Switzerland
 
 ``` r
 ng = nrow(data)
 cat('we have G =', ng, 'games \n')
 ```
 
-    ## we have G = 328 games
+    ## we have G = 115 games
 
 ``` r
 nt = length(unique(data$Home))
 cat('We have T = ', nt, 'teams \n')
 ```
 
-    ## We have T =  20 teams
+    ## We have T =  24 teams
 
 ### Data Preparation
 
@@ -109,12 +115,12 @@ at = unlist(sapply(1:ng, function(g) which(teams == data$Away[g])))
 
 ``` r
 # we will save the last np games to predict
-np=200
+np=1
 ngob = ng-np #ngames obsered ngob = number of games to fit
 print(paste0("Using the first ", ngob, " games to fit the model and ", np, " games to predict"))
 ```
 
-    ## [1] "Using the first 128 games to fit the model and 200 games to predict"
+    ## [1] "Using the first 114 games to fit the model and 1 games to predict"
 
 ``` r
 my_data = list(
@@ -199,13 +205,15 @@ abline(a=0,  b=1, lty='dashed')
 sqrt(mean((pred_scores - true_scores)^2))
 ```
 
-    ## [1] 1.203396
+    ## [1] 0.156375
 
 ``` r
 cor(pred_scores, true_scores)
 ```
 
-    ## [1] 0.3170073
+    ## Warning in cor(pred_scores, true_scores): the standard deviation is zero
+
+    ## [1] NA
 
 Below is a function to calculate the score of the model. Using the
 following rules:
@@ -246,7 +254,7 @@ get_score = function(s1new, s2new, data){
 get_score(s1new, s2new, data)
 ```
 
-    ## [1] 144
+    ## [1] 3
 
 #### Defense / Attack Non-Hierachical
 
@@ -304,7 +312,7 @@ attack and defense ability are drawn from the population distribution.
 Instead we define priors on the population, known as the hyperpriors.
 
 ``` r
-hmodel <- cmdstan_model(here('lab/football1/hier_model.stan')) 
+hmodel <- cmdstan_model('~/Documents/GitHub/da/stan/football/hier_model.stan')
 hfit = hmodel$sample(data = my_data)
 ```
 
@@ -314,19 +322,19 @@ hfit = hmodel$sample(data = my_data)
 hfit
 ```
 
-    ##    variable    mean  median   sd  mad      q5     q95 rhat ess_bulk ess_tail
-    ##  lp__       -183.71 -184.99 8.91 6.89 -195.55 -164.59 1.04       97       39
-    ##  home          0.35    0.35 0.08 0.08    0.23    0.47 1.00     2144     2906
-    ##  att_raw[1]   -0.09   -0.09 0.20 0.20   -0.42    0.22 1.00     1107     2142
-    ##  att_raw[2]    0.07    0.07 0.19 0.18   -0.25    0.37 1.00     4287     2839
-    ##  att_raw[3]   -0.30   -0.28 0.22 0.21   -0.66    0.06 1.00     4560     2603
-    ##  att_raw[4]   -0.48   -0.47 0.24 0.23   -0.90   -0.11 1.00     3265     2946
-    ##  att_raw[5]   -0.10   -0.09 0.20 0.20   -0.45    0.22 1.01     3989     2864
-    ##  att_raw[6]    0.12    0.11 0.19 0.19   -0.19    0.43 1.00     3760     2655
-    ##  att_raw[7]    0.48    0.48 0.18 0.18    0.19    0.77 1.00     3342     2800
-    ##  att_raw[8]   -0.27   -0.26 0.24 0.24   -0.70    0.10 1.01      559      190
+    ##    variable    mean  median    sd   mad      q5    q95 rhat ess_bulk ess_tail
+    ##  lp__       -132.05 -135.30 19.71 19.61 -159.35 -94.14 1.07       42       33
+    ##  home          0.42    0.43  0.08  0.08    0.29   0.54 1.01      289     1907
+    ##  att_raw[1]    0.01    0.00  0.15  0.13   -0.23   0.25 1.04     2369     1975
+    ##  att_raw[2]    0.10    0.07  0.16  0.13   -0.13   0.41 1.02      211      201
+    ##  att_raw[3]    0.16    0.13  0.17  0.16   -0.06   0.47 1.02      191     1034
+    ##  att_raw[4]   -0.04   -0.03  0.16  0.13   -0.32   0.20 1.03      397     1053
+    ##  att_raw[5]    0.27    0.25  0.21  0.23   -0.01   0.62 1.05       65      688
+    ##  att_raw[6]   -0.05   -0.03  0.18  0.14   -0.37   0.23 1.03     1823     1385
+    ##  att_raw[7]   -0.10   -0.07  0.16  0.14   -0.40   0.13 1.02     1043     1374
+    ##  att_raw[8]   -0.08   -0.05  0.15  0.13   -0.35   0.14 1.01      757     1619
     ## 
-    ##  # showing 10 of 1268 rows (change via 'max_rows' argument or 'cmdstanr_max_rows' option)
+    ##  # showing 10 of 446 rows (change via 'max_rows' argument or 'cmdstanr_max_rows' option)
 
 ``` r
 bayesplot::mcmc_trace(hfit$draws(c("mu_att", "lp__")))
@@ -345,19 +353,19 @@ loo::loo(hfit$draws("log_lik"))
     ## Warning: Some Pareto k diagnostic values are slightly high. See help('pareto-k-diagnostic') for details.
 
     ## 
-    ## Computed from 4000 by 128 log-likelihood matrix
+    ## Computed from 4000 by 114 log-likelihood matrix
     ## 
     ##          Estimate   SE
-    ## elpd_loo   -386.0 13.3
-    ## p_loo        23.0  3.5
-    ## looic       772.0 26.6
+    ## elpd_loo   -349.1 12.1
+    ## p_loo        13.5  2.1
+    ## looic       698.3 24.3
     ## ------
     ## Monte Carlo SE of elpd_loo is 0.1.
     ## 
     ## Pareto k diagnostic values:
     ##                          Count Pct.    Min. n_eff
-    ## (-Inf, 0.5]   (good)     126   98.4%   655       
-    ##  (0.5, 0.7]   (ok)         2    1.6%   309       
+    ## (-Inf, 0.5]   (good)     113   99.1%   1280      
+    ##  (0.5, 0.7]   (ok)         1    0.9%   3149      
     ##    (0.7, 1]   (bad)        0    0.0%   <NA>      
     ##    (1, Inf)   (very bad)   0    0.0%   <NA>      
     ## 
@@ -371,26 +379,25 @@ loo::loo(nhfit$draws("log_lik"))
     ## Warning: Relative effective sample sizes ('r_eff' argument) not specified.
     ## For models fit with MCMC, the reported PSIS effective sample sizes and 
     ## MCSE estimates will be over-optimistic.
-    ## Warning: Some Pareto k diagnostic values are slightly high. See help('pareto-k-diagnostic') for details.
+
+    ## Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.
 
     ## 
-    ## Computed from 4000 by 128 log-likelihood matrix
+    ## Computed from 4000 by 114 log-likelihood matrix
     ## 
     ##          Estimate   SE
-    ## elpd_loo   -392.3 11.8
-    ## p_loo        35.4  3.6
-    ## looic       784.7 23.6
+    ## elpd_loo   -370.0 10.8
+    ## p_loo        43.5  3.8
+    ## looic       740.0 21.5
     ## ------
-    ## Monte Carlo SE of elpd_loo is 0.2.
+    ## Monte Carlo SE of elpd_loo is NA.
     ## 
     ## Pareto k diagnostic values:
     ##                          Count Pct.    Min. n_eff
-    ## (-Inf, 0.5]   (good)     122   95.3%   239       
-    ##  (0.5, 0.7]   (ok)         6    4.7%   502       
-    ##    (0.7, 1]   (bad)        0    0.0%   <NA>      
-    ##    (1, Inf)   (very bad)   0    0.0%   <NA>      
-    ## 
-    ## All Pareto k estimates are ok (k < 0.7).
+    ## (-Inf, 0.5]   (good)     95    83.3%   589       
+    ##  (0.5, 0.7]   (ok)       18    15.8%   130       
+    ##    (0.7, 1]   (bad)       1     0.9%   72        
+    ##    (1, Inf)   (very bad)  0     0.0%   <NA>      
     ## See help('pareto-k-diagnostic') for details.
 
 ## Prediction of Hierarchical Model
@@ -420,19 +427,21 @@ abline(a=0,  b=1, lty='dashed')
 sqrt(mean((pred_scores - true_scores)^2))
 ```
 
-    ## [1] 1.108828
+    ## [1] 0.4313268
 
 ``` r
 cor(pred_scores, true_scores)
 ```
 
-    ## [1] 0.3403446
+    ## Warning in cor(pred_scores, true_scores): the standard deviation is zero
+
+    ## [1] NA
 
 ``` r
  get_score(s1new, s2new, data)
 ```
 
-    ## [1] 147
+    ## [1] 0
 
 ### Mean attack and dense abilities
 

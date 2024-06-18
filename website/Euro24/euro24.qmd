@@ -1,0 +1,421 @@
+---
+title: "Bayes is coming home - Predicting the Euro 2024 with Stan"
+author: "Oliver Dürr"
+format: 
+  html:
+    toc: true
+    toc-title: "Table of Contents"
+    toc-depth: 3
+    fig-width: 6
+    fig-height: 3
+    code-fold: true
+    code-tools: true
+    mathjax: true
+  # pdf:
+  #   toc: true
+  #   toc-title: "Table of Contents"
+filters:
+  - webr
+---
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+  library(tidyverse)
+  library(kableExtra)
+```
+The Euro 2024 ⚽ is a nice showcase of Bayesian Statistics. In Bayesian statistics, probabilities are seen as a degree of belief, which fits well with the nature of football. Almost everyone has beliefs about the strengths and weaknesses of the teams before seeing any games (based on historical data) and then updates these beliefs as new data comes in (games have been played).
+
+
+## Prediction based on the Historical Data
+
+We load the matches prior to the Euro 2024, see <https://github.com/oduerr/da/blob/master/stan/Euro24/Euro_Data.md> how to get the data. Note the limitations of using historic; for example, Germany only started finding their form shortly before Euro 2024.
+
+
+## Loading the data
+
+
+```{r load_data, echo=FALSE, eval=TRUE, collapse=TRUE}
+# Uncomment the following line to read the data for the Euro 24
+data = read.csv('~/Documents/GitHub/da/stan/Euro24/games_before_euro24.csv', stringsAsFactors = FALSE)
+data = data[,1:4]
+colnames(data) = c('Home','score1', 'score2', 'Away')
+#kable(data[1:3,])
+```
+
+Loaded `r nrow(data)` games with `r length(unique(c(data$Home, data$Away)))` teams.
+
+::: {.callout-caution collapse="true"}
+## Expand To Learn How to set up the data for Stan
+
+## Preparing the data for Stan
+
+```{r preparing_for_stan}
+#Some R-Magic to convert the team names to numbers, no need to understand this
+ng = nrow(data)
+teams = unique(data$Home)
+nt = length(teams)
+ht = unlist(sapply(1:ng, function(g) which(teams == data$Home[g])))
+at = unlist(sapply(1:ng, function(g) which(teams == data$Away[g])))
+
+np=1 #Number games leaving out for prediction
+ngob = ng-np #ngames obsered ngob = number of games to fit
+#print(paste0("Using the first ", ngob, " games to fit the model and ", np, " games to predict.", "Num teams ",  length(teams)))
+my_data = list(
+  nt = nt, 
+  ng = ngob,
+  ht = ht[1:ngob], 
+  at = at[1:ngob], 
+  s1 = data$score1[1:ngob],
+  s2 = data$score2[1:ngob],
+  np = np,
+  htnew = ht[(ngob+1):ng],
+  atnew = at[(ngob+1):ng]
+)
+```
+Using the first `r ngob` games to fit the model and `r np` games to predict. In total we have `r length(teams)` teams.
+:::
+
+
+## A Model for the goals scored 🥅
+
+We will assume that the number of goals scored by the home team $s_1$ and the away team $s_2$ follows a Poisson distribution. This has been shown to be a good model for the number of goals scored in a football match. We model the rate parameter $\theta$ of the Poisson distribution, related to the attack and defense strengths of the teams, as follows:
+
+	$$s_1 \sim \text{Pois}(\theta_1) \quad\text{goals scored by the home team}$$
+	
+	$$
+	s_2 \sim \text{Pois}(\theta_2) \quad\text{goals scored by the away team}
+	$$ 
+
+This is equivalent to performing two separate Poisson regressions, one for each team.
+
+We assume that:
+
+	$$
+	\theta_1 = \exp(\text{home} + \text{att}\text{ht} - \text{def}\text{at})
+	$$
+	
+	$$
+	\theta_2 = \exp(\text{att}\text{at} - \text{def}\text{ht})
+	$$
+
+Since there is no home advantage in the Euro (except for Germany), we set $\text{home} = 0$.
+
+
+### Prior for the attack and defence strength
+In Bayesian statistics, we further need to specify a prior for the parameters (our degree of believe in the attack and defense abilities before seeing any data). For that we use a  hierarchical model with correlated parameters. Other models are investigated at <https://github.com/oduerr/da/blob/master/stan/football/Correlated.md> for the English Premier League 2019/2020 season where the hiearchical model have been especially successfull. The model is adopted from the [blog_post](https://github.com/MaggieLieu/STAN_tutorials/tree/master/Hierarchical) and the [paper](https://discovery.ucl.ac.uk/id/eprint/16040/1/16040.pdf). The model is written in the probabilistic programming language Stan and can be found at <https://github.com/oduerr/da/blob/master/website/Euro24/hier_model_cor.stan>.
+
+## Conditioning on the data / Fitting the model
+After we state the model we fit the model to the data, or in Bayesian parlance, we update our degree of belief after seeing the data. 
+
+::: {.callout-caution collapse="true"}
+## Expand MCMC sampling with Stan
+
+
+
+```{r, message=FALSE, collapse=TRUE, warning=FALSE, fig.width=10, fig.height=3}
+library(cmdstanr)
+options(mc.cores = parallel::detectCores())
+hmodel <- cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model_cor.stan') 
+hfit = hmodel$sample(data = my_data)
+p1 = bayesplot::mcmc_rhat_hist(bayesplot::rhat(hfit))
+p2 = bayesplot::mcmc_neff_hist(bayesplot::neff_ratio(hfit))
+ggpubr::ggarrange(p1, p2, ncol=2)
+```
+
+The fitting of the model is good, as the Rhat values are close to 1 and we have no divergent transitions. The effective sample size is also good. 
+:::
+
+## The fitted model
+We plot the means of the attack and defense strengths of the teams. Shown are the mean values along with the 25% and 75% quantiles. There is considerable uncertainty in the strengths of the teams, but that’s the nature of the game.
+
+
+
+```{r, message=FALSE, collapse=TRUE, warning=FALSE, fig.width=7, fig.height=7}
+library(tidyverse)
+library(tidybayes)
+
+# Step 1: Gather draws and calculate summary statistics with credible intervals
+d = hfit %>%
+  tidybayes::gather_draws(A[i, j]) %>%
+  group_by(i, j) %>%
+  summarise(
+    average_value = mean(.value),
+    lower = quantile(.value, 0.25),  # Lower bound 
+    upper = quantile(.value, 0.75),  # Upper bound 
+    .groups = "drop"
+  )
+
+# Step 2: Create a matrix of the average values
+A = xtabs(average_value ~ i + j, data = d)
+
+# Step 3: Plot the average values
+plot(A[1,], A[2,], pch=20, xlab='Attack', ylab='Defence', main='Attack vs Defence')
+
+# Step 4: Add team labels
+text(A[1,], A[2,], labels=teams, cex=0.7, adj=c(-0.05, -0.8))
+
+# Step 5: Add error bars for 66% credibility intervals
+# Reshape data for plotting
+d_wide <- d %>% spread(key = j, value = average_value)
+d_lower <- d %>% spread(key = j, value = lower)
+d_upper <- d %>% spread(key = j, value = upper)
+
+# Convert to matrices for easier plotting
+A_lower <- xtabs(lower ~ i + j, data = d)
+A_upper <- xtabs(upper ~ i + j, data = d)
+
+# Plot vertical error bars
+arrows(A[1,], A_lower[2,], A[1,], A_upper[2,], angle=90, code=3, length=0.05, col="lightblue", alpha=0.5)
+
+# Plot horizontal error bars
+arrows(A_lower[1,], A[2,], A_upper[1,], A[2,], angle=90, code=3, length=0.05, col="lightblue")
+```
+
+::: {.callout-caution collapse="false"}
+## Example Prediction Germany vs Scotland
+The opening game of Euro 2024 was Germany vs. Scotland. In the plots below, we show the posterior probabilities for the attack and defense strengths of the teams. 
+
+```{r, message=FALSE, collapse=TRUE, warning=FALSE, fig.width=7, fig.height=3}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(tidybayes)
+
+# Function to calculate probabilities for a pairing
+id1 <- which(teams == 'Germany')
+id2 <- which(teams == 'Scotland')
+
+# Extract posterior distributions for Attack and Defense
+attack_germany <- hfit %>% tidybayes::spread_draws(A[i, j]) %>% filter(j == id1, i == 1) %>% select(A)
+attack_scotland <- hfit %>% tidybayes::spread_draws(A[i, j]) %>% filter(j == id2, i == 1) %>% select(A)
+defense_germany <- hfit %>% tidybayes::spread_draws(A[i, j]) %>% filter(j == id1, i == 2) %>% select(A)
+defense_scotland <- hfit %>% tidybayes::spread_draws(A[i, j]) %>% filter(j == id2, i == 2) %>% select(A)
+
+# Combine data into a tidy data frame
+tidy_df <- bind_rows(
+  attack_germany %>% mutate(Statistic = "Attack", Country = "Germany"),
+  attack_scotland %>% mutate(Statistic = "Attack", Country = "Scotland"),
+  defense_germany %>% mutate(Statistic = "Defense", Country = "Germany"),
+  defense_scotland %>% mutate(Statistic = "Defense", Country = "Scotland")
+)
+
+# Include the mean values in the plot
+ggplot(tidy_df, aes(x = A, fill = Country)) +
+  geom_density(alpha = 0.5) +
+  facet_wrap(~ Statistic, scales = "free") +
+  labs(title = "Posterior Distributions of Attack and Defense Strengths", x = "Strength", y = "Density") +
+  geom_vline(data = tidy_df %>% group_by(Statistic, Country) %>% summarise(mean_A = mean(A)), 
+             aes(xintercept = mean_A, color = Country), linetype = "dashed") +
+  theme_minimal() 
+```
+### Making predictions
+We can now make predictions for the game Germany vs Scotland. Below are the first samples of the posterior distribution for the attack and defense strengths of germany and scotland.
+
+```{r, message=FALSE, collapse=TRUE, warning=FALSE, eval=TRUE}
+# Extract first five samples for demonstration
+df = data.frame(attack_germany = attack_germany$A, defense_germany = defense_germany$A, attack_scotland = attack_scotland$A, defense_scotland = defense_scotland$A) %>% head() 
+knitr::kable(df)
+```
+
+
+
+We use the samples for posterior row by row to sample the number of goals for Germany and Scotland. We can use the samples to calculate the probability of a win, draw or loss for Germany.
+
+```{r, echo=TRUE, collapse=FALSE, warning=FALSE}
+ theta_germany = exp(attack_germany$A - defense_scotland$A)
+ theta_scotland = exp(attack_scotland$A - defense_germany$A)
+ g_germany = rpois(length(theta_germany), theta_germany)
+ g_scotland = rpois(length(theta_scotland), theta_scotland)
+ mean(g_germany > g_scotland) #Probability of Germany winning
+ mean(g_germany == g_scotland) #Probability of a draw
+ mean(g_germany < g_scotland) #Probability of Scotland winning
+ 
+ plot(table(g_germany)/length(g_germany), main='Germany Goals', xlab='Goals', ylab='Probability')
+ plot(table(g_scotland)/length(g_scotland), main='Scotland Goals', xlab='Goals', ylab='Probability')
+ 
+```
+Remember the result? It was 5:1 for Germany. The model predicted a win for Germany with a probability of `r round(mean(g_germany > g_scotland),2)`. The probability of a draw was `r round(mean(g_germany == g_scotland),2)` and the probability of Scotland winning was `r round(mean(g_germany < g_scotland),2)`. 
+
+So that these predictions with a grain of salt. The model is based on historical data and does not take into account the current form of the teams.
+:::
+
+
+# Predictions
+::: callout-caution 
+Note that these predictions are based on historical data and might do not take into account the current form of the teams. 
+:::
+
+```{r, message=FALSE, collapse=TRUE, warning=FALSE}
+library(tidyverse)
+library(tidybayes)
+library(ggpubr)
+library(knitr)
+
+# Function to calculate probabilities for a pairing
+calculate_probabilities <- function(team1, team2, teams, hfit) {
+  cat(sprintf('## %s vs %s\n', team1, team2))
+  id1 <- which(teams == team1)
+  id2 <- which(teams == team2)
+  
+  # Spread draws and filter the relevant data
+  As <- hfit %>% tidybayes::spread_draws(A[i, j]) %>% select(i, j, A)
+  att_1 <- As %>% filter(j == id1, i == 1)
+  att_2 <- As %>% filter(j == id2, i == 1)
+  def_1 <- As %>% filter(j == id1, i == 2)
+  def_2 <- As %>% filter(j == id2, i == 2)
+  
+  theta_1 <- exp(att_1$A - def_2$A)
+  theta_2 <- exp(att_2$A - def_1$A)
+  
+  g_1 <- rpois(length(theta_1), theta_1)
+  g_2 <- rpois(length(theta_2), theta_2)
+  
+  # Calculate probabilities
+  prob_win <- mean(g_1 > g_2)
+  prob_draw <- mean(g_1 == g_2)
+  prob_lose <- mean(g_1 < g_2)
+  
+  # Return the probabilities and goals
+  list(
+    prob_win = round(prob_win,2),
+    prob_draw = round(prob_draw,2),
+    prob_lose = round(prob_lose,2),
+    g_1 = g_1,
+    g_2 = g_2
+  )
+}
+
+### Group stage matches
+# Quite a pain to get the data in the right format from a lying ChatGPT
+library(data.table)
+# Read the data from the CSV
+csv_data <- "MatchNumber, Date, Team1, Team2, KickoffTime
+1, 14.06, Germany, Scotland, 21:00
+2, 15.06, Hungary, Switzerland, 15:00
+3, 15.06, Spain, Croatia, 18:00
+4, 15.06, Italy, Albania, 21:00
+5, 16.06, Serbia, England, 21:00
+6, 16.06, Slovenia, Denmark, 18:00
+7, 16.06, Poland, Netherlands, 15:00
+8, 17.06, Austria, France, 21:00
+9, 17.06, Belgium, Slovakia, 18:00
+10, 17.06, Romania, Ukraine, 15:00
+11, 18.06, Türkiye, Georgia, 18:00
+12, 18.06, Portugal, Czechia, 21:00
+13, 19.06, Scotland, Switzerland, 21:00
+14, 19.06, Germany, Hungary, 18:00
+15, 19.06, Croatia, Albania, 15:00
+16, 19.06, Spain, Italy, 21:00
+17, 20.06, Denmark, England, 18:00
+18, 20.06, Slovenia, Serbia, 15:00
+19, 20.06, Poland, Austria, 18:00
+20, 20.06, Netherlands, France, 21:00
+21, 21.06, Slovakia, Ukraine, 15:00
+22, 21.06, Belgium, Romania, 21:00
+23, 21.06, Türkiye, Portugal, 18:00
+24, 21.06, Georgia, Czechia, 15:00
+25, 25.06, Switzerland, Germany, 21:00
+26, 25.06, Scotland, Hungary, 21:00
+27, 25.06, Albania, Spain, 21:00
+28, 25.06, Croatia, Italy, 21:00
+29, 25.06, England, Slovenia, 21:00
+30, 25.06, Denmark, Serbia, 21:00
+31, 25.06, Netherlands, Austria, 18:00
+32, 25.06, France, Poland, 18:00
+33, 25.06, Slovakia, Romania, 18:00
+34, 25.06, Ukraine, Belgium, 18:00
+35, 25.06, Georgia, Portugal, 21:00
+36, 25.06, Czechia, Türkiye, 21:00"
+
+# Convert CSV data to data table
+matches_raw <- fread(text = csv_data)
+
+matches = data.frame(Date=as.Date(paste0('2024-06-', matches_raw$Date)), Time=paste0(matches_raw$KickoffTime, ' CEST'), HomeTeam=matches_raw$Team1, AwayTeam=matches_raw$Team2)
+
+results = data.frame(num=NULL,Date=NULL, Time=NULL, HomeTeam=NULL, AwayTeam=NULL, Win=NULL, Draw=NULL, Lose=NULL)
+for (i in 1:nrow(matches)) {
+  # i=1
+  #cat(sprintf('## %s vs %s\n', matches[i,3], matches[i,4]))
+  probs <- calculate_probabilities(matches[i,3,drop=TRUE], matches[i,4,drop=TRUE], teams, hfit)
+  cat(sprintf('Win: %.2f, Draw: %.2f, Lose: %.2f\n', probs$prob_win, probs$prob_draw, probs$prob_lose))
+  results = rbind(results, data.frame(
+    Number = i,
+    Date=matches[i,1], 
+    Time=matches[i,2], 
+    HomeTeam=matches[i,3], 
+    AwayTeam=matches[i,4], 
+    Win=probs$prob_win, Draw=probs$prob_draw, Lose=probs$prob_lose))
+}
+
+# Print the summary table with links
+kable(results, caption = "Probabilities of Match Outcomes", escape = FALSE)
+```
+
+
+## Details on individual games
+
+### Goal Distributions
+
+
+
+```{r individual_plots, echo=FALSE, results='asis', fig.width=7, fig.height=2}
+# Function to generate plot for a pairing
+generate_plot <- function(team1, team2, teams, hfit) {
+  #cat(team1, team2)
+  id1 <- which(teams == team1)
+  id2 <- which(teams == team2)
+  
+  # Spread draws and filter the relevant data
+  As <- hfit %>% tidybayes::spread_draws(A[i, j]) %>% select(i, j, A)
+  att_1 <- As %>% filter(j == id1, i == 1)
+  att_2 <- As %>% filter(j == id2, i == 1)
+  def_1 <- As %>% filter(j == id1, i == 2)
+  def_2 <- As %>% filter(j == id2, i == 2)
+   
+  theta_1 <- exp(att_1$A - def_2$A)
+  theta_2 <- exp(att_2$A - def_1$A)
+  
+  g_1 <- rpois(length(theta_1), theta_1)
+  g_2 <- rpois(length(theta_2), theta_2)
+  
+  # Calculate mean goals
+  mean_g1 <- mean(g_1)
+  mean_g2 <- mean(g_2)
+  
+  # Create a data frame for the goal distributions
+  goal_dist <- data.frame(
+    goals = c(g_1, g_2),
+    team = rep(c(team1, team2), each = length(g_1))
+  )
+  
+  # Plot the goal distributions for each team with mean values
+  p1 <- ggplot(goal_dist %>% filter(team == team1), aes(x = factor(goals))) +
+    geom_bar(aes(y = after_stat(count) / sum(after_stat(count))), fill = "blue", color = "black", alpha = 0.7) +
+    labs(title = paste("Goals for", team1, "(Expected:", round(mean_g1, 2), ")"), x = "Goals", y = "Probability") +
+    theme_minimal() +
+    geom_vline(xintercept = mean_g1, linetype = "dashed", color = "blue")
+  
+  p2 <- ggplot(goal_dist %>% filter(team == team2), aes(x = factor(goals))) +
+    geom_bar(aes(y = after_stat(count) / sum(after_stat(count))), fill = "red", color = "black", alpha = 0.7) +
+    labs(title = paste("Goals for", team2, "(Expected:", round(mean_g2, 2), ")"), x = "Goals", y = "Probability") +
+    theme_minimal() +
+    geom_vline(xintercept = mean_g2, linetype = "dashed", color = "red")
+  
+  # Arrange the plots side by side
+  combined_plot <- ggarrange(p1, p2, ncol = 2, nrow = 1)
+  
+  return(combined_plot)
+}
+
+# Generate plots for all pairings and display them
+for (i in 1:nrow(matches)) {
+  cat(sprintf('\n## %d %s vs %s\n',i, matches[i,3], matches[i,4]))
+  #cat(sprintf('<div id="%s-%s-plot"></div>\n', gsub(" ", "-", matches[i,3]), gsub(" ", "-", matches[i,4])))
+  plot <- generate_plot(matches[i,3,drop=TRUE], matches[i,4,drop=TRUE], teams, hfit)
+  print(plot)
+  cat(sprintf('\n'))
+}
+```
+
+
+
+

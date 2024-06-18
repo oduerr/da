@@ -46,7 +46,11 @@ options(mc.cores = parallel::detectCores())
 First we read in the data
 
 ```{r}
-data = read.csv('https://raw.githubusercontent.com/MaggieLieu/STAN_tutorials/master/Hierarchical/premiereleague.csv',col.names = c('Home','score1', 'score2', 'Away'), stringsAsFactors = FALSE)
+#data = read.csv('https://raw.githubusercontent.com/MaggieLieu/STAN_tutorials/master/Hierarchical/premiereleague.csv',col.names = c('Home','score1', 'score2', 'Away'), stringsAsFactors = FALSE)
+
+# Uncomment the following line to read the data for the Euro 24
+data = read.csv('../../stan/Euro24/games_before_euro24.csv', stringsAsFactors = FALSE)[,1:4]
+colnames(data) = c('Home','score1', 'score2', 'Away')
 ```
 
 ```{r}
@@ -76,7 +80,7 @@ at = unlist(sapply(1:ng, function(g) which(teams == data$Away[g])))
 
 ```{r}
 # we will save the last np games to predict
-np=300
+np=1
 ngob = ng-np #ngames obsered ngob = number of games to fit
 print(paste0("Using the first ", ngob, " games to fit the model and ", np, " games to predict"))
 my_data = list(
@@ -210,7 +214,7 @@ In a hierarchical model, the parameters of interest, in our case the attack and 
 Instead we define priors on the population, known as the hyperpriors.
 
 ```{r hmodel, results="hide", message=FALSE, warning=FALSE,  results="hide"}
-hmodel <- cmdstan_model(here('lab/football1/hier_model.stan')) 
+hmodel <- cmdstan_model('~/Documents/GitHub/da/stan/football/hier_model.stan')
 hfit = hmodel$sample(data = my_data)
 ```
 

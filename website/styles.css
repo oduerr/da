@@ -1,7 +1,7 @@
 /* Reduce font size for headings */
-h1, h2, h3, h4, h5, h6 {
+/*h1, h2, h3, h4, h5, h6 {
     font-size: smaller; /* or specify exact sizes, e.g., 1.5em for h1, 1.2em for h2, etc. */
-}
+}*/
 
 /* Reduce font weight for headings */
 h1, h2, h3, h4, h5, h6 {
