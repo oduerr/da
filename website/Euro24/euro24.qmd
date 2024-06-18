@@ -21,7 +21,10 @@ filters:
 ```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
   library(tidyverse)
   library(kableExtra)
+  set.seed(42)
 ```
+<!-- ![Bayes with Football](bayes.webp) -->
+
 The Euro 2024 ⚽ is a nice showcase of Bayesian Statistics. In Bayesian statistics, probabilities are seen as a degree of belief, which fits well with the nature of football. Almost everyone has beliefs about the strengths and weaknesses of the teams before seeing any games (based on historical data) and then updates these beliefs as new data comes in (games have been played).
 
 
@@ -79,23 +82,25 @@ Using the first `r ngob` games to fit the model and `r np` games to predict. In 
 
 We will assume that the number of goals scored by the home team $s_1$ and the away team $s_2$ follows a Poisson distribution. This has been shown to be a good model for the number of goals scored in a football match. We model the rate parameter $\theta$ of the Poisson distribution, related to the attack and defense strengths of the teams, as follows:
 
-	$$s_1 \sim \text{Pois}(\theta_1) \quad\text{goals scored by the home team}$$
+$$
+	s_1 \sim \text{Pois}(\theta_1) \quad\text{goals scored by the home team}
+$$
 	
-	$$
+$$
 	s_2 \sim \text{Pois}(\theta_2) \quad\text{goals scored by the away team}
-	$$ 
+$$ 
 
 This is equivalent to performing two separate Poisson regressions, one for each team.
 
 We assume that:
 
-	$$
-	\theta_1 = \exp(\text{home} + \text{att}\text{ht} - \text{def}\text{at})
-	$$
+$$
+	\theta_1 = \exp(\text{home} + \text{att}_\text{ht} - \text{def}_\text{at})
+$$
 	
-	$$
-	\theta_2 = \exp(\text{att}\text{at} - \text{def}\text{ht})
-	$$
+$$
+	\theta_2 = \exp(\text{att}_\text{at} - \text{def}_\text{ht})
+$$
 
 Since there is no home advantage in the Euro (except for Germany), we set $\text{home} = 0$.
 
@@ -221,6 +226,7 @@ knitr::kable(df)
 We use the samples for posterior row by row to sample the number of goals for Germany and Scotland. We can use the samples to calculate the probability of a win, draw or loss for Germany.
 
 ```{r, echo=TRUE, collapse=FALSE, warning=FALSE}
+ set.seed(42)
  theta_germany = exp(attack_germany$A - defense_scotland$A)
  theta_scotland = exp(attack_scotland$A - defense_germany$A)
  g_germany = rpois(length(theta_germany), theta_germany)
@@ -249,6 +255,9 @@ library(tidyverse)
 library(tidybayes)
 library(ggpubr)
 library(knitr)
+
+set.seed(42)
+
 
 # Function to calculate probabilities for a pairing
 calculate_probabilities <- function(team1, team2, teams, hfit) {
