@@ -28,6 +28,13 @@
     "text": "Bayes plot\nWorks with rstan and cmdstanr\n\n  s = s_rcmdstan$draws() #We need to call draws() 2023\n  bayesplot::mcmc_trace(s)"
   },
   {
+    "objectID": "Stan_Primer_Full.html#rendering-quarto-for-exercises",
+    "href": "Stan_Primer_Full.html#rendering-quarto-for-exercises",
+    "title": "Stan primer",
+    "section": "Rendering Quarto for exercises",
+    "text": "Rendering Quarto for exercises\nPrinting the model in markdown files (only important for rendering exercise sheets), see e.g. around here\n{r, echo=lsg, eval=FALSE, code=readLines(“../world.stan”), collapse=TRUE}\nNot showing the many details in MCMC simulation with Stan. | ```{r, echo=lsg, eval=lsg, message=FALSE, warning=FALSE, results=“hide”}"
+  },
+  {
     "objectID": "Stan_Primer_Full.html#stan",
     "href": "Stan_Primer_Full.html#stan",
     "title": "Stan primer",
@@ -119,25 +126,18 @@
     "text": "Footnotes\n\n\nWell actually its a density plot plot(density(.)) and not hist(.)↩︎"
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "Internal Notes for authoring the website\n\nHow to add a new page\n\nCreate a new quarto file in the root directory or subdirectory. Put the quarto-file in website directory (or subdirectory). Make sure that you do not have self-contained: true in the qmd file, otherwise file gets to large. An example is website/lecture_notes/MCMC/MCMC.qmd\n\n\n---\ntitle: \"Lecture Notes on MCMC\"\nauthor: \"Oliver Dürr\"\nformat: \n  html:\n    toc: true\n    toc-title: \"Table of Contents\"\n    toc-depth: 3\n    fig-width: 6\n    fig-height: 3\n    code-fold: true\n    code-tools: true\n    mathjax: true\n  #  self-contained: true &lt;------ NEEDS TO BE COMMENTED OUT (or not there at all)\n  # pdf:\n  #   toc: true\n  #   toc-title: \"Table of Contents\"\nfilters:\n  - webr\n---\n\n\n\nHow to render the website\n\nRender and move to docs folder\n\nquarto render \n\nCheck in the changes in the docs folder\n\n\n\nDevelopment (in da/website)\nquarto preview lecture_notes/MCMC/MCMC.qmd #For a single file\nquarto preview #For the complete website"
-  },
-  {
-    "objectID": "Stan_Primer_Full.html#rendering-quarto-for-exercises",
-    "href": "Stan_Primer_Full.html#rendering-quarto-for-exercises",
-    "title": "Stan primer",
-    "section": "Rendering Quarto for exercises",
-    "text": "Rendering Quarto for exercises\nPrinting the model in markdown files (only important for rendering exercise sheets), see e.g. around here\n{r, echo=lsg, eval=FALSE, code=readLines(“../world.stan”), collapse=TRUE}\nNot showing the many details in MCMC simulation with Stan. | ```{r, echo=lsg, eval=lsg, message=FALSE, warning=FALSE, results=“hide”}"
-  },
-  {
     "objectID": "Euro24/euro24.html",
     "href": "Euro24/euro24.html",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
     "section": "",
     "text": "The Euro 2024 ⚽ is a nice showcase of Bayesian Statistics. In Bayesian statistics, probabilities are seen as a degree of belief, which fits well with the nature of football. Almost everyone has beliefs about the strengths and weaknesses of the teams before seeing any games (based on historical data) and then updates these beliefs as new data comes in (games have been played)."
+  },
+  {
+    "objectID": "Euro24/euro24.html#prediction-based-on-the-historical-data",
+    "href": "Euro24/euro24.html#prediction-based-on-the-historical-data",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "Prediction based on the Historical Data",
+    "text": "Prediction based on the Historical Data\nWe load the matches prior to the Euro 2024, see https://github.com/oduerr/da/blob/master/stan/Euro24/Euro_Data.md how to get the data. Note the limitations of using historic; for example, Germany only started finding their form shortly before Euro 2024."
   },
   {
     "objectID": "Euro24/euro24.html#loading-the-data",
@@ -154,46 +154,32 @@
     "text": "Preparing the data for Stan\n\n\nCode\n#Some R-Magic to convert the team names to numbers, no need to understand this\nng = nrow(data)\nteams = unique(data$Home)\nnt = length(teams)\nht = unlist(sapply(1:ng, function(g) which(teams == data$Home[g])))\nat = unlist(sapply(1:ng, function(g) which(teams == data$Away[g])))\n\nnp=1 #Number games leaving out for prediction\nngob = ng-np #ngames obsered ngob = number of games to fit\n#print(paste0(\"Using the first \", ngob, \" games to fit the model and \", np, \" games to predict.\", \"Num teams \",  length(teams)))\nmy_data = list(\n  nt = nt, \n  ng = ngob,\n  ht = ht[1:ngob], \n  at = at[1:ngob], \n  s1 = data$score1[1:ngob],\n  s2 = data$score2[1:ngob],\n  np = np,\n  htnew = ht[(ngob+1):ng],\n  atnew = at[(ngob+1):ng]\n)\n\n\nUsing the first 115 games to fit the model and 1 games to predict. In total we have 24 teams."
   },
   {
-    "objectID": "Euro24/euro24.html#fitting-the-model",
-    "href": "Euro24/euro24.html#fitting-the-model",
+    "objectID": "Euro24/euro24.html#a-model-for-the-goals-scored",
+    "href": "Euro24/euro24.html#a-model-for-the-goals-scored",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "Fitting the model",
-    "text": "Fitting the model\nWe will assume that the number of goals scored for the home team \\(s_1\\) and away team \\(s_2\\) come from a poisson distribution. This has been shown to be a good model for the number of goals scored in a football match. The rate parameter \\(\\theta\\) of the poisson distribution is related to the attack and defence strength of the teams. We will model the log of the rate parameter as a linear combination of the attack and defence strength of the teams.\n\n\\(s_1 \\sim \\text{Pois}(\\theta_1)\\) goals scored by home team\n\\(s_2 \\sim \\text{Pois}(\\theta_2)\\) goals scored by away team\n\nWe assume that\n\n\\(\\theta_1 = \\exp(\\text{home} + \\text{att}_\\text{ht} - \\text{def}_\\text{at})\\)\n\\(\\theta_2 = \\exp(\\text{att}_\\text{at} - \\text{def}_\\text{ht})\\)\n\nSince for the euro there is no home advantage (except for Germany), we set \\(\\text{home}=0\\). Now we estimate the attack and defence strength of the teams from historical data. There are different ways to model. We use start with a hierarchical model, other models are investigated at https://github.com/oduerr/da/blob/master/stan/football/Correlated.md for the English Premier League 2019/2020 season. The model is adopted from the blog_post and the paper."
+    "section": "A Model for the goals scored 🥅",
+    "text": "A Model for the goals scored 🥅\nWe will assume that the number of goals scored by the home team \\(s_1\\) and the away team \\(s_2\\) follows a Poisson distribution. This has been shown to be a good model for the number of goals scored in a football match. We model the rate parameter \\(\\theta\\) of the Poisson distribution, related to the attack and defense strengths of the teams, as follows:\n\\[\n    s_1 \\sim \\text{Pois}(\\theta_1) \\quad\\text{goals scored by the home team}\n\\]\n\\[\n    s_2 \\sim \\text{Pois}(\\theta_2) \\quad\\text{goals scored by the away team}\n\\]\nThis is equivalent to performing two separate Poisson regressions, one for each team.\nWe assume that:\n\\[\n    \\theta_1 = \\exp(\\text{home} + \\text{att}_\\text{ht} - \\text{def}_\\text{at})\n\\]\n\\[\n    \\theta_2 = \\exp(\\text{att}_\\text{at} - \\text{def}_\\text{ht})\n\\]\nSince there is no home advantage in the Euro (except for Germany), we set \\(\\text{home} = 0\\).\n\nPrior for the attack and defence strength\nIn Bayesian statistics, we further need to specify a prior for the parameters (our degree of believe in the attack and defense abilities before seeing any data). For that we use a hierarchical model with correlated parameters. Other models are investigated at https://github.com/oduerr/da/blob/master/stan/football/Correlated.md for the English Premier League 2019/2020 season where the hiearchical model have been especially successfull. The model is adopted from the blog_post and the paper. We extend the model to include a correlation between the attack and defense strength of the teams, since it is quite reasonable that a team that scores many goals (is above average in offense) is also good in defense."
   },
   {
     "objectID": "Euro24/euro24.html#conditioning-on-the-data-fitting-the-model",
     "href": "Euro24/euro24.html#conditioning-on-the-data-fitting-the-model",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
     "section": "Conditioning on the data / Fitting the model",
-    "text": "Conditioning on the data / Fitting the model\nAfter we state the model we fit the model to the data, or in Bayesian parlance, we update our degree of belief after seeing the data.\n\n\n\n\n\n\nExpand MCMC sampling with Stan\n\n\n\n\n\n\n\nCode\nlibrary(cmdstanr)\noptions(mc.cores = parallel::detectCores())\nhmodel &lt;- cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model_cor.stan') \nhfit = hmodel$sample(data = my_data)\n## Running MCMC with 4 chains, at most 10 in parallel...\n## \n## Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) \n## Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) \n## Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) \n## Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) \n## Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) \n## Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) \n## Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) \n## Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) \n## Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) \n## Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) \n## Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) \n## Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) \n## Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) \n## Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) \n## Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) \n## Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) \n## Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) \n## Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) \n## Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) \n## Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) \n## Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) \n## Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) \n## Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) \n## Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) \n## Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) \n## Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) \n## Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) \n## Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) \n## Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) \n## Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) \n## Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) \n## Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) \n## Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) \n## Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) \n## Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) \n## Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) \n## Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) \n## Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) \n## Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) \n## Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) \n## Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) \n## Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) \n## Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) \n## Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) \n## Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) \n## Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) \n## Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) \n## Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) \n## Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) \n## Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) \n## Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) \n## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) \n## Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) \n## Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) \n## Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) \n## Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) \n## Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) \n## Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) \n## Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) \n## Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) \n## Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) \n## Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) \n## Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) \n## Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) \n## Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) \n## Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) \n## Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) \n## Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) \n## Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) \n## Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) \n## Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) \n## Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) \n## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) \n## Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) \n## Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) \n## Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) \n## Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) \n## Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) \n## Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) \n## Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) \n## Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) \n## Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) \n## Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) \n## Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) \n## Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) \n## Chain 3 finished in 0.8 seconds.\n## Chain 4 finished in 0.7 seconds.\n## Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) \n## Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) \n## Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) \n## Chain 1 finished in 0.9 seconds.\n## Chain 2 finished in 0.8 seconds.\n## \n## All 4 chains finished successfully.\n## Mean chain execution time: 0.8 seconds.\n## Total execution time: 1.0 seconds.\np1 = bayesplot::mcmc_rhat_hist(bayesplot::rhat(hfit))\np2 = bayesplot::mcmc_neff_hist(bayesplot::neff_ratio(hfit))\nggpubr::ggarrange(p1, p2, ncol=2)\n\n\n\n\n\n\n\n\n\nThe fitting of the model is good, as the Rhat values are close to 1 and we have no divergent transitions. The effective sample size is also good."
+    "text": "Conditioning on the data / Fitting the model\nAfter we state the model we fit the model to the data, or in Bayesian parlance, we update our degree of belief after seeing the data.\n\n\n\n\n\n\nDetails of the model MCMC sampling with Stan\n\n\n\n\n\nThe model is written in the probabilistic programming language Stan and can be found at https://github.com/oduerr/da/blob/master/website/Euro24/hier_model_cor.stan. This model used a Cholesky decomposition to model the correlation between the attack and defense strength of the teams. While this produces very effective sampling and is numerically stable, the Cholesky decomposition adds another layer of complexity to the model. We also provide a model without the Cholesky decomposition at https://github.com/oduerr/da/blob/master/website/Euro24/hier_model_cor_nocholesky.stan which is easier to understand but which is, besides the numerical difficulties, equivalent to the model with the Cholesky decomposition.\n\n\nCode\nlibrary(cmdstanr)\noptions(mc.cores = parallel::detectCores())\nhmodel &lt;- cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model_cor.stan')\n#hmodel &lt;- cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model_cor_nocholsky.stan')\nhfit = hmodel$sample(data = my_data)\n## Running MCMC with 4 chains, at most 10 in parallel...\n## \n## Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) \n## Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) \n## Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) \n## Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) \n## Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) \n## Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) \n## Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) \n## Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) \n## Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) \n## Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) \n## Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) \n## Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) \n## Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) \n## Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) \n## Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) \n## Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) \n## Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) \n## Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) \n## Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) \n## Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) \n## Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) \n## Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) \n## Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) \n## Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) \n## Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) \n## Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) \n## Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) \n## Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) \n## Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) \n## Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) \n## Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) \n## Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) \n## Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) \n## Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) \n## Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) \n## Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) \n## Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) \n## Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) \n## Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) \n## Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) \n## Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) \n## Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) \n## Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) \n## Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) \n## Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) \n## Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) \n## Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) \n## Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) \n## Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) \n## Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) \n## Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) \n## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) \n## Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) \n## Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) \n## Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) \n## Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) \n## Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) \n## Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) \n## Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) \n## Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) \n## Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) \n## Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) \n## Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) \n## Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) \n## Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) \n## Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) \n## Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) \n## Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) \n## Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) \n## Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) \n## Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) \n## Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) \n## Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) \n## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) \n## Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) \n## Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) \n## Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) \n## Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) \n## Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) \n## Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) \n## Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) \n## Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) \n## Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) \n## Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) \n## Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) \n## Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) \n## Chain 2 finished in 0.8 seconds.\n## Chain 3 finished in 0.8 seconds.\n## Chain 4 finished in 0.7 seconds.\n## Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) \n## Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) \n## Chain 1 finished in 0.9 seconds.\n## \n## All 4 chains finished successfully.\n## Mean chain execution time: 0.8 seconds.\n## Total execution time: 1.0 seconds.\np1 = bayesplot::mcmc_rhat_hist(bayesplot::rhat(hfit))\np2 = bayesplot::mcmc_neff_hist(bayesplot::neff_ratio(hfit))\nggpubr::ggarrange(p1, p2, ncol=2)\n\n\n\n\n\n\n\n\n\nThe fitting of the model is good, as the Rhat values are close to 1 and we have no divergent transitions. The effective sample size is also good."
   },
   {
-    "objectID": "Euro24/euro24.html#vs-2024-06-15",
-    "href": "Euro24/euro24.html#vs-2024-06-15",
-    "title": "Euro24 And Bayes",
-    "section": "",
-    "text": "function (x, y, …) UseMethod(“plot”) &lt;bytecode: 0x13a26e498&gt; &lt;environment: namespace:base&gt;"
-  },
-  {
-    "objectID": "Euro24/euro24.html#vs-1500",
-    "href": "Euro24/euro24.html#vs-1500",
-    "title": "Euro24 And Bayes",
-    "section": "",
-    "text": "function (x, y, …) UseMethod(“plot”) &lt;bytecode: 0x13a26e498&gt; &lt;environment: namespace:base&gt;"
-  },
-  {
-    "objectID": "Euro24/euro24.html#germany-vs-hungary",
-    "href": "Euro24/euro24.html#germany-vs-hungary",
+    "objectID": "Euro24/euro24.html#the-fitted-model",
+    "href": "Euro24/euro24.html#the-fitted-model",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "14 Germany vs Hungary",
-    "text": "14 Germany vs Hungary"
+    "section": "The fitted model",
+    "text": "The fitted model\nWe plot the means of the attack and defense strengths of the teams. Shown are the mean values along with the 25% and 75% quantiles. There is considerable uncertainty in the strengths of the teams, but that’s the nature of the game.\n\n\nCode\nlibrary(tidyverse)\nlibrary(tidybayes)\n\n# Step 1: Gather draws and calculate summary statistics with credible intervals\nd = hfit %&gt;%\n  tidybayes::gather_draws(A[i, j]) %&gt;%\n  group_by(i, j) %&gt;%\n  summarise(\n    average_value = mean(.value),\n    lower = quantile(.value, 0.25),  # Lower bound \n    upper = quantile(.value, 0.75),  # Upper bound \n    .groups = \"drop\"\n  )\n\n# Step 2: Create a matrix of the average values\nA = xtabs(average_value ~ i + j, data = d)\n\n# Step 3: Plot the average values\nplot(A[1,], A[2,], pch=20, xlab='Attack', ylab='Defence', main='Attack vs Defence')\n\n# Step 4: Add team labels\ntext(A[1,], A[2,], labels=teams, cex=0.7, adj=c(-0.05, -0.8))\n\n# Step 5: Add error bars for 66% credibility intervals\n# Reshape data for plotting\nd_wide &lt;- d %&gt;% spread(key = j, value = average_value)\nd_lower &lt;- d %&gt;% spread(key = j, value = lower)\nd_upper &lt;- d %&gt;% spread(key = j, value = upper)\n\n# Convert to matrices for easier plotting\nA_lower &lt;- xtabs(lower ~ i + j, data = d)\nA_upper &lt;- xtabs(upper ~ i + j, data = d)\n\n# Plot vertical error bars\narrows(A[1,], A_lower[2,], A[1,], A_upper[2,], angle=90, code=3, length=0.05, col=\"lightblue\", alpha=0.5)\n\n# Plot horizontal error bars\narrows(A_lower[1,], A[2,], A_upper[1,], A[2,], angle=90, code=3, length=0.05, col=\"lightblue\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDetailed explanations for a single match Germany vs Scotland\n\n\n\n\n\nThe opening game of Euro 2024 was Germany vs. Scotland. In the plots below, we show the posterior probabilities for the attack and defense strengths of the teams.\n\n\nCode\nlibrary(dplyr)\nlibrary(tidyr)\nlibrary(ggplot2)\nlibrary(tidybayes)\n\n# Function to calculate probabilities for a pairing\nid1 &lt;- which(teams == 'Germany')\nid2 &lt;- which(teams == 'Scotland')\n\n# Extract posterior distributions for Attack and Defense\nattack_germany &lt;- hfit %&gt;% tidybayes::spread_draws(A[i, j]) %&gt;% filter(j == id1, i == 1) %&gt;% select(A)\nattack_scotland &lt;- hfit %&gt;% tidybayes::spread_draws(A[i, j]) %&gt;% filter(j == id2, i == 1) %&gt;% select(A)\ndefense_germany &lt;- hfit %&gt;% tidybayes::spread_draws(A[i, j]) %&gt;% filter(j == id1, i == 2) %&gt;% select(A)\ndefense_scotland &lt;- hfit %&gt;% tidybayes::spread_draws(A[i, j]) %&gt;% filter(j == id2, i == 2) %&gt;% select(A)\n\n# Combine data into a tidy data frame\ntidy_df &lt;- bind_rows(\n  attack_germany %&gt;% mutate(Statistic = \"Attack\", Country = \"Germany\"),\n  attack_scotland %&gt;% mutate(Statistic = \"Attack\", Country = \"Scotland\"),\n  defense_germany %&gt;% mutate(Statistic = \"Defense\", Country = \"Germany\"),\n  defense_scotland %&gt;% mutate(Statistic = \"Defense\", Country = \"Scotland\")\n)\n\n# Include the mean values in the plot\nggplot(tidy_df, aes(x = A, fill = Country)) +\n  geom_density(alpha = 0.5) +\n  facet_wrap(~ Statistic, scales = \"free\") +\n  labs(title = \"Posterior Distributions of Attack and Defense Strengths\", x = \"Strength\", y = \"Density\") +\n  geom_vline(data = tidy_df %&gt;% group_by(Statistic, Country) %&gt;% summarise(mean_A = mean(A)), \n             aes(xintercept = mean_A, color = Country), linetype = \"dashed\") +\n  theme_minimal() \n\n\n\n\n\n\n\n\n\n\nMaking predictions\nWe can now make predictions for the game Germany vs Scotland. Below are the first samples of the posterior distribution for the attack and defense strengths of germany and scotland.\n\n\nCode\n# Extract first five samples for demonstration\ndf = data.frame(attack_germany = attack_germany$A, defense_germany = defense_germany$A, attack_scotland = attack_scotland$A, defense_scotland = defense_scotland$A) %&gt;% head() \nknitr::kable(df)\n\n\n\n\n\n\nattack_germany\ndefense_germany\nattack_scotland\ndefense_scotland\n\n\n\n\n-0.0442763\n-0.0242716\n0.163076\n-0.1346680\n\n\n-0.0206877\n0.0249255\n-0.178088\n0.0312232\n\n\n-0.0107814\n-0.1450450\n0.223999\n-0.3913570\n\n\n0.4885000\n0.0832831\n-0.382091\n0.0152179\n\n\n-0.0609140\n-0.3309840\n0.169096\n-0.4265350\n\n\n0.0887341\n0.0641705\n-0.207708\n-0.0027483\n\n\n\n\n\n\n\n\nWe use the samples for posterior row by row to sample the number of goals for Germany and Scotland. We can use the samples to calculate the probability of a win, draw or loss for Germany.\n\n\nCode\n set.seed(42)\n theta_germany = exp(attack_germany$A - defense_scotland$A)\n theta_scotland = exp(attack_scotland$A - defense_germany$A)\n g_germany = rpois(length(theta_germany), theta_germany)\n g_scotland = rpois(length(theta_scotland), theta_scotland)\n mean(g_germany &gt; g_scotland) #Probability of Germany winning\n\n\n[1] 0.458\n\n\nCode\n mean(g_germany == g_scotland) #Probability of a draw\n\n\n[1] 0.2535\n\n\nCode\n mean(g_germany &lt; g_scotland) #Probability of Scotland winning\n\n\n[1] 0.2885\n\n\nCode\n plot(table(g_germany)/length(g_germany), main='Germany Goals', xlab='Goals', ylab='Probability')\n\n\n\n\n\n\n\n\n\nCode\n plot(table(g_scotland)/length(g_scotland), main='Scotland Goals', xlab='Goals', ylab='Probability')\n\n\n\n\n\n\n\n\n\nAnother way to look at is is at the joint distribution of the goals scored\n\n\nCode\nlibrary(tidyverse)\nlibrary(ggplot2)\n\n# Define the function\nplot_goal_probabilities &lt;- function(attack_team1, defense_team1, attack_team2, defense_team2, team1_name = \"Team 1\", team2_name = \"Team 2\") {\n  set.seed(42)\n  \n  # Simulate goals scored using Poisson distribution\n  theta_team1 &lt;- exp(attack_team1 - defense_team2)\n  theta_team2 &lt;- exp(attack_team2 - defense_team1)\n  g_team1 &lt;- rpois(length(theta_team1), theta_team1)\n  g_team2 &lt;- rpois(length(theta_team2), theta_team2)\n  \n  # Calculate joint probabilities\n  joint_prob &lt;- table(g_team1, g_team2) / length(g_team1)\n  df_joint &lt;- as.data.frame(as.table(joint_prob))\n  colnames(df_joint) &lt;- c(\"Goals_Team1\", \"Goals_Team2\", \"Probability\")\n  \n  # Ensure all combinations from 0 to 5 are included\n  all_combinations &lt;- expand.grid(Goals_Team1 = 0:5, Goals_Team2 = 0:5)\n  df_joint &lt;- merge(all_combinations, df_joint, by = c(\"Goals_Team1\", \"Goals_Team2\"), all.x = TRUE)\n  df_joint$Probability[is.na(df_joint$Probability)] &lt;- 0\n  \n  # Calculate outcomes\n  df_joint &lt;- df_joint %&gt;%\n    mutate(\n      Outcome = case_when(\n        Goals_Team1 &gt; Goals_Team2 ~ \"Win1\",\n        Goals_Team1 &lt; Goals_Team2 ~ \"Win2\",\n        TRUE ~ \"Draw\"\n      )\n    )\n  \n  # Calculate probabilities\n  prob_team1_win &lt;- sum(df_joint$Probability[df_joint$Outcome == \"Win1\"])\n  prob_team2_win &lt;- sum(df_joint$Probability[df_joint$Outcome == \"Win2\"])\n  prob_draw &lt;- sum(df_joint$Probability[df_joint$Outcome == \"Draw\"])\n  \n  # Print probabilities to the console\n  # cat(\"Probability of\", team1_name, \"winning: \", prob_team1_win, \"\\n\")\n  # cat(\"Probability of\", team2_name, \"winning: \", prob_team2_win, \"\\n\")\n  # cat(\"Probability of a draw: \", prob_draw, \"\\n\")\n  \n  # Plot the joint probabilities with labels and different colors for outcomes\n  joint_plot &lt;- ggplot(df_joint, aes(x = Goals_Team1, y = Goals_Team2, fill = Outcome)) +\n    geom_tile(color = \"white\", aes(alpha = Probability)) +\n    geom_text(aes(label = sprintf(\"%.2f\", Probability)), color = \"black\", size = 3) +\n    scale_fill_manual(values = c(\"Win1\" = \"blue\", \"Win2\" = \"red\", \"Draw\" = \"green\"), guide = NULL) +\n    scale_alpha(range = c(0.3, 1), guide = NULL) +\n    labs(title = paste0(team1_name, \" vs. \", team2_name),  x = paste(\"Goals by\", team1_name), y = paste(\"Goals by\", team2_name)) +\n    theme_minimal() +\n    theme(\n      plot.title = element_text(hjust = 0.5, size = 14, face = \"bold\"),\n      axis.title = element_text(size = 12),\n      axis.text = element_text(size = 10)\n    ) +\n    scale_x_continuous(limits = c(-0.5, 9), breaks = 0:4) +\n    scale_y_continuous(limits = c(-0.5, 5.5), breaks = 0:5) +\n    annotate(\"text\", x = 5.7, y = 4, label = sprintf(\"%s Wins: %.2f\", team1_name, prob_team1_win), color = \"blue\", size = 3, hjust = 0) +\n    annotate(\"text\", x = 5.7, y = 3, label = sprintf(\"Draw: %.2f\", prob_draw), color = \"green\", size = 3, hjust = 0) +\n    annotate(\"text\", x = 5.7, y = 2, label = sprintf(\"%s Wins: %.2f\", team2_name, prob_team2_win), color = \"red\", size = 3, hjust = 0)\n  \n  # Print the joint plot\n  return(joint_plot)\n}\n\n# Call the function\nplot_goal_probabilities(attack_team1=attack_germany$A, defense_team1 = defense_germany$A, \n                        attack_team2=attack_scotland$A, defense_team2 = defense_scotland$A, team1_name=\"Germany\", team2_name=\"Scotland\")\n\n\n\n\n\n\n\n\n\nRemember the result? It was 5:1 for Germany, so quite unexpected by the model. So that these predictions with a grain of salt. The model is based on historical data and does not take into account the current form of the teams."
   },
   {
-    "objectID": "Euro24/euro24.html#scotland-vs-switzerland",
-    "href": "Euro24/euro24.html#scotland-vs-switzerland",
+    "objectID": "Euro24/euro24.html#details-on-individual-games",
+    "href": "Euro24/euro24.html#details-on-individual-games",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "13 Scotland vs Switzerland",
-    "text": "13 Scotland vs Switzerland"
+    "section": "Details on individual games",
+    "text": "Details on individual games\n\nGoal Distributions"
   },
   {
     "objectID": "Euro24/euro24.html#germany-vs-scotland",
@@ -217,11 +203,18 @@
     "text": "3 Spain vs Croatia"
   },
   {
-    "objectID": "Euro24/euro24.html#poland-vs-netherlands",
-    "href": "Euro24/euro24.html#poland-vs-netherlands",
+    "objectID": "Euro24/euro24.html#italy-vs-albania",
+    "href": "Euro24/euro24.html#italy-vs-albania",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "7 Poland vs Netherlands",
-    "text": "7 Poland vs Netherlands"
+    "section": "4 Italy vs Albania",
+    "text": "4 Italy vs Albania"
+  },
+  {
+    "objectID": "Euro24/euro24.html#serbia-vs-england",
+    "href": "Euro24/euro24.html#serbia-vs-england",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "5 Serbia vs England",
+    "text": "5 Serbia vs England"
   },
   {
     "objectID": "Euro24/euro24.html#slovenia-vs-denmark",
@@ -231,11 +224,18 @@
     "text": "6 Slovenia vs Denmark"
   },
   {
-    "objectID": "Euro24/euro24.html#romania-vs-ukraine",
-    "href": "Euro24/euro24.html#romania-vs-ukraine",
+    "objectID": "Euro24/euro24.html#poland-vs-netherlands",
+    "href": "Euro24/euro24.html#poland-vs-netherlands",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "10 Romania vs Ukraine",
-    "text": "10 Romania vs Ukraine"
+    "section": "7 Poland vs Netherlands",
+    "text": "7 Poland vs Netherlands"
+  },
+  {
+    "objectID": "Euro24/euro24.html#austria-vs-france",
+    "href": "Euro24/euro24.html#austria-vs-france",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "8 Austria vs France",
+    "text": "8 Austria vs France"
   },
   {
     "objectID": "Euro24/euro24.html#belgium-vs-slovakia",
@@ -245,11 +245,39 @@
     "text": "9 Belgium vs Slovakia"
   },
   {
+    "objectID": "Euro24/euro24.html#romania-vs-ukraine",
+    "href": "Euro24/euro24.html#romania-vs-ukraine",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "10 Romania vs Ukraine",
+    "text": "10 Romania vs Ukraine"
+  },
+  {
     "objectID": "Euro24/euro24.html#türkiye-vs-georgia",
     "href": "Euro24/euro24.html#türkiye-vs-georgia",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
     "section": "11 Türkiye vs Georgia",
     "text": "11 Türkiye vs Georgia"
+  },
+  {
+    "objectID": "Euro24/euro24.html#portugal-vs-czechia",
+    "href": "Euro24/euro24.html#portugal-vs-czechia",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "12 Portugal vs Czechia",
+    "text": "12 Portugal vs Czechia"
+  },
+  {
+    "objectID": "Euro24/euro24.html#scotland-vs-switzerland",
+    "href": "Euro24/euro24.html#scotland-vs-switzerland",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "13 Scotland vs Switzerland",
+    "text": "13 Scotland vs Switzerland"
+  },
+  {
+    "objectID": "Euro24/euro24.html#germany-vs-hungary",
+    "href": "Euro24/euro24.html#germany-vs-hungary",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "14 Germany vs Hungary",
+    "text": "14 Germany vs Hungary"
   },
   {
     "objectID": "Euro24/euro24.html#croatia-vs-albania",
@@ -259,11 +287,11 @@
     "text": "15 Croatia vs Albania"
   },
   {
-    "objectID": "Euro24/euro24.html#slovenia-vs-serbia",
-    "href": "Euro24/euro24.html#slovenia-vs-serbia",
+    "objectID": "Euro24/euro24.html#spain-vs-italy",
+    "href": "Euro24/euro24.html#spain-vs-italy",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "18 Slovenia vs Serbia",
-    "text": "18 Slovenia vs Serbia"
+    "section": "16 Spain vs Italy",
+    "text": "16 Spain vs Italy"
   },
   {
     "objectID": "Euro24/euro24.html#denmark-vs-england",
@@ -273,6 +301,27 @@
     "text": "17 Denmark vs England"
   },
   {
+    "objectID": "Euro24/euro24.html#slovenia-vs-serbia",
+    "href": "Euro24/euro24.html#slovenia-vs-serbia",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "18 Slovenia vs Serbia",
+    "text": "18 Slovenia vs Serbia"
+  },
+  {
+    "objectID": "Euro24/euro24.html#poland-vs-austria",
+    "href": "Euro24/euro24.html#poland-vs-austria",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "19 Poland vs Austria",
+    "text": "19 Poland vs Austria"
+  },
+  {
+    "objectID": "Euro24/euro24.html#netherlands-vs-france",
+    "href": "Euro24/euro24.html#netherlands-vs-france",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "20 Netherlands vs France",
+    "text": "20 Netherlands vs France"
+  },
+  {
     "objectID": "Euro24/euro24.html#slovakia-vs-ukraine",
     "href": "Euro24/euro24.html#slovakia-vs-ukraine",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
@@ -280,11 +329,11 @@
     "text": "21 Slovakia vs Ukraine"
   },
   {
-    "objectID": "Euro24/euro24.html#georgia-vs-czechia",
-    "href": "Euro24/euro24.html#georgia-vs-czechia",
+    "objectID": "Euro24/euro24.html#belgium-vs-romania",
+    "href": "Euro24/euro24.html#belgium-vs-romania",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "24 Georgia vs Czechia",
-    "text": "24 Georgia vs Czechia"
+    "section": "22 Belgium vs Romania",
+    "text": "22 Belgium vs Romania"
   },
   {
     "objectID": "Euro24/euro24.html#türkiye-vs-portugal",
@@ -294,6 +343,13 @@
     "text": "23 Türkiye vs Portugal"
   },
   {
+    "objectID": "Euro24/euro24.html#georgia-vs-czechia",
+    "href": "Euro24/euro24.html#georgia-vs-czechia",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "24 Georgia vs Czechia",
+    "text": "24 Georgia vs Czechia"
+  },
+  {
     "objectID": "Euro24/euro24.html#switzerland-vs-germany",
     "href": "Euro24/euro24.html#switzerland-vs-germany",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
@@ -301,11 +357,39 @@
     "text": "25 Switzerland vs Germany"
   },
   {
+    "objectID": "Euro24/euro24.html#scotland-vs-hungary",
+    "href": "Euro24/euro24.html#scotland-vs-hungary",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "26 Scotland vs Hungary",
+    "text": "26 Scotland vs Hungary"
+  },
+  {
+    "objectID": "Euro24/euro24.html#albania-vs-spain",
+    "href": "Euro24/euro24.html#albania-vs-spain",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "27 Albania vs Spain",
+    "text": "27 Albania vs Spain"
+  },
+  {
     "objectID": "Euro24/euro24.html#croatia-vs-italy",
     "href": "Euro24/euro24.html#croatia-vs-italy",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
     "section": "28 Croatia vs Italy",
     "text": "28 Croatia vs Italy"
+  },
+  {
+    "objectID": "Euro24/euro24.html#england-vs-slovenia",
+    "href": "Euro24/euro24.html#england-vs-slovenia",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "29 England vs Slovenia",
+    "text": "29 England vs Slovenia"
+  },
+  {
+    "objectID": "Euro24/euro24.html#denmark-vs-serbia",
+    "href": "Euro24/euro24.html#denmark-vs-serbia",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "30 Denmark vs Serbia",
+    "text": "30 Denmark vs Serbia"
   },
   {
     "objectID": "Euro24/euro24.html#netherlands-vs-austria",
@@ -336,188 +420,6 @@
     "text": "34 Ukraine vs Belgium"
   },
   {
-    "objectID": "Euro24/euro24.html#the-fitted-model",
-    "href": "Euro24/euro24.html#the-fitted-model",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "The fitted model",
-    "text": "The fitted model\nWe plot the means of the attack and defense strengths of the teams. Shown are the mean values along with the 25% and 75% quantiles. There is considerable uncertainty in the strengths of the teams, but that’s the nature of the game.\n\n\nCode\nlibrary(tidyverse)\nlibrary(tidybayes)\n\n# Step 1: Gather draws and calculate summary statistics with credible intervals\nd = hfit %&gt;%\n  tidybayes::gather_draws(A[i, j]) %&gt;%\n  group_by(i, j) %&gt;%\n  summarise(\n    average_value = mean(.value),\n    lower = quantile(.value, 0.25),  # Lower bound \n    upper = quantile(.value, 0.75),  # Upper bound \n    .groups = \"drop\"\n  )\n\n# Step 2: Create a matrix of the average values\nA = xtabs(average_value ~ i + j, data = d)\n\n# Step 3: Plot the average values\nplot(A[1,], A[2,], pch=20, xlab='Attack', ylab='Defence', main='Attack vs Defence')\n\n# Step 4: Add team labels\ntext(A[1,], A[2,], labels=teams, cex=0.7, adj=c(-0.05, -0.8))\n\n# Step 5: Add error bars for 66% credibility intervals\n# Reshape data for plotting\nd_wide &lt;- d %&gt;% spread(key = j, value = average_value)\nd_lower &lt;- d %&gt;% spread(key = j, value = lower)\nd_upper &lt;- d %&gt;% spread(key = j, value = upper)\n\n# Convert to matrices for easier plotting\nA_lower &lt;- xtabs(lower ~ i + j, data = d)\nA_upper &lt;- xtabs(upper ~ i + j, data = d)\n\n# Plot vertical error bars\narrows(A[1,], A_lower[2,], A[1,], A_upper[2,], angle=90, code=3, length=0.05, col=\"lightblue\", alpha=0.5)\n\n# Plot horizontal error bars\narrows(A_lower[1,], A[2,], A_upper[1,], A[2,], angle=90, code=3, length=0.05, col=\"lightblue\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExample Prediction Germany vs Scotland\n\n\n\n\n\nThe opening game of Euro 2024 was Germany vs. Scotland. In the plots below, we show the posterior probabilities for the attack and defense strengths of the teams.\n\n\nCode\nlibrary(dplyr)\nlibrary(tidyr)\nlibrary(ggplot2)\nlibrary(tidybayes)\n\n# Function to calculate probabilities for a pairing\nid1 &lt;- which(teams == 'Germany')\nid2 &lt;- which(teams == 'Scotland')\n\n# Extract posterior distributions for Attack and Defense\nattack_germany &lt;- hfit %&gt;% tidybayes::spread_draws(A[i, j]) %&gt;% filter(j == id1, i == 1) %&gt;% select(A)\nattack_scotland &lt;- hfit %&gt;% tidybayes::spread_draws(A[i, j]) %&gt;% filter(j == id2, i == 1) %&gt;% select(A)\ndefense_germany &lt;- hfit %&gt;% tidybayes::spread_draws(A[i, j]) %&gt;% filter(j == id1, i == 2) %&gt;% select(A)\ndefense_scotland &lt;- hfit %&gt;% tidybayes::spread_draws(A[i, j]) %&gt;% filter(j == id2, i == 2) %&gt;% select(A)\n\n# Combine data into a tidy data frame\ntidy_df &lt;- bind_rows(\n  attack_germany %&gt;% mutate(Statistic = \"Attack\", Country = \"Germany\"),\n  attack_scotland %&gt;% mutate(Statistic = \"Attack\", Country = \"Scotland\"),\n  defense_germany %&gt;% mutate(Statistic = \"Defense\", Country = \"Germany\"),\n  defense_scotland %&gt;% mutate(Statistic = \"Defense\", Country = \"Scotland\")\n)\n\n# Include the mean values in the plot\nggplot(tidy_df, aes(x = A, fill = Country)) +\n  geom_density(alpha = 0.5) +\n  facet_wrap(~ Statistic, scales = \"free\") +\n  labs(title = \"Posterior Distributions of Attack and Defense Strengths\", x = \"Strength\", y = \"Density\") +\n  geom_vline(data = tidy_df %&gt;% group_by(Statistic, Country) %&gt;% summarise(mean_A = mean(A)), \n             aes(xintercept = mean_A, color = Country), linetype = \"dashed\") +\n  theme_minimal() \n\n\n\n\n\n\n\n\n\n\nMaking predictions\nWe can now make predictions for the game Germany vs Scotland. Below are the first samples of the posterior distribution for the attack and defense strengths of germany and scotland.\n\n\nCode\n# Extract first five samples for demonstration\ndf = data.frame(attack_germany = attack_germany$A, defense_germany = defense_germany$A, attack_scotland = attack_scotland$A, defense_scotland = defense_scotland$A) %&gt;% head() \nknitr::kable(df)\n\n\n\n\n\n\nattack_germany\ndefense_germany\nattack_scotland\ndefense_scotland\n\n\n\n\n-0.0442763\n-0.0242716\n0.163076\n-0.1346680\n\n\n-0.0206877\n0.0249255\n-0.178088\n0.0312232\n\n\n-0.0107814\n-0.1450450\n0.223999\n-0.3913570\n\n\n0.4885000\n0.0832831\n-0.382091\n0.0152179\n\n\n-0.0609140\n-0.3309840\n0.169096\n-0.4265350\n\n\n0.0887341\n0.0641705\n-0.207708\n-0.0027483\n\n\n\n\n\n\n\n\nWe use the samples for posterior row by row to sample the number of goals for Germany and Scotland. We can use the samples to calculate the probability of a win, draw or loss for Germany.\n\n\nCode\n set.seed(42)\n theta_germany = exp(attack_germany$A - defense_scotland$A)\n theta_scotland = exp(attack_scotland$A - defense_germany$A)\n g_germany = rpois(length(theta_germany), theta_germany)\n g_scotland = rpois(length(theta_scotland), theta_scotland)\n mean(g_germany &gt; g_scotland) #Probability of Germany winning\n\n\n[1] 0.458\n\n\nCode\n mean(g_germany == g_scotland) #Probability of a draw\n\n\n[1] 0.2535\n\n\nCode\n mean(g_germany &lt; g_scotland) #Probability of Scotland winning\n\n\n[1] 0.2885\n\n\nCode\n plot(table(g_germany)/length(g_germany), main='Germany Goals', xlab='Goals', ylab='Probability')\n\n\n\n\n\n\n\n\n\nCode\n plot(table(g_scotland)/length(g_scotland), main='Scotland Goals', xlab='Goals', ylab='Probability')\n\n\n\n\n\n\n\n\n\nRemember the result? It was 5:1 for Germany. The model predicted a win for Germany with a probability of 0.46. The probability of a draw was 0.25 and the probability of Scotland winning was 0.29.\nSo that these predictions with a grain of salt. The model is based on historical data and does not take into account the current form of the teams."
-  },
-  {
-    "objectID": "Euro24/euro24.html#prediction-based-on-the-historical-data",
-    "href": "Euro24/euro24.html#prediction-based-on-the-historical-data",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "Prediction based on the Historical Data",
-    "text": "Prediction based on the Historical Data\nWe load the matches prior to the Euro 2024, see https://github.com/oduerr/da/blob/master/stan/Euro24/Euro_Data.md how to get the data. Note the limitations of using historic; for example, Germany only started finding their form shortly before Euro 2024."
-  },
-  {
-    "objectID": "Euro24/euro24.html#details-on-individual-games",
-    "href": "Euro24/euro24.html#details-on-individual-games",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "Details on individual games",
-    "text": "Details on individual games\n\nGoal Distributions"
-  },
-  {
-    "objectID": "Euro24/euro24.html#predictions",
-    "href": "Euro24/euro24.html#predictions",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "Predictions",
-    "text": "Predictions\n\n\n\n\n\n\nCaution\n\n\n\nNote that these predictions are based on historical data and might do not take into account the current form of the teams.\n\n\n\n\nCode\nlibrary(tidyverse)\nlibrary(tidybayes)\nlibrary(ggpubr)\nlibrary(knitr)\n\n# Function to calculate probabilities for a pairing\ncalculate_probabilities &lt;- function(team1, team2, teams, hfit) {\n  cat(sprintf('## %s vs %s\\n', team1, team2))\n  id1 &lt;- which(teams == team1)\n  id2 &lt;- which(teams == team2)\n  \n  # Spread draws and filter the relevant data\n  As &lt;- hfit %&gt;% tidybayes::spread_draws(A[i, j]) %&gt;% select(i, j, A)\n  att_1 &lt;- As %&gt;% filter(j == id1, i == 1)\n  att_2 &lt;- As %&gt;% filter(j == id2, i == 1)\n  def_1 &lt;- As %&gt;% filter(j == id1, i == 2)\n  def_2 &lt;- As %&gt;% filter(j == id2, i == 2)\n  \n  theta_1 &lt;- exp(att_1$A - def_2$A)\n  theta_2 &lt;- exp(att_2$A - def_1$A)\n  \n  g_1 &lt;- rpois(length(theta_1), theta_1)\n  g_2 &lt;- rpois(length(theta_2), theta_2)\n  \n  # Calculate probabilities\n  prob_win &lt;- mean(g_1 &gt; g_2)\n  prob_draw &lt;- mean(g_1 == g_2)\n  prob_lose &lt;- mean(g_1 &lt; g_2)\n  \n  # Return the probabilities and goals\n  list(\n    prob_win = round(prob_win,2),\n    prob_draw = round(prob_draw,2),\n    prob_lose = round(prob_lose,2),\n    g_1 = g_1,\n    g_2 = g_2\n  )\n}\n\n### Group stage matches\n# Quite a pain to get the data in the right format from a lying ChatGPT\nlibrary(data.table)\n# Read the data from the CSV\ncsv_data &lt;- \"MatchNumber, Date, Team1, Team2, KickoffTime\n1, 14.06, Germany, Scotland, 21:00\n2, 15.06, Hungary, Switzerland, 15:00\n3, 15.06, Spain, Croatia, 18:00\n4, 15.06, Italy, Albania, 21:00\n5, 16.06, Serbia, England, 21:00\n6, 16.06, Slovenia, Denmark, 18:00\n7, 16.06, Poland, Netherlands, 15:00\n8, 17.06, Austria, France, 21:00\n9, 17.06, Belgium, Slovakia, 18:00\n10, 17.06, Romania, Ukraine, 15:00\n11, 18.06, Türkiye, Georgia, 18:00\n12, 18.06, Portugal, Czechia, 21:00\n13, 19.06, Scotland, Switzerland, 21:00\n14, 19.06, Germany, Hungary, 18:00\n15, 19.06, Croatia, Albania, 15:00\n16, 19.06, Spain, Italy, 21:00\n17, 20.06, Denmark, England, 18:00\n18, 20.06, Slovenia, Serbia, 15:00\n19, 20.06, Poland, Austria, 18:00\n20, 20.06, Netherlands, France, 21:00\n21, 21.06, Slovakia, Ukraine, 15:00\n22, 21.06, Belgium, Romania, 21:00\n23, 21.06, Türkiye, Portugal, 18:00\n24, 21.06, Georgia, Czechia, 15:00\n25, 25.06, Switzerland, Germany, 21:00\n26, 25.06, Scotland, Hungary, 21:00\n27, 25.06, Albania, Spain, 21:00\n28, 25.06, Croatia, Italy, 21:00\n29, 25.06, England, Slovenia, 21:00\n30, 25.06, Denmark, Serbia, 21:00\n31, 25.06, Netherlands, Austria, 18:00\n32, 25.06, France, Poland, 18:00\n33, 25.06, Slovakia, Romania, 18:00\n34, 25.06, Ukraine, Belgium, 18:00\n35, 25.06, Georgia, Portugal, 21:00\n36, 25.06, Czechia, Türkiye, 21:00\"\n\n# Convert CSV data to data table\nmatches_raw &lt;- fread(text = csv_data)\n\nmatches = data.frame(Date=as.Date(paste0('2024-06-', matches_raw$Date)), Time=paste0(matches_raw$KickoffTime, ' CEST'), HomeTeam=matches_raw$Team1, AwayTeam=matches_raw$Team2)\n\nresults = data.frame(num=NULL,Date=NULL, Time=NULL, HomeTeam=NULL, AwayTeam=NULL, Win=NULL, Draw=NULL, Lose=NULL)\nfor (i in 1:nrow(matches)) {\n  # i=1\n  #cat(sprintf('## %s vs %s\\n', matches[i,3], matches[i,4]))\n  probs &lt;- calculate_probabilities(matches[i,3,drop=TRUE], matches[i,4,drop=TRUE], teams, hfit)\n  cat(sprintf('Win: %.2f, Draw: %.2f, Lose: %.2f\\n', probs$prob_win, probs$prob_draw, probs$prob_lose))\n  results = rbind(results, data.frame(\n    Number = i,\n    Date=matches[i,1], \n    Time=matches[i,2], \n    HomeTeam=matches[i,3], \n    AwayTeam=matches[i,4], \n    Win=probs$prob_win, Draw=probs$prob_draw, Lose=probs$prob_lose))\n}\n## ## Germany vs Scotland\n## Win: 0.46, Draw: 0.26, Lose: 0.28\n## ## Hungary vs Switzerland\n## Win: 0.37, Draw: 0.27, Lose: 0.36\n## ## Spain vs Croatia\n## Win: 0.53, Draw: 0.23, Lose: 0.24\n## ## Italy vs Albania\n## Win: 0.41, Draw: 0.28, Lose: 0.30\n## ## Serbia vs England\n## Win: 0.20, Draw: 0.23, Lose: 0.57\n## ## Slovenia vs Denmark\n## Win: 0.37, Draw: 0.28, Lose: 0.35\n## ## Poland vs Netherlands\n## Win: 0.32, Draw: 0.26, Lose: 0.42\n## ## Austria vs France\n## Win: 0.35, Draw: 0.25, Lose: 0.40\n## ## Belgium vs Slovakia\n## Win: 0.52, Draw: 0.25, Lose: 0.23\n## ## Romania vs Ukraine\n## Win: 0.43, Draw: 0.28, Lose: 0.28\n## ## Türkiye vs Georgia\n## Win: 0.41, Draw: 0.26, Lose: 0.33\n## ## Portugal vs Czechia\n## Win: 0.45, Draw: 0.25, Lose: 0.30\n## ## Scotland vs Switzerland\n## Win: 0.32, Draw: 0.26, Lose: 0.42\n## ## Germany vs Hungary\n## Win: 0.41, Draw: 0.27, Lose: 0.32\n## ## Croatia vs Albania\n## Win: 0.36, Draw: 0.30, Lose: 0.34\n## ## Spain vs Italy\n## Win: 0.47, Draw: 0.23, Lose: 0.30\n## ## Denmark vs England\n## Win: 0.27, Draw: 0.26, Lose: 0.48\n## ## Slovenia vs Serbia\n## Win: 0.47, Draw: 0.27, Lose: 0.26\n## ## Poland vs Austria\n## Win: 0.27, Draw: 0.25, Lose: 0.48\n## ## Netherlands vs France\n## Win: 0.30, Draw: 0.24, Lose: 0.46\n## ## Slovakia vs Ukraine\n## Win: 0.35, Draw: 0.29, Lose: 0.36\n## ## Belgium vs Romania\n## Win: 0.43, Draw: 0.27, Lose: 0.30\n## ## Türkiye vs Portugal\n## Win: 0.24, Draw: 0.22, Lose: 0.54\n## ## Georgia vs Czechia\n## Win: 0.25, Draw: 0.28, Lose: 0.47\n## ## Switzerland vs Germany\n## Win: 0.33, Draw: 0.25, Lose: 0.42\n## ## Scotland vs Hungary\n## Win: 0.31, Draw: 0.28, Lose: 0.41\n## ## Albania vs Spain\n## Win: 0.23, Draw: 0.24, Lose: 0.53\n## ## Croatia vs Italy\n## Win: 0.31, Draw: 0.27, Lose: 0.42\n## ## England vs Slovenia\n## Win: 0.46, Draw: 0.27, Lose: 0.27\n## ## Denmark vs Serbia\n## Win: 0.46, Draw: 0.28, Lose: 0.26\n## ## Netherlands vs Austria\n## Win: 0.33, Draw: 0.24, Lose: 0.44\n## ## France vs Poland\n## Win: 0.52, Draw: 0.23, Lose: 0.25\n## ## Slovakia vs Romania\n## Win: 0.28, Draw: 0.28, Lose: 0.43\n## ## Ukraine vs Belgium\n## Win: 0.23, Draw: 0.26, Lose: 0.52\n## ## Georgia vs Portugal\n## Win: 0.21, Draw: 0.22, Lose: 0.57\n## ## Czechia vs Türkiye\n## Win: 0.43, Draw: 0.27, Lose: 0.30\n\n# Print the summary table with links\nkable(results, caption = \"Probabilities of Match Outcomes\", escape = FALSE)\n\n\n\n\nProbabilities of Match Outcomes\n\n\nNumber\nDate\nTime\nHomeTeam\nAwayTeam\nWin\nDraw\nLose\n\n\n\n\n1\n2024-06-14\n21:00 CEST\nGermany\nScotland\n0.46\n0.26\n0.28\n\n\n2\n2024-06-15\n15:00 CEST\nHungary\nSwitzerland\n0.37\n0.27\n0.36\n\n\n3\n2024-06-15\n18:00 CEST\nSpain\nCroatia\n0.53\n0.23\n0.24\n\n\n4\n2024-06-15\n21:00 CEST\nItaly\nAlbania\n0.41\n0.28\n0.30\n\n\n5\n2024-06-16\n21:00 CEST\nSerbia\nEngland\n0.20\n0.23\n0.57\n\n\n6\n2024-06-16\n18:00 CEST\nSlovenia\nDenmark\n0.37\n0.28\n0.35\n\n\n7\n2024-06-16\n15:00 CEST\nPoland\nNetherlands\n0.32\n0.26\n0.42\n\n\n8\n2024-06-17\n21:00 CEST\nAustria\nFrance\n0.35\n0.25\n0.40\n\n\n9\n2024-06-17\n18:00 CEST\nBelgium\nSlovakia\n0.52\n0.25\n0.23\n\n\n10\n2024-06-17\n15:00 CEST\nRomania\nUkraine\n0.43\n0.28\n0.28\n\n\n11\n2024-06-18\n18:00 CEST\nTürkiye\nGeorgia\n0.41\n0.26\n0.33\n\n\n12\n2024-06-18\n21:00 CEST\nPortugal\nCzechia\n0.45\n0.25\n0.30\n\n\n13\n2024-06-19\n21:00 CEST\nScotland\nSwitzerland\n0.32\n0.26\n0.42\n\n\n14\n2024-06-19\n18:00 CEST\nGermany\nHungary\n0.41\n0.27\n0.32\n\n\n15\n2024-06-19\n15:00 CEST\nCroatia\nAlbania\n0.36\n0.30\n0.34\n\n\n16\n2024-06-19\n21:00 CEST\nSpain\nItaly\n0.47\n0.23\n0.30\n\n\n17\n2024-06-20\n18:00 CEST\nDenmark\nEngland\n0.27\n0.26\n0.48\n\n\n18\n2024-06-20\n15:00 CEST\nSlovenia\nSerbia\n0.47\n0.27\n0.26\n\n\n19\n2024-06-20\n18:00 CEST\nPoland\nAustria\n0.27\n0.25\n0.48\n\n\n20\n2024-06-20\n21:00 CEST\nNetherlands\nFrance\n0.30\n0.24\n0.46\n\n\n21\n2024-06-21\n15:00 CEST\nSlovakia\nUkraine\n0.35\n0.29\n0.36\n\n\n22\n2024-06-21\n21:00 CEST\nBelgium\nRomania\n0.43\n0.27\n0.30\n\n\n23\n2024-06-21\n18:00 CEST\nTürkiye\nPortugal\n0.24\n0.22\n0.54\n\n\n24\n2024-06-21\n15:00 CEST\nGeorgia\nCzechia\n0.25\n0.28\n0.47\n\n\n25\n2024-06-25\n21:00 CEST\nSwitzerland\nGermany\n0.33\n0.25\n0.42\n\n\n26\n2024-06-25\n21:00 CEST\nScotland\nHungary\n0.31\n0.28\n0.41\n\n\n27\n2024-06-25\n21:00 CEST\nAlbania\nSpain\n0.23\n0.24\n0.53\n\n\n28\n2024-06-25\n21:00 CEST\nCroatia\nItaly\n0.31\n0.27\n0.42\n\n\n29\n2024-06-25\n21:00 CEST\nEngland\nSlovenia\n0.46\n0.27\n0.27\n\n\n30\n2024-06-25\n21:00 CEST\nDenmark\nSerbia\n0.46\n0.28\n0.26\n\n\n31\n2024-06-25\n18:00 CEST\nNetherlands\nAustria\n0.33\n0.24\n0.44\n\n\n32\n2024-06-25\n18:00 CEST\nFrance\nPoland\n0.52\n0.23\n0.25\n\n\n33\n2024-06-25\n18:00 CEST\nSlovakia\nRomania\n0.28\n0.28\n0.43\n\n\n34\n2024-06-25\n18:00 CEST\nUkraine\nBelgium\n0.23\n0.26\n0.52\n\n\n35\n2024-06-25\n21:00 CEST\nGeorgia\nPortugal\n0.21\n0.22\n0.57\n\n\n36\n2024-06-25\n21:00 CEST\nCzechia\nTürkiye\n0.43\n0.27\n0.30"
-  },
-  {
-    "objectID": "Euro24/euro24.html#spain-vs-italy",
-    "href": "Euro24/euro24.html#spain-vs-italy",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "16 Spain vs Italy",
-    "text": "16 Spain vs Italy"
-  },
-  {
-    "objectID": "Euro24/euro24.html#ukraine-vs-romania",
-    "href": "Euro24/euro24.html#ukraine-vs-romania",
-    "title": "Euro24 and Bayes",
-    "section": "Ukraine vs Romania",
-    "text": "Ukraine vs Romania\nUkraine Romania"
-  },
-  {
-    "objectID": "Euro24/euro24.html#germany-vs-switzerland",
-    "href": "Euro24/euro24.html#germany-vs-switzerland",
-    "title": "Euro24 and Bayes",
-    "section": "Germany vs Switzerland",
-    "text": "Germany vs Switzerland\nGermany Switzerland"
-  },
-  {
-    "objectID": "Euro24/euro24.html#italy-vs-croatia",
-    "href": "Euro24/euro24.html#italy-vs-croatia",
-    "title": "Euro24 and Bayes",
-    "section": "Italy vs Croatia",
-    "text": "Italy vs Croatia\nItaly Croatia"
-  },
-  {
-    "objectID": "Euro24/euro24.html#slovenia-vs-serbia-1",
-    "href": "Euro24/euro24.html#slovenia-vs-serbia-1",
-    "title": "Euro24 and Bayes",
-    "section": "Slovenia vs Serbia",
-    "text": "Slovenia vs Serbia\nSlovenia Serbia"
-  },
-  {
-    "objectID": "Euro24/euro24.html#serbia-vs-slovenia",
-    "href": "Euro24/euro24.html#serbia-vs-slovenia",
-    "title": "Euro24 and Bayes",
-    "section": "Serbia vs Slovenia",
-    "text": "Serbia vs Slovenia\nSerbia Slovenia"
-  },
-  {
-    "objectID": "Euro24/euro24.html#belgium-vs-slovakia-1",
-    "href": "Euro24/euro24.html#belgium-vs-slovakia-1",
-    "title": "Euro24 and Bayes",
-    "section": "Belgium vs Slovakia",
-    "text": "Belgium vs Slovakia\nBelgium Slovakia"
-  },
-  {
-    "objectID": "Euro24/euro24.html#romania-vs-belgium",
-    "href": "Euro24/euro24.html#romania-vs-belgium",
-    "title": "Euro24 and Bayes",
-    "section": "Romania vs Belgium",
-    "text": "Romania vs Belgium\nRomania Belgium"
-  },
-  {
-    "objectID": "Euro24/euro24.html#czechia-vs-portugal",
-    "href": "Euro24/euro24.html#czechia-vs-portugal",
-    "title": "Euro24 and Bayes",
-    "section": "Czechia vs Portugal",
-    "text": "Czechia vs Portugal\nCzechia Portugal"
-  },
-  {
-    "objectID": "Euro24/euro24.html#ukraine-vs-czechia",
-    "href": "Euro24/euro24.html#ukraine-vs-czechia",
-    "title": "Euro24 and Bayes",
-    "section": "Ukraine vs Czechia",
-    "text": "Ukraine vs Czechia\nUkraine Czechia"
-  },
-  {
-    "objectID": "Euro24/euro24.html#slovakia-vs-belgium",
-    "href": "Euro24/euro24.html#slovakia-vs-belgium",
-    "title": "Euro24 and Bayes",
-    "section": "Slovakia vs Belgium",
-    "text": "Slovakia vs Belgium\nSlovakia Belgium"
-  },
-  {
-    "objectID": "Euro24/euro24.html#austria-vs-france",
-    "href": "Euro24/euro24.html#austria-vs-france",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "8 Austria vs France",
-    "text": "8 Austria vs France"
-  },
-  {
-    "objectID": "Euro24/euro24.html#italy-vs-albania",
-    "href": "Euro24/euro24.html#italy-vs-albania",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "4 Italy vs Albania",
-    "text": "4 Italy vs Albania"
-  },
-  {
-    "objectID": "Euro24/euro24.html#serbia-vs-england",
-    "href": "Euro24/euro24.html#serbia-vs-england",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "5 Serbia vs England",
-    "text": "5 Serbia vs England"
-  },
-  {
-    "objectID": "Euro24/euro24.html#portugal-vs-czechia",
-    "href": "Euro24/euro24.html#portugal-vs-czechia",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "12 Portugal vs Czechia",
-    "text": "12 Portugal vs Czechia"
-  },
-  {
-    "objectID": "Euro24/euro24.html#poland-vs-austria",
-    "href": "Euro24/euro24.html#poland-vs-austria",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "19 Poland vs Austria",
-    "text": "19 Poland vs Austria"
-  },
-  {
-    "objectID": "Euro24/euro24.html#netherlands-vs-france",
-    "href": "Euro24/euro24.html#netherlands-vs-france",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "20 Netherlands vs France",
-    "text": "20 Netherlands vs France"
-  },
-  {
-    "objectID": "Euro24/euro24.html#belgium-vs-romania",
-    "href": "Euro24/euro24.html#belgium-vs-romania",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "22 Belgium vs Romania",
-    "text": "22 Belgium vs Romania"
-  },
-  {
-    "objectID": "Euro24/euro24.html#scotland-vs-hungary",
-    "href": "Euro24/euro24.html#scotland-vs-hungary",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "26 Scotland vs Hungary",
-    "text": "26 Scotland vs Hungary"
-  },
-  {
-    "objectID": "Euro24/euro24.html#albania-vs-spain",
-    "href": "Euro24/euro24.html#albania-vs-spain",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "27 Albania vs Spain",
-    "text": "27 Albania vs Spain"
-  },
-  {
-    "objectID": "Euro24/euro24.html#england-vs-slovenia",
-    "href": "Euro24/euro24.html#england-vs-slovenia",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "29 England vs Slovenia",
-    "text": "29 England vs Slovenia"
-  },
-  {
-    "objectID": "Euro24/euro24.html#denmark-vs-serbia",
-    "href": "Euro24/euro24.html#denmark-vs-serbia",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "30 Denmark vs Serbia",
-    "text": "30 Denmark vs Serbia"
-  },
-  {
     "objectID": "Euro24/euro24.html#georgia-vs-portugal",
     "href": "Euro24/euro24.html#georgia-vs-portugal",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
@@ -532,17 +434,10 @@
     "text": "36 Czechia vs Türkiye"
   },
   {
-    "objectID": "Euro24/euro24.html#a-model-for-the-goals-scored",
-    "href": "Euro24/euro24.html#a-model-for-the-goals-scored",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "A Model for the goals scored 🥅",
-    "text": "A Model for the goals scored 🥅\nWe will assume that the number of goals scored by the home team \\(s_1\\) and the away team \\(s_2\\) follows a Poisson distribution. This has been shown to be a good model for the number of goals scored in a football match. We model the rate parameter \\(\\theta\\) of the Poisson distribution, related to the attack and defense strengths of the teams, as follows:\n\\[\n    s_1 \\sim \\text{Pois}(\\theta_1) \\quad\\text{goals scored by the home team}\n\\]\n\\[\n    s_2 \\sim \\text{Pois}(\\theta_2) \\quad\\text{goals scored by the away team}\n\\]\nThis is equivalent to performing two separate Poisson regressions, one for each team.\nWe assume that:\n\\[\n    \\theta_1 = \\exp(\\text{home} + \\text{att}_\\text{ht} - \\text{def}_\\text{at})\n\\]\n\\[\n    \\theta_2 = \\exp(\\text{att}_\\text{at} - \\text{def}_\\text{ht})\n\\]\nSince there is no home advantage in the Euro (except for Germany), we set \\(\\text{home} = 0\\).\n\nPrior for the attack and defence strength\nIn Bayesian statistics, we further need to specify a prior for the parameters (our degree of believe in the attack and defense abilities before seeing any data). For that we use a hierarchical model with correlated parameters. Other models are investigated at https://github.com/oduerr/da/blob/master/stan/football/Correlated.md for the English Premier League 2019/2020 season where the hiearchical model have been especially successfull. The model is adopted from the blog_post and the paper. The model is written in the probabilistic programming language Stan and can be found at https://github.com/oduerr/da/blob/master/website/Euro24/hier_model_cor.stan."
-  },
-  {
-    "objectID": "Euro24/euro24.html#test",
-    "href": "Euro24/euro24.html#test",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "Test",
-    "text": "Test\nHallo:\n\\[\n\\frac{1}{2}\n\\]"
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Internal Notes for authoring the website\n\nHow to add a new page\n\nCreate a new quarto file in the root directory or subdirectory. Put the quarto-file in website directory (or subdirectory). Make sure that you do not have self-contained: true in the qmd file, otherwise file gets to large. An example is website/lecture_notes/MCMC/MCMC.qmd\n\n\n---\ntitle: \"Lecture Notes on MCMC\"\nauthor: \"Oliver Dürr\"\nformat: \n  html:\n    toc: true\n    toc-title: \"Table of Contents\"\n    toc-depth: 3\n    fig-width: 6\n    fig-height: 3\n    code-fold: true\n    code-tools: true\n    mathjax: true\n  #  self-contained: true &lt;------ NEEDS TO BE COMMENTED OUT (or not there at all)\n  # pdf:\n  #   toc: true\n  #   toc-title: \"Table of Contents\"\nfilters:\n  - webr\n---\n\n\n\nHow to render the website\n\nRender and move to docs folder\n\nquarto render \n\nCheck in the changes in the docs folder\n\n\n\nDevelopment (in da/website)\nquarto preview lecture_notes/MCMC/MCMC.qmd #For a single file\nquarto preview #For the complete website"
   }
 ]

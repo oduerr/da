@@ -106,20 +106,22 @@ Since there is no home advantage in the Euro (except for Germany), we set $\text
 
 
 ### Prior for the attack and defence strength
-In Bayesian statistics, we further need to specify a prior for the parameters (our degree of believe in the attack and defense abilities before seeing any data). For that we use a  hierarchical model with correlated parameters. Other models are investigated at <https://github.com/oduerr/da/blob/master/stan/football/Correlated.md> for the English Premier League 2019/2020 season where the hiearchical model have been especially successfull. The model is adopted from the [blog_post](https://github.com/MaggieLieu/STAN_tutorials/tree/master/Hierarchical) and the [paper](https://discovery.ucl.ac.uk/id/eprint/16040/1/16040.pdf). The model is written in the probabilistic programming language Stan and can be found at <https://github.com/oduerr/da/blob/master/website/Euro24/hier_model_cor.stan>.
+In Bayesian statistics, we further need to specify a prior for the parameters (our degree of believe in the attack and defense abilities before seeing any data). For that we use a  hierarchical model with correlated parameters. Other models are investigated at <https://github.com/oduerr/da/blob/master/stan/football/Correlated.md> for the English Premier League 2019/2020 season where the hiearchical model have been especially successfull. The model is adopted from the [blog_post](https://github.com/MaggieLieu/STAN_tutorials/tree/master/Hierarchical) and the [paper](https://discovery.ucl.ac.uk/id/eprint/16040/1/16040.pdf). We extend the model to include a correlation between the attack and defense strength of the teams, since it is quite reasonable that a team that scores many goals (is above average in offense) is also good in defense.
 
 ## Conditioning on the data / Fitting the model
 After we state the model we fit the model to the data, or in Bayesian parlance, we update our degree of belief after seeing the data. 
 
 ::: {.callout-caution collapse="true"}
-## Expand MCMC sampling with Stan
-
+## Details of the model MCMC sampling with Stan
+The model is written in the probabilistic programming language Stan and can be found at <https://github.com/oduerr/da/blob/master/website/Euro24/hier_model_cor.stan>. This model used a Cholesky decomposition to model the correlation between the attack and defense strength of the teams. While this produces very effective sampling and is numerically stable, the Cholesky decomposition adds another layer of complexity to the model. We also provide a model without the Cholesky decomposition at <https://github.com/oduerr/da/blob/master/website/Euro24/hier_model_cor_nocholesky.stan> which is easier to understand but which is, besides the numerical difficulties, equivalent to the model with the Cholesky decomposition. 
+ 
 
 
 ```{r, message=FALSE, collapse=TRUE, warning=FALSE, fig.width=10, fig.height=3}
 library(cmdstanr)
 options(mc.cores = parallel::detectCores())
-hmodel <- cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model_cor.stan') 
+hmodel <- cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model_cor.stan')
+#hmodel <- cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model_cor_nocholsky.stan')
 hfit = hmodel$sample(data = my_data)
 p1 = bayesplot::mcmc_rhat_hist(bayesplot::rhat(hfit))
 p2 = bayesplot::mcmc_neff_hist(bayesplot::neff_ratio(hfit))
@@ -175,8 +177,8 @@ arrows(A[1,], A_lower[2,], A[1,], A_upper[2,], angle=90, code=3, length=0.05, co
 arrows(A_lower[1,], A[2,], A_upper[1,], A[2,], angle=90, code=3, length=0.05, col="lightblue")
 ```
 
-::: {.callout-caution collapse="false"}
-## Example Prediction Germany vs Scotland
+::: {.callout-caution collapse="true"}
+## Detailed explanations for a single match Germany vs Scotland
 The opening game of Euro 2024 was Germany vs. Scotland. In the plots below, we show the posterior probabilities for the attack and defense strengths of the teams. 
 
 ```{r, message=FALSE, collapse=TRUE, warning=FALSE, fig.width=7, fig.height=3}
@@ -239,8 +241,83 @@ We use the samples for posterior row by row to sample the number of goals for Ge
  plot(table(g_scotland)/length(g_scotland), main='Scotland Goals', xlab='Goals', ylab='Probability')
  
 ```
-Remember the result? It was 5:1 for Germany. The model predicted a win for Germany with a probability of `r round(mean(g_germany > g_scotland),2)`. The probability of a draw was `r round(mean(g_germany == g_scotland),2)` and the probability of Scotland winning was `r round(mean(g_germany < g_scotland),2)`. 
+Another way to look at is is at the joint distribution of the goals scored
+```{r, echo=TRUE, collapse=FALSE, warning=FALSE, fig.width=4, fig.height=3}
+library(tidyverse)
+library(ggplot2)
 
+# Define the function
+plot_goal_probabilities <- function(attack_team1, defense_team1, attack_team2, defense_team2, team1_name = "Team 1", team2_name = "Team 2") {
+  set.seed(42)
+  
+  # Simulate goals scored using Poisson distribution
+  theta_team1 <- exp(attack_team1 - defense_team2)
+  theta_team2 <- exp(attack_team2 - defense_team1)
+  g_team1 <- rpois(length(theta_team1), theta_team1)
+  g_team2 <- rpois(length(theta_team2), theta_team2)
+  
+  # Calculate joint probabilities
+  joint_prob <- table(g_team1, g_team2) / length(g_team1)
+  df_joint <- as.data.frame(as.table(joint_prob))
+  colnames(df_joint) <- c("Goals_Team1", "Goals_Team2", "Probability")
+  
+  # Ensure all combinations from 0 to 5 are included
+  all_combinations <- expand.grid(Goals_Team1 = 0:5, Goals_Team2 = 0:5)
+  df_joint <- merge(all_combinations, df_joint, by = c("Goals_Team1", "Goals_Team2"), all.x = TRUE)
+  df_joint$Probability[is.na(df_joint$Probability)] <- 0
+  
+  # Calculate outcomes
+  df_joint <- df_joint %>%
+    mutate(
+      Outcome = case_when(
+        Goals_Team1 > Goals_Team2 ~ "Win1",
+        Goals_Team1 < Goals_Team2 ~ "Win2",
+        TRUE ~ "Draw"
+      )
+    )
+  
+  # Calculate probabilities
+  prob_team1_win <- sum(df_joint$Probability[df_joint$Outcome == "Win1"])
+  prob_team2_win <- sum(df_joint$Probability[df_joint$Outcome == "Win2"])
+  prob_draw <- sum(df_joint$Probability[df_joint$Outcome == "Draw"])
+  
+  # Print probabilities to the console
+  # cat("Probability of", team1_name, "winning: ", prob_team1_win, "\n")
+  # cat("Probability of", team2_name, "winning: ", prob_team2_win, "\n")
+  # cat("Probability of a draw: ", prob_draw, "\n")
+  
+  # Plot the joint probabilities with labels and different colors for outcomes
+  joint_plot <- ggplot(df_joint, aes(x = Goals_Team1, y = Goals_Team2, fill = Outcome)) +
+    geom_tile(color = "white", aes(alpha = Probability)) +
+    geom_text(aes(label = sprintf("%.2f", Probability)), color = "black", size = 3) +
+    scale_fill_manual(values = c("Win1" = "blue", "Win2" = "red", "Draw" = "green"), guide = NULL) +
+    scale_alpha(range = c(0.3, 1), guide = NULL) +
+    labs(title = paste0(team1_name, " vs. ", team2_name),  x = paste("Goals by", team1_name), y = paste("Goals by", team2_name)) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+      axis.title = element_text(size = 12),
+      axis.text = element_text(size = 10)
+    ) +
+    scale_x_continuous(limits = c(-0.5, 9), breaks = 0:4) +
+    scale_y_continuous(limits = c(-0.5, 5.5), breaks = 0:5) +
+    annotate("text", x = 5.7, y = 4, label = sprintf("%s Wins: %.2f", team1_name, prob_team1_win), color = "blue", size = 3, hjust = 0) +
+    annotate("text", x = 5.7, y = 3, label = sprintf("Draw: %.2f", prob_draw), color = "green", size = 3, hjust = 0) +
+    annotate("text", x = 5.7, y = 2, label = sprintf("%s Wins: %.2f", team2_name, prob_team2_win), color = "red", size = 3, hjust = 0)
+  
+  # Print the joint plot
+  return(joint_plot)
+}
+
+# Call the function
+plot_goal_probabilities(attack_team1=attack_germany$A, defense_team1 = defense_germany$A, 
+                        attack_team2=attack_scotland$A, defense_team2 = defense_scotland$A, team1_name="Germany", team2_name="Scotland")
+```
+
+
+
+
+Remember the result? It was 5:1 for Germany, so quite unexpected by the model. 
 So that these predictions with a grain of salt. The model is based on historical data and does not take into account the current form of the teams.
 :::
 
@@ -366,7 +443,7 @@ kable(results, caption = "Probabilities of Match Outcomes", escape = FALSE)
 
 
 
-```{r individual_plots, echo=FALSE, results='asis', fig.width=7, fig.height=2}
+```{r individual_plots, echo=FALSE, results='asis', fig.width=4, fig.height=3}
 # Function to generate plot for a pairing
 generate_plot <- function(team1, team2, teams, hfit) {
   #cat(team1, team2)
@@ -417,9 +494,19 @@ generate_plot <- function(team1, team2, teams, hfit) {
 
 # Generate plots for all pairings and display them
 for (i in 1:nrow(matches)) {
-  cat(sprintf('\n## %d %s vs %s\n',i, matches[i,3], matches[i,4]))
-  #cat(sprintf('<div id="%s-%s-plot"></div>\n', gsub(" ", "-", matches[i,3]), gsub(" ", "-", matches[i,4])))
-  plot <- generate_plot(matches[i,3,drop=TRUE], matches[i,4,drop=TRUE], teams, hfit)
+  team1_name = matches[i,3]
+  team2_name = matches[i,4]
+  cat(sprintf('\n## %d %s vs %s\n',i, team1_name, team2_name))
+  id1 <- which(teams == team1_name)
+  id2 <- which(teams == team2_name)
+  # Getting the posterior draws for the attack and defense strengths
+  As <- hfit %>% tidybayes::spread_draws(A[i, j]) %>% select(i, j, A)
+  att_1 <- As %>% filter(j == id1, i == 1)
+  att_2 <- As %>% filter(j == id2, i == 1)
+  def_1 <- As %>% filter(j == id1, i == 2)
+  def_2 <- As %>% filter(j == id2, i == 2)
+  plot = plot_goal_probabilities(att_1$A, def_1$A, att_2$A, def_2$A, team1_name, team2_name)
+  #plot <- generate_plot(matches[i,3,drop=TRUE], matches[i,4,drop=TRUE], teams, hfit)
   print(plot)
   cat(sprintf('\n'))
 }

@@ -23,8 +23,9 @@
 
 #### Bayes Woche 6 (Multilevel) ###
 "/Users/oli/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_06_Bayes_6/bayes_6_compile.R"
-"/Users/oli/Documents/GitHub/da/lab/kn_rent/rent_kn_cmdrstan.Rmd"
-
+"/Users/oli/Documents/GitHub/da/stan/mixed_cafes/Cafes_of_Konstanz.R"
+"/Users/oli/Documents/GitHub/da/lab/kn_rent/rent_kn_cmdrstan.qmd"
 
 #### Bayes Woche 7 (Multilevel 2) ###
 "/Users/oli/Documents/GitHub/da/lab/football1/Hierarchical.Rmd"
+
