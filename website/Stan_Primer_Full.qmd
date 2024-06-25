@@ -22,6 +22,7 @@ options(mc.cores = parallel::detectCores()) #Make it faster
 m_rcmdstan <- cmdstan_model(file_stan) #Compiling
 s_rcmdstan = m_rcmdstan$sample(data = data) #Sampling
 df = s_rcmdstan$draws(format = "df") #Extracting Samples as data.frame
+#shinystan::launch_shinystan(s_rcmdstan) #Shiny Stan 
 ```
 
 ## Tidy Bayes
@@ -41,6 +42,7 @@ Works with rstan and cmdstanr
 ```{r tidy_bayes minimal, eval=FALSE}
   s = s_rcmdstan$draws() #We need to call draws() 2023
   bayesplot::mcmc_trace(s)
+  bayesplot::ess_bulk(s)
 ```
 
 ## Rendering Quarto for exercises

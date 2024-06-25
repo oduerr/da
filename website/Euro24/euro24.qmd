@@ -71,7 +71,9 @@ my_data = list(
   s2 = data$score2[1:ngob],
   np = np,
   htnew = ht[(ngob+1):ng],
-  atnew = at[(ngob+1):ng]
+  atnew = at[(ngob+1):ng],
+  s1new = data$score1[(ngob+1):ng],
+  s2new = data$score2[(ngob+1):ng]
 )
 ```
 Using the first `r ngob` games to fit the model and `r np` games to predict. In total we have `r length(teams)` teams.
@@ -106,7 +108,7 @@ Since there is no home advantage in the Euro (except for Germany), we set $\text
 
 
 ### Prior for the attack and defence strength
-In Bayesian statistics, we further need to specify a prior for the parameters (our degree of believe in the attack and defense abilities before seeing any data). For that we use a  hierarchical model with correlated parameters. Other models are investigated at <https://github.com/oduerr/da/blob/master/stan/football/Correlated.md> for the English Premier League 2019/2020 season where the hiearchical model have been especially successfull. The model is adopted from the [blog_post](https://github.com/MaggieLieu/STAN_tutorials/tree/master/Hierarchical) and the [paper](https://discovery.ucl.ac.uk/id/eprint/16040/1/16040.pdf). We extend the model to include a correlation between the attack and defense strength of the teams, since it is quite reasonable that a team that scores many goals (is above average in offense) is also good in defense.
+In Bayesian statistics, we further need to specify a prior for the parameters (our degree of believe in the attack and defense abilities before seeing any data). For that we use a  hierarchical model with correlated parameters. Other models are investigated at [comp_premier_league](comp_premier_league.html) for the English Premier League 2019/2020 season and for the German Bundesliga [2000](comp_bundes_liga_2000.html) and [2024](comp_bundes_liga.html) where the hierarchical model have been especially successful. The model is adopted from the [blog_post](https://github.com/MaggieLieu/STAN_tutorials/tree/master/Hierarchical) and the [paper](https://discovery.ucl.ac.uk/id/eprint/16040/1/16040.pdf). We extend the model to include a correlation between the attack and defense strength of the teams, since it is quite reasonable that a team that scores many goals (is above average in offense) is also good in defense.
 
 ## Conditioning on the data / Fitting the model
 After we state the model we fit the model to the data, or in Bayesian parlance, we update our degree of belief after seeing the data. 
@@ -227,22 +229,51 @@ knitr::kable(df)
 
 We use the samples for posterior row by row to sample the number of goals for Germany and Scotland. We can use the samples to calculate the probability of a win, draw or loss for Germany.
 
+### Probabilities for win/draw/loss
 ```{r, echo=TRUE, collapse=FALSE, warning=FALSE}
  set.seed(42)
  theta_germany = exp(attack_germany$A - defense_scotland$A)
  theta_scotland = exp(attack_scotland$A - defense_germany$A)
  g_germany = rpois(length(theta_germany), theta_germany)
  g_scotland = rpois(length(theta_scotland), theta_scotland)
- mean(g_germany > g_scotland) #Probability of Germany winning
- mean(g_germany == g_scotland) #Probability of a draw
- mean(g_germany < g_scotland) #Probability of Scotland winning
+ 
+ 
+ 
+ # Alternative way to calculate the probabilities
+ calc_prob <- function(observed, theta) {
+     mean(dpois(observed, theta))
+ }
  
  plot(table(g_germany)/length(g_germany), main='Germany Goals', xlab='Goals', ylab='Probability')
- plot(table(g_scotland)/length(g_scotland), main='Scotland Goals', xlab='Goals', ylab='Probability')
+ prob_goals_germany = apply(matrix(0:10, ncol=1), 1, function(x) calc_prob(x, theta_germany))
+ points(0:5, prob_goals_germany[1:6])
  
+ prob_goals_scotland = apply(matrix(0:10, ncol=1), 1, function(x) calc_prob(x, theta_scotland))
+ plot(table(g_scotland)/length(g_scotland), main='Scotland Goals', xlab='Goals', ylab='Probability')
+ points(0:5, prob_goals_scotland[1:6])
+ 
+ prob_goals = outer(prob_goals_germany, prob_goals_scotland, '*')
+ sum(prob_goals) #Should be very close to 1
+ 
+ print(paste0('Germany wins (simu) ',
+              mean(g_germany > g_scotland), #Probability of Germany winning
+              ' probs',
+              round(sum(prob_goals[lower.tri(prob_goals, diag = FALSE)]),4)))
+ 
+ mean(g_germany < g_scotland) #Probability of Scotland winning
+ mean(g_germany == g_scotland) #Probability of a draw
+ print(paste0('Draw (simu) ',
+              mean(g_germany == g_scotland), #Probability of a draw
+              ' probs',
+              sum(diag(prob_goals))))
+ 
+ print(paste0('Scotland wins (simu) ',
+              mean(g_germany < g_scotland), #Probability of Germany winning
+              ' probs',
+              round(sum(prob_goals[upper.tri(prob_goals, diag = FALSE)]),4)))
 ```
 Another way to look at is is at the joint distribution of the goals scored
-```{r, echo=TRUE, collapse=FALSE, warning=FALSE, fig.width=4, fig.height=3}
+```{r goal_plot, echo=TRUE, collapse=FALSE, warning=FALSE, fig.width=4, fig.height=3}
 library(tidyverse)
 library(ggplot2)
 
@@ -253,18 +284,26 @@ plot_goal_probabilities <- function(attack_team1, defense_team1, attack_team2, d
   # Simulate goals scored using Poisson distribution
   theta_team1 <- exp(attack_team1 - defense_team2)
   theta_team2 <- exp(attack_team2 - defense_team1)
-  g_team1 <- rpois(length(theta_team1), theta_team1)
-  g_team2 <- rpois(length(theta_team2), theta_team2)
+  #g_team1 <- rpois(length(theta_team1), theta_team1)
+  #g_team2 <- rpois(length(theta_team2), theta_team2)
   
   # Calculate joint probabilities
-  joint_prob <- table(g_team1, g_team2) / length(g_team1)
-  df_joint <- as.data.frame(as.table(joint_prob))
+  #joint_prob <- table(g_team1, g_team2) / length(g_team1)
+  
+  prob_g1= apply(matrix(0:10, ncol=1), 1, function(x) calc_prob(x, theta_team1))
+  prob_g2= apply(matrix(0:10, ncol=1), 1, function(x) calc_prob(x, theta_team2))
+  
+  df_joint = outer(prob_g1, prob_g2, '*') %>% as.matrix
+  df_joint <- reshape2::melt(df_joint, varnames = c("g_team1", "g_team2"), value.name = "Freq")
+  #df_joint <- as.data.frame(as.table(joint_prob))
   colnames(df_joint) <- c("Goals_Team1", "Goals_Team2", "Probability")
+  df_joint$Goals_Team1 = df_joint$Goals_Team1 - 1
+  df_joint$Goals_Team2 = df_joint$Goals_Team2 - 1
   
   # Ensure all combinations from 0 to 5 are included
-  all_combinations <- expand.grid(Goals_Team1 = 0:5, Goals_Team2 = 0:5)
-  df_joint <- merge(all_combinations, df_joint, by = c("Goals_Team1", "Goals_Team2"), all.x = TRUE)
-  df_joint$Probability[is.na(df_joint$Probability)] <- 0
+  #all_combinations <- expand.grid(Goals_Team1 = 0:5, Goals_Team2 = 0:5)
+  #df_joint <- merge(all_combinations, df_joint, by = c("Goals_Team1", "Goals_Team2"), all.x = TRUE)
+  #df_joint$Probability[is.na(df_joint$Probability)] <- 0
   
   # Calculate outcomes
   df_joint <- df_joint %>%
@@ -287,7 +326,8 @@ plot_goal_probabilities <- function(attack_team1, defense_team1, attack_team2, d
   # cat("Probability of a draw: ", prob_draw, "\n")
   
   # Plot the joint probabilities with labels and different colors for outcomes
-  joint_plot <- ggplot(df_joint, aes(x = Goals_Team1, y = Goals_Team2, fill = Outcome)) +
+  d = df_joint %>% filter(df_joint$Goals_Team1 <= 5)  
+  joint_plot <- ggplot(d, aes(x = Goals_Team1, y = Goals_Team2, fill = Outcome)) +
     geom_tile(color = "white", aes(alpha = Probability)) +
     geom_text(aes(label = sprintf("%.2f", Probability)), color = "black", size = 3) +
     scale_fill_manual(values = c("Win1" = "blue", "Win2" = "red", "Draw" = "green"), guide = NULL) +
@@ -299,7 +339,7 @@ plot_goal_probabilities <- function(attack_team1, defense_team1, attack_team2, d
       axis.title = element_text(size = 12),
       axis.text = element_text(size = 10)
     ) +
-    scale_x_continuous(limits = c(-0.5, 9), breaks = 0:4) +
+    scale_x_continuous(limits = c(-0.5, 9), breaks = 0:5) +
     scale_y_continuous(limits = c(-0.5, 5.5), breaks = 0:5) +
     annotate("text", x = 5.7, y = 4, label = sprintf("%s Wins: %.2f", team1_name, prob_team1_win), color = "blue", size = 3, hjust = 0) +
     annotate("text", x = 5.7, y = 3, label = sprintf("Draw: %.2f", prob_draw), color = "green", size = 3, hjust = 0) +
@@ -327,6 +367,8 @@ So that these predictions with a grain of salt. The model is based on historical
 Note that these predictions are based on historical data and might do not take into account the current form of the teams. 
 :::
 
+Note that there are some wrong dates in the list.
+
 ```{r, message=FALSE, collapse=TRUE, warning=FALSE}
 library(tidyverse)
 library(tidybayes)
@@ -352,21 +394,27 @@ calculate_probabilities <- function(team1, team2, teams, hfit) {
   theta_1 <- exp(att_1$A - def_2$A)
   theta_2 <- exp(att_2$A - def_1$A)
   
-  g_1 <- rpois(length(theta_1), theta_1)
-  g_2 <- rpois(length(theta_2), theta_2)
+  #g_1 <- rpois(length(theta_1), theta_1)
+  #g_2 <- rpois(length(theta_2), theta_2)
   
   # Calculate probabilities
-  prob_win <- mean(g_1 > g_2)
-  prob_draw <- mean(g_1 == g_2)
-  prob_lose <- mean(g_1 < g_2)
+  #prob_win <- mean(g_1 > g_2)
+  #prob_draw <- mean(g_1 == g_2)
+  #prob_lose <- mean(g_1 < g_2)
+  
+  prob_g1= apply(matrix(0:10, ncol=1), 1, function(x) calc_prob(x, theta_1))
+  prob_g2= apply(matrix(0:10, ncol=1), 1, function(x) calc_prob(x, theta_2))
+  prob_goals = outer(prob_g1, prob_g2, '*') %>% as.matrix
+  prob_draw = sum(diag(prob_goals))
+  prob_win = sum(prob_goals[lower.tri(prob_goals, diag = FALSE)])
+  prob_lose = sum(prob_goals[upper.tri(prob_goals, diag = FALSE)])
+  
   
   # Return the probabilities and goals
   list(
     prob_win = round(prob_win,2),
     prob_draw = round(prob_draw,2),
-    prob_lose = round(prob_lose,2),
-    g_1 = g_1,
-    g_2 = g_2
+    prob_lose = round(prob_lose,2)
   )
 }
 
@@ -379,39 +427,38 @@ csv_data <- "MatchNumber, Date, Team1, Team2, KickoffTime
 2, 15.06, Hungary, Switzerland, 15:00
 3, 15.06, Spain, Croatia, 18:00
 4, 15.06, Italy, Albania, 21:00
-5, 16.06, Serbia, England, 21:00
+5, 16.06, Poland, Netherlands, 15:00
 6, 16.06, Slovenia, Denmark, 18:00
-7, 16.06, Poland, Netherlands, 15:00
-8, 17.06, Austria, France, 21:00
+7, 16.06, Serbia, England, 21:00
+8, 17.06, Romania, Ukraine, 15:00
 9, 17.06, Belgium, Slovakia, 18:00
-10, 17.06, Romania, Ukraine, 15:00
-11, 18.06, Türkiye, Georgia, 18:00
-12, 18.06, Portugal, Czechia, 21:00
-13, 19.06, Scotland, Switzerland, 21:00
+10, 17.06, Austria, France, 21:00
+11, 18.06, Türkiye, Georgia, 15:00
+12, 18.06, Portugal, Czechia, 18:00
+13, 19.06, Croatia, Albania, 15:00
 14, 19.06, Germany, Hungary, 18:00
-15, 19.06, Croatia, Albania, 15:00
+15, 19.06, Scotland, Switzerland, 21:00
 16, 19.06, Spain, Italy, 21:00
-17, 20.06, Denmark, England, 18:00
-18, 20.06, Slovenia, Serbia, 15:00
-19, 20.06, Poland, Austria, 18:00
+17, 20.06, Slovenia, Serbia, 15:00
+18, 20.06, Denmark, England, 18:00
+19, 20.06, Poland, Austria, 15:00
 20, 20.06, Netherlands, France, 21:00
 21, 21.06, Slovakia, Ukraine, 15:00
-22, 21.06, Belgium, Romania, 21:00
-23, 21.06, Türkiye, Portugal, 18:00
-24, 21.06, Georgia, Czechia, 15:00
-25, 25.06, Switzerland, Germany, 21:00
-26, 25.06, Scotland, Hungary, 21:00
-27, 25.06, Albania, Spain, 21:00
-28, 25.06, Croatia, Italy, 21:00
-29, 25.06, England, Slovenia, 21:00
-30, 25.06, Denmark, Serbia, 21:00
-31, 25.06, Netherlands, Austria, 18:00
-32, 25.06, France, Poland, 18:00
-33, 25.06, Slovakia, Romania, 18:00
-34, 25.06, Ukraine, Belgium, 18:00
-35, 25.06, Georgia, Portugal, 21:00
-36, 25.06, Czechia, Türkiye, 21:00"
-
+22, 21.06, Belgium, Romania, 18:00
+23, 21.06, Türkiye, Portugal, 21:00
+24, 21.06, Georgia, Czechia, 18:00
+25, 23.06, Switzerland, Germany, 21:00
+26, 23.06, Scotland, Hungary, 21:00
+27, 24.06, Croatia, Italy, 21:00
+28, 24.06, Albania, Spain, 21:00
+29, 25.06, Netherlands, Austria, 18:00
+30, 25.06, France, Poland, 18:00
+31, 25.06, England, Slovenia, 21:00
+32, 25.06, Denmark, Serbia, 21:00
+33, 26.06, Slovakia, Romania, 18:00
+34, 26.06, Ukraine, Belgium, 18:00
+35, 26.06, Czechia, Türkiye, 21:00
+36, 26.06, Georgia, Portugal, 21:00"
 # Convert CSV data to data table
 matches_raw <- fread(text = csv_data)
 
@@ -443,7 +490,7 @@ kable(results, caption = "Probabilities of Match Outcomes", escape = FALSE)
 
 
 
-```{r individual_plots, echo=FALSE, results='asis', fig.width=4, fig.height=3}
+```{r individual_plots, echo=FALSE, results='asis', fig.width=4, fig.height=3, warning=FALSE, message=FALSE}
 # Function to generate plot for a pairing
 generate_plot <- function(team1, team2, teams, hfit) {
   #cat(team1, team2)

@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.554">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Oliver Dürr">
+
+<title>da_website - Comparison of different models Bundesliga Dataset</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">da_website</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../Stan_Primer_Full.html"> 
+<span class="menu-text">Stan primer</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../Euro24/euro24.html"> 
+<span class="menu-text">Euro24</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-lecture-notes" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Lecture Notes</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-lecture-notes">    
+        <li>
+    <a class="dropdown-item" href="../lecture_notes/MCMC/MCMC.html">
+ <span class="dropdown-text">MCMC</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of Contents</h2>
+   
+  <ul>
+  <li><a href="#loading-the-data" id="toc-loading-the-data" class="nav-link active" data-scroll-target="#loading-the-data">Loading the data</a></li>
+  <li><a href="#model-comparisons" id="toc-model-comparisons" class="nav-link" data-scroll-target="#model-comparisons">Model Comparisons</a>
+  <ul class="collapse">
+  <li><a href="#observations" id="toc-observations" class="nav-link" data-scroll-target="#observations">Observations</a></li>
+  </ul></li>
+  <li><a href="#comparison-of-predicted-vs-psis-loo" id="toc-comparison-of-predicted-vs-psis-loo" class="nav-link" data-scroll-target="#comparison-of-predicted-vs-psis-loo">Comparison of predicted vs PSIS-LOO</a>
+  <ul class="collapse">
+  <li><a href="#observations-1" id="toc-observations-1" class="nav-link" data-scroll-target="#observations-1">Observations</a></li>
+  </ul></li>
+  <li><a href="#nnl-for-win-draws-and-losses" id="toc-nnl-for-win-draws-and-losses" class="nav-link" data-scroll-target="#nnl-for-win-draws-and-losses">NNL for win, draws and losses</a>
+  <ul class="collapse">
+  <li><a href="#observations-2" id="toc-observations-2" class="nav-link" data-scroll-target="#observations-2">Observations</a></li>
+  <li><a href="#ranked-probability-score" id="toc-ranked-probability-score" class="nav-link" data-scroll-target="#ranked-probability-score">Ranked probability score</a></li>
+  </ul></li>
+  <li><a href="#betting-returns" id="toc-betting-returns" class="nav-link" data-scroll-target="#betting-returns">Betting Returns</a>
+  <ul class="collapse">
+  <li><a href="#observations-3" id="toc-observations-3" class="nav-link" data-scroll-target="#observations-3">Observations</a></li>
+  </ul></li>
+  <li><a href="#technical-details" id="toc-technical-details" class="nav-link" data-scroll-target="#technical-details">Technical Details</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Comparison of different models Bundesliga Dataset</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Oliver Dürr </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>The experiments take some time to run, therefore we used the R-Script to producte the results <a href="https://github.com/oduerr/da/blob/master/website/Euro24/eval_performance_runner.R" class="uri">https://github.com/oduerr/da/blob/master/website/Euro24/eval_performance_runner.R</a>.</p>
+<section id="loading-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="loading-the-data">Loading the data</h2>
+<div class="cell" data-asis="true">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">'~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23.csv'</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">mutate</span>(df, <span class="at">name =</span> <span class="fu">sub</span>(<span class="st">"^.*/"</span>, <span class="st">""</span>, name))</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Add additional run with home advantage</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  df2 <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">'~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_home_adv.csv'</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  df2 <span class="ot">&lt;-</span> <span class="fu">mutate</span>(df2, <span class="at">name =</span> <span class="fu">sub</span>(<span class="st">"^.*/"</span>, <span class="st">""</span>, name))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">rbind</span>(df, df2)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add additional run with 18 games ahead</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  df3 <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">'~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_18Ahead.csv'</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">=</span> df3</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"Using 24_18Ahead that means all data is averaged 18 games ahead."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Using 24_18Ahead that means all data is averaged 18 games ahead."</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>  df_raw <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">'~/Documents/GitHub/da/website/Euro24/bundesliga2023.csv'</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(df_raw) <span class="sc">%&gt;%</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<table data-quarto-postprocess="true" class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Div</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Date</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Time</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">HomeTeam</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">AwayTeam</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">FTHG</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">FTAG</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">FTR</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">HTHG</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">HTAG</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">HTR</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">HS</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AS</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">HST</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AST</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">HF</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AF</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">HC</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AC</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">HY</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AY</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">HR</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AR</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">B365H</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">B365D</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">B365A</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">BWH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">BWD</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">BWA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">IWH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">IWD</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">IWA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">PSH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">PSD</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">PSA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">WHH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">WHD</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">WHA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">VCH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">VCD</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">VCA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">MaxH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">MaxD</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">MaxA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AvgH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AvgD</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AvgA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">B365.2.5</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">B365.2.5.1</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">P.2.5</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">P.2.5.1</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Max.2.5</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Max.2.5.1</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Avg.2.5</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Avg.2.5.1</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AHh</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">B365AHH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">B365AHA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">PAHH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">PAHA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">MaxAHH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">MaxAHA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AvgAHH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AvgAHA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">B365CH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">B365CD</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">B365CA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">BWCH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">BWCD</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">BWCA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">IWCH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">IWCD</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">IWCA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">PSCH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">PSCD</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">PSCA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">WHCH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">WHCD</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">WHCA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">VCCH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">VCCD</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">VCCA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">MaxCH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">MaxCD</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">MaxCA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AvgCH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AvgCD</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AvgCA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">B365C.2.5</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">B365C.2.5.1</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">PC.2.5</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">PC.2.5.1</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">MaxC.2.5</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">MaxC.2.5.1</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AvgC.2.5</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AvgC.2.5.1</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AHCh</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">B365CAHH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">B365CAHA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">PCAHH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">PCAHA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">MaxCAHH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">MaxCAHA</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AvgCAHH</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">AvgCAHA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">D1</td>
+<td style="text-align: left;">18/08/2023</td>
+<td style="text-align: left;">19:30</td>
+<td style="text-align: left;">Werder Bremen</td>
+<td style="text-align: left;">Bayern Munich</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7.50</td>
+<td style="text-align: right;">6.50</td>
+<td style="text-align: right;">1.30</td>
+<td style="text-align: right;">8.00</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">1.31</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: right;">5.25</td>
+<td style="text-align: right;">1.40</td>
+<td style="text-align: right;">8.59</td>
+<td style="text-align: right;">6.36</td>
+<td style="text-align: right;">1.33</td>
+<td style="text-align: right;">8.00</td>
+<td style="text-align: right;">5.50</td>
+<td style="text-align: right;">1.22</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">1.30</td>
+<td style="text-align: right;">9.50</td>
+<td style="text-align: right;">6.50</td>
+<td style="text-align: right;">1.40</td>
+<td style="text-align: right;">8.50</td>
+<td style="text-align: right;">6.09</td>
+<td style="text-align: right;">1.32</td>
+<td style="text-align: right;">1.33</td>
+<td style="text-align: right;">3.4</td>
+<td style="text-align: right;">1.35</td>
+<td style="text-align: right;">3.41</td>
+<td style="text-align: right;">1.37</td>
+<td style="text-align: right;">3.55</td>
+<td style="text-align: right;">1.33</td>
+<td style="text-align: right;">3.34</td>
+<td style="text-align: right;">1.75</td>
+<td style="text-align: right;">1.87</td>
+<td style="text-align: right;">2.06</td>
+<td style="text-align: right;">1.84</td>
+<td style="text-align: right;">2.07</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1.84</td>
+<td style="text-align: right;">2.01</td>
+<td style="text-align: right;">8.50</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">1.30</td>
+<td style="text-align: right;">8.50</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: right;">5.25</td>
+<td style="text-align: right;">1.40</td>
+<td style="text-align: right;">8.80</td>
+<td style="text-align: right;">6.30</td>
+<td style="text-align: right;">1.31</td>
+<td style="text-align: right;">8.00</td>
+<td style="text-align: right;">5.50</td>
+<td style="text-align: right;">1.22</td>
+<td style="text-align: right;">9.50</td>
+<td style="text-align: right;">6.00</td>
+<td style="text-align: right;">1.29</td>
+<td style="text-align: right;">9.50</td>
+<td style="text-align: right;">6.50</td>
+<td style="text-align: right;">1.40</td>
+<td style="text-align: right;">8.69</td>
+<td style="text-align: right;">6.05</td>
+<td style="text-align: right;">1.31</td>
+<td style="text-align: right;">1.36</td>
+<td style="text-align: right;">3.20</td>
+<td style="text-align: right;">1.34</td>
+<td style="text-align: right;">3.38</td>
+<td style="text-align: right;">1.40</td>
+<td style="text-align: right;">3.58</td>
+<td style="text-align: right;">1.34</td>
+<td style="text-align: right;">3.29</td>
+<td style="text-align: right;">1.75</td>
+<td style="text-align: right;">1.85</td>
+<td style="text-align: right;">2.08</td>
+<td style="text-align: right;">1.88</td>
+<td style="text-align: right;">2.03</td>
+<td style="text-align: right;">1.92</td>
+<td style="text-align: right;">2.09</td>
+<td style="text-align: right;">1.85</td>
+<td style="text-align: right;">2.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">D1</td>
+<td style="text-align: left;">19/08/2023</td>
+<td style="text-align: left;">14:30</td>
+<td style="text-align: left;">Augsburg</td>
+<td style="text-align: left;">M'gladbach</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">D</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">D</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.70</td>
+<td style="text-align: right;">3.60</td>
+<td style="text-align: right;">2.45</td>
+<td style="text-align: right;">2.70</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">2.45</td>
+<td style="text-align: right;">2.75</td>
+<td style="text-align: right;">3.60</td>
+<td style="text-align: right;">2.45</td>
+<td style="text-align: right;">2.74</td>
+<td style="text-align: right;">3.78</td>
+<td style="text-align: right;">2.51</td>
+<td style="text-align: right;">2.50</td>
+<td style="text-align: right;">3.40</td>
+<td style="text-align: right;">2.30</td>
+<td style="text-align: right;">2.70</td>
+<td style="text-align: right;">3.7</td>
+<td style="text-align: right;">2.45</td>
+<td style="text-align: right;">2.80</td>
+<td style="text-align: right;">3.88</td>
+<td style="text-align: right;">2.54</td>
+<td style="text-align: right;">2.72</td>
+<td style="text-align: right;">3.69</td>
+<td style="text-align: right;">2.47</td>
+<td style="text-align: right;">1.62</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: right;">1.63</td>
+<td style="text-align: right;">2.39</td>
+<td style="text-align: right;">1.66</td>
+<td style="text-align: right;">2.43</td>
+<td style="text-align: right;">1.61</td>
+<td style="text-align: right;">2.34</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">2.03</td>
+<td style="text-align: right;">1.87</td>
+<td style="text-align: right;">2.04</td>
+<td style="text-align: right;">1.87</td>
+<td style="text-align: right;">2.07</td>
+<td style="text-align: right;">1.90</td>
+<td style="text-align: right;">2.02</td>
+<td style="text-align: right;">1.84</td>
+<td style="text-align: right;">2.80</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">2.38</td>
+<td style="text-align: right;">2.75</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: right;">2.75</td>
+<td style="text-align: right;">3.65</td>
+<td style="text-align: right;">2.45</td>
+<td style="text-align: right;">2.92</td>
+<td style="text-align: right;">3.72</td>
+<td style="text-align: right;">2.43</td>
+<td style="text-align: right;">2.50</td>
+<td style="text-align: right;">3.40</td>
+<td style="text-align: right;">2.30</td>
+<td style="text-align: right;">2.75</td>
+<td style="text-align: right;">3.75</td>
+<td style="text-align: right;">2.38</td>
+<td style="text-align: right;">2.92</td>
+<td style="text-align: right;">3.87</td>
+<td style="text-align: right;">2.51</td>
+<td style="text-align: right;">2.79</td>
+<td style="text-align: right;">3.67</td>
+<td style="text-align: right;">2.42</td>
+<td style="text-align: right;">1.62</td>
+<td style="text-align: right;">2.30</td>
+<td style="text-align: right;">1.67</td>
+<td style="text-align: right;">2.33</td>
+<td style="text-align: right;">1.67</td>
+<td style="text-align: right;">2.40</td>
+<td style="text-align: right;">1.62</td>
+<td style="text-align: right;">2.31</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">1.82</td>
+<td style="text-align: right;">2.11</td>
+<td style="text-align: right;">1.83</td>
+<td style="text-align: right;">2.11</td>
+<td style="text-align: right;">1.83</td>
+<td style="text-align: right;">2.18</td>
+<td style="text-align: right;">1.77</td>
+<td style="text-align: right;">2.09</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">D1</td>
+<td style="text-align: left;">19/08/2023</td>
+<td style="text-align: left;">14:30</td>
+<td style="text-align: left;">Hoffenheim</td>
+<td style="text-align: left;">Freiburg</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">A</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.30</td>
+<td style="text-align: right;">3.60</td>
+<td style="text-align: right;">2.90</td>
+<td style="text-align: right;">2.25</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">3.10</td>
+<td style="text-align: right;">2.30</td>
+<td style="text-align: right;">3.55</td>
+<td style="text-align: right;">2.95</td>
+<td style="text-align: right;">2.43</td>
+<td style="text-align: right;">3.67</td>
+<td style="text-align: right;">2.92</td>
+<td style="text-align: right;">2.10</td>
+<td style="text-align: right;">3.40</td>
+<td style="text-align: right;">2.80</td>
+<td style="text-align: right;">2.38</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">2.88</td>
+<td style="text-align: right;">2.50</td>
+<td style="text-align: right;">3.85</td>
+<td style="text-align: right;">3.10</td>
+<td style="text-align: right;">2.35</td>
+<td style="text-align: right;">3.63</td>
+<td style="text-align: right;">2.94</td>
+<td style="text-align: right;">1.67</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: right;">1.67</td>
+<td style="text-align: right;">2.30</td>
+<td style="text-align: right;">1.71</td>
+<td style="text-align: right;">2.32</td>
+<td style="text-align: right;">1.66</td>
+<td style="text-align: right;">2.24</td>
+<td style="text-align: right;">-0.25</td>
+<td style="text-align: right;">2.06</td>
+<td style="text-align: right;">1.84</td>
+<td style="text-align: right;">2.11</td>
+<td style="text-align: right;">1.82</td>
+<td style="text-align: right;">2.11</td>
+<td style="text-align: right;">1.88</td>
+<td style="text-align: right;">2.03</td>
+<td style="text-align: right;">1.82</td>
+<td style="text-align: right;">2.15</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">3.10</td>
+<td style="text-align: right;">2.20</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;">2.25</td>
+<td style="text-align: right;">3.60</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">2.20</td>
+<td style="text-align: right;">3.74</td>
+<td style="text-align: right;">3.32</td>
+<td style="text-align: right;">2.10</td>
+<td style="text-align: right;">3.40</td>
+<td style="text-align: right;">2.80</td>
+<td style="text-align: right;">2.15</td>
+<td style="text-align: right;">3.75</td>
+<td style="text-align: right;">3.13</td>
+<td style="text-align: right;">2.30</td>
+<td style="text-align: right;">3.87</td>
+<td style="text-align: right;">3.32</td>
+<td style="text-align: right;">2.20</td>
+<td style="text-align: right;">3.68</td>
+<td style="text-align: right;">3.15</td>
+<td style="text-align: right;">1.67</td>
+<td style="text-align: right;">2.20</td>
+<td style="text-align: right;">1.69</td>
+<td style="text-align: right;">2.28</td>
+<td style="text-align: right;">1.70</td>
+<td style="text-align: right;">2.36</td>
+<td style="text-align: right;">1.65</td>
+<td style="text-align: right;">2.26</td>
+<td style="text-align: right;">-0.25</td>
+<td style="text-align: right;">1.91</td>
+<td style="text-align: right;">2.02</td>
+<td style="text-align: right;">1.92</td>
+<td style="text-align: right;">2.01</td>
+<td style="text-align: right;">1.98</td>
+<td style="text-align: right;">2.02</td>
+<td style="text-align: right;">1.91</td>
+<td style="text-align: right;">1.95</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">D1</td>
+<td style="text-align: left;">19/08/2023</td>
+<td style="text-align: left;">14:30</td>
+<td style="text-align: left;">Leverkusen</td>
+<td style="text-align: left;">RB Leipzig</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">H</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">H</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.45</td>
+<td style="text-align: right;">3.60</td>
+<td style="text-align: right;">2.75</td>
+<td style="text-align: right;">2.45</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">2.70</td>
+<td style="text-align: right;">2.50</td>
+<td style="text-align: right;">3.55</td>
+<td style="text-align: right;">2.70</td>
+<td style="text-align: right;">2.50</td>
+<td style="text-align: right;">3.61</td>
+<td style="text-align: right;">2.85</td>
+<td style="text-align: right;">2.30</td>
+<td style="text-align: right;">3.25</td>
+<td style="text-align: right;">2.60</td>
+<td style="text-align: right;">2.45</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">2.75</td>
+<td style="text-align: right;">2.56</td>
+<td style="text-align: right;">3.75</td>
+<td style="text-align: right;">2.91</td>
+<td style="text-align: right;">2.47</td>
+<td style="text-align: right;">3.62</td>
+<td style="text-align: right;">2.78</td>
+<td style="text-align: right;">1.67</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: right;">1.70</td>
+<td style="text-align: right;">2.24</td>
+<td style="text-align: right;">1.77</td>
+<td style="text-align: right;">2.28</td>
+<td style="text-align: right;">1.68</td>
+<td style="text-align: right;">2.20</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.83</td>
+<td style="text-align: right;">2.07</td>
+<td style="text-align: right;">1.83</td>
+<td style="text-align: right;">2.09</td>
+<td style="text-align: right;">1.89</td>
+<td style="text-align: right;">2.11</td>
+<td style="text-align: right;">1.82</td>
+<td style="text-align: right;">2.05</td>
+<td style="text-align: right;">2.38</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">2.80</td>
+<td style="text-align: right;">2.37</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">2.50</td>
+<td style="text-align: right;">3.60</td>
+<td style="text-align: right;">2.70</td>
+<td style="text-align: right;">2.48</td>
+<td style="text-align: right;">3.63</td>
+<td style="text-align: right;">2.98</td>
+<td style="text-align: right;">2.30</td>
+<td style="text-align: right;">3.25</td>
+<td style="text-align: right;">2.60</td>
+<td style="text-align: right;">2.40</td>
+<td style="text-align: right;">3.60</td>
+<td style="text-align: right;">2.80</td>
+<td style="text-align: right;">2.50</td>
+<td style="text-align: right;">3.78</td>
+<td style="text-align: right;">2.99</td>
+<td style="text-align: right;">2.44</td>
+<td style="text-align: right;">3.60</td>
+<td style="text-align: right;">2.81</td>
+<td style="text-align: right;">1.67</td>
+<td style="text-align: right;">2.20</td>
+<td style="text-align: right;">1.74</td>
+<td style="text-align: right;">2.20</td>
+<td style="text-align: right;">1.75</td>
+<td style="text-align: right;">2.32</td>
+<td style="text-align: right;">1.68</td>
+<td style="text-align: right;">2.19</td>
+<td style="text-align: right;">-0.25</td>
+<td style="text-align: right;">2.11</td>
+<td style="text-align: right;">1.82</td>
+<td style="text-align: right;">2.14</td>
+<td style="text-align: right;">1.84</td>
+<td style="text-align: right;">2.14</td>
+<td style="text-align: right;">1.84</td>
+<td style="text-align: right;">2.09</td>
+<td style="text-align: right;">1.78</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">D1</td>
+<td style="text-align: left;">19/08/2023</td>
+<td style="text-align: left;">14:30</td>
+<td style="text-align: left;">Stuttgart</td>
+<td style="text-align: left;">Bochum</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">H</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">H</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.65</td>
+<td style="text-align: right;">4.33</td>
+<td style="text-align: right;">4.50</td>
+<td style="text-align: right;">1.68</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">4.75</td>
+<td style="text-align: right;">1.70</td>
+<td style="text-align: right;">4.10</td>
+<td style="text-align: right;">4.50</td>
+<td style="text-align: right;">1.70</td>
+<td style="text-align: right;">4.25</td>
+<td style="text-align: right;">4.78</td>
+<td style="text-align: right;">1.57</td>
+<td style="text-align: right;">3.90</td>
+<td style="text-align: right;">4.33</td>
+<td style="text-align: right;">1.70</td>
+<td style="text-align: right;">4.1</td>
+<td style="text-align: right;">4.60</td>
+<td style="text-align: right;">1.77</td>
+<td style="text-align: right;">4.40</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">1.69</td>
+<td style="text-align: right;">4.17</td>
+<td style="text-align: right;">4.69</td>
+<td style="text-align: right;">1.62</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: right;">1.66</td>
+<td style="text-align: right;">2.32</td>
+<td style="text-align: right;">1.71</td>
+<td style="text-align: right;">2.38</td>
+<td style="text-align: right;">1.64</td>
+<td style="text-align: right;">2.29</td>
+<td style="text-align: right;">-0.75</td>
+<td style="text-align: right;">1.88</td>
+<td style="text-align: right;">2.02</td>
+<td style="text-align: right;">1.89</td>
+<td style="text-align: right;">2.01</td>
+<td style="text-align: right;">1.95</td>
+<td style="text-align: right;">2.04</td>
+<td style="text-align: right;">1.86</td>
+<td style="text-align: right;">1.98</td>
+<td style="text-align: right;">1.73</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">4.20</td>
+<td style="text-align: right;">1.77</td>
+<td style="text-align: right;">3.9</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">1.77</td>
+<td style="text-align: right;">4.10</td>
+<td style="text-align: right;">4.20</td>
+<td style="text-align: right;">1.78</td>
+<td style="text-align: right;">4.16</td>
+<td style="text-align: right;">4.52</td>
+<td style="text-align: right;">1.67</td>
+<td style="text-align: right;">3.60</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">1.73</td>
+<td style="text-align: right;">4.10</td>
+<td style="text-align: right;">4.33</td>
+<td style="text-align: right;">1.85</td>
+<td style="text-align: right;">4.20</td>
+<td style="text-align: right;">4.52</td>
+<td style="text-align: right;">1.76</td>
+<td style="text-align: right;">4.02</td>
+<td style="text-align: right;">4.32</td>
+<td style="text-align: right;">1.62</td>
+<td style="text-align: right;">2.30</td>
+<td style="text-align: right;">1.67</td>
+<td style="text-align: right;">2.33</td>
+<td style="text-align: right;">1.70</td>
+<td style="text-align: right;">2.35</td>
+<td style="text-align: right;">1.64</td>
+<td style="text-align: right;">2.26</td>
+<td style="text-align: right;">-0.75</td>
+<td style="text-align: right;">1.98</td>
+<td style="text-align: right;">1.95</td>
+<td style="text-align: right;">1.99</td>
+<td style="text-align: right;">1.93</td>
+<td style="text-align: right;">2.06</td>
+<td style="text-align: right;">1.96</td>
+<td style="text-align: right;">1.95</td>
+<td style="text-align: right;">1.89</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">D1</td>
+<td style="text-align: left;">19/08/2023</td>
+<td style="text-align: left;">14:30</td>
+<td style="text-align: left;">Wolfsburg</td>
+<td style="text-align: left;">Heidenheim</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">H</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">H</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.60</td>
+<td style="text-align: right;">4.20</td>
+<td style="text-align: right;">5.25</td>
+<td style="text-align: right;">1.61</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">5.25</td>
+<td style="text-align: right;">1.63</td>
+<td style="text-align: right;">4.20</td>
+<td style="text-align: right;">5.25</td>
+<td style="text-align: right;">1.62</td>
+<td style="text-align: right;">4.49</td>
+<td style="text-align: right;">5.24</td>
+<td style="text-align: right;">1.50</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">4.75</td>
+<td style="text-align: right;">1.60</td>
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">1.66</td>
+<td style="text-align: right;">4.60</td>
+<td style="text-align: right;">5.50</td>
+<td style="text-align: right;">1.62</td>
+<td style="text-align: right;">4.31</td>
+<td style="text-align: right;">5.19</td>
+<td style="text-align: right;">1.62</td>
+<td style="text-align: right;">2.3</td>
+<td style="text-align: right;">1.63</td>
+<td style="text-align: right;">2.39</td>
+<td style="text-align: right;">1.66</td>
+<td style="text-align: right;">2.44</td>
+<td style="text-align: right;">1.61</td>
+<td style="text-align: right;">2.34</td>
+<td style="text-align: right;">-1.00</td>
+<td style="text-align: right;">2.03</td>
+<td style="text-align: right;">1.87</td>
+<td style="text-align: right;">2.03</td>
+<td style="text-align: right;">1.88</td>
+<td style="text-align: right;">2.07</td>
+<td style="text-align: right;">1.88</td>
+<td style="text-align: right;">2.01</td>
+<td style="text-align: right;">1.84</td>
+<td style="text-align: right;">1.62</td>
+<td style="text-align: right;">4.2</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">1.65</td>
+<td style="text-align: right;">4.1</td>
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">1.65</td>
+<td style="text-align: right;">4.20</td>
+<td style="text-align: right;">4.90</td>
+<td style="text-align: right;">1.66</td>
+<td style="text-align: right;">4.42</td>
+<td style="text-align: right;">5.16</td>
+<td style="text-align: right;">1.50</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">4.75</td>
+<td style="text-align: right;">1.62</td>
+<td style="text-align: right;">4.33</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">1.69</td>
+<td style="text-align: right;">4.50</td>
+<td style="text-align: right;">5.25</td>
+<td style="text-align: right;">1.64</td>
+<td style="text-align: right;">4.28</td>
+<td style="text-align: right;">5.03</td>
+<td style="text-align: right;">1.57</td>
+<td style="text-align: right;">2.38</td>
+<td style="text-align: right;">1.60</td>
+<td style="text-align: right;">2.49</td>
+<td style="text-align: right;">1.67</td>
+<td style="text-align: right;">2.49</td>
+<td style="text-align: right;">1.59</td>
+<td style="text-align: right;">2.39</td>
+<td style="text-align: right;">-1.00</td>
+<td style="text-align: right;">2.13</td>
+<td style="text-align: right;">1.81</td>
+<td style="text-align: right;">2.10</td>
+<td style="text-align: right;">1.82</td>
+<td style="text-align: right;">2.14</td>
+<td style="text-align: right;">1.85</td>
+<td style="text-align: right;">2.07</td>
+<td style="text-align: right;">1.80</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+</section>
+<section id="model-comparisons" class="level2">
+<h2 class="anchored" data-anchor-id="model-comparisons">Model Comparisons</h2>
+<p>We use the negative log likelihood (NLL) as a measure of the predictive performance of the models. The lower the NLL, the better the model. However, strictly speaking it is the negative log posterior predictive density (divided by <span class="math inline">\(n\)</span>) evaluated at the <span class="math inline">\(n\)</span> games after the training data.</p>
+<p><span class="math display">\[
+\text{NLL} = -\frac{1}{n}\sum_{i=1}^n \log p(y_i | x_i, \theta)
+\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Assuming df is your dataframe</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">'NLL_PRED'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> name)) <span class="sc">+</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>, </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Negative Log Likelihood'</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">#ylim(2.9, 3.5) +</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">#xlim(0,100) +</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>) <span class="sc">+</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="comp_bundes_liga_files/figure-html/hier-vs-non-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="observations" class="level3">
+<h3 class="anchored" data-anchor-id="observations">Observations</h3>
+<ul>
+<li><p>Especially for small training data, the hierarchical model performs better than the non-hierarchical model.</p></li>
+<li><p>The Correlated Dataset model performs slightly better than non-correlated one</p></li>
+<li><p>There is partically no difference in predictive performance when comparing the model with and without Cholesky decomposition.</p></li>
+<li><p>The negative binomial model performs comparable to Poisson model.</p></li>
+</ul>
+</section>
+</section>
+<section id="comparison-of-predicted-vs-psis-loo" class="level2">
+<h2 class="anchored" data-anchor-id="comparison-of-predicted-vs-psis-loo">Comparison of predicted vs PSIS-LOO</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'NLL_PRED'</span>, <span class="st">'NLL_PSIS'</span>, <span class="st">'NLL_PRED_STAN'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> type)) <span class="sc">+</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> type)) <span class="sc">+</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span>  <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Negative Log Likelihood'</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="fl">2.5</span>, <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>name) <span class="sc">+</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="comp_bundes_liga_files/figure-html/pred-vs-loo-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="observations-1" class="level3">
+<h3 class="anchored" data-anchor-id="observations-1">Observations</h3>
+</section>
+</section>
+<section id="nnl-for-win-draws-and-losses" class="level2">
+<h2 class="anchored" data-anchor-id="nnl-for-win-draws-and-losses">NNL for win, draws and losses</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'NLL_RESULTS'</span>, <span class="st">'NLL_BOOKIE'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> type)) <span class="sc">+</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span> </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Negative Log Likelihood'</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="fl">0.75</span>, <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="comp_bundes_liga_files/figure-html/resultbases-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="observations-2" class="level3">
+<h3 class="anchored" data-anchor-id="observations-2">Observations</h3>
+<ul>
+<li>The NLL for the bookie is always better than the NLL of the models, so we should not bet.</li>
+</ul>
+</section>
+<section id="ranked-probability-score" class="level3">
+<h3 class="anchored" data-anchor-id="ranked-probability-score">Ranked probability score</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'RPS'</span>, <span class="st">'rps_booki'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> type)) <span class="sc">+</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span> </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Ranked Probability Score'</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">#ylim(0.75, 1.5) +</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="comp_bundes_liga_files/figure-html/result rps-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Averaged for the complete season:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>  dfres <span class="ot">=</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'RPS'</span>, <span class="st">'rps_booki'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(name, type) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">rps =</span> <span class="fu">mean</span>(res)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'name'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>  rps_booki <span class="ot">=</span> dfres <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">'rps_booki'</span>) </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  dfres2 <span class="ot">=</span> dfres <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">'RPS'</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(name, rps) </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  dfres2 <span class="ot">=</span> <span class="fu">rbind</span>(dfres2, rps_booki[<span class="dv">1</span>,])</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sort by RPS</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  dfres2 <span class="ot">=</span> dfres2[<span class="fu">order</span>(dfres2<span class="sc">$</span>rps),]</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(dfres2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<table data-quarto-postprocess="true" class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">name</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">rps</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">da/stan/football/hier_model_nb</td>
+<td style="text-align: right;">0.1865408</td>
+<td style="text-align: left;">rps_booki</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">da/website/Euro24/hier_model_cor_home</td>
+<td style="text-align: right;">0.1979763</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">da/stan/football/hier_model_nb</td>
+<td style="text-align: right;">0.1982434</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">da/website/Euro24/hier_model</td>
+<td style="text-align: right;">0.1984227</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">da/website/Euro24/hier_model_cor</td>
+<td style="text-align: right;">0.1993777</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">da/website/Euro24/hier_model_cor_nocholsky</td>
+<td style="text-align: right;">0.1994641</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">da/stan/football/non_hier_model</td>
+<td style="text-align: right;">0.2032188</td>
+<td style="text-align: left;">NA</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="betting-returns" class="level2">
+<h2 class="anchored" data-anchor-id="betting-returns">Betting Returns</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'BET_RETURN'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> name)) <span class="sc">+</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span>  </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Betting Returns'</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">#ylim(0.75, 1.5) +</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span>  </span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="comp_bundes_liga_files/figure-html/betting-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="observations-3" class="level3">
+<h3 class="anchored" data-anchor-id="observations-3">Observations</h3>
+<p>We see quite some fluctuation in the betting return. Since the NLL shows that the odds from the booki are always better then the NLLs of the models we should not bet.</p>
+</section>
+</section>
+<section id="technical-details" class="level2">
+<h2 class="anchored" data-anchor-id="technical-details">Technical Details</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'MIN_SUM_PROB'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> name)) <span class="sc">+</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span> </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Sum of Probabilities from 0 to 10 goals (should be 1)'</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="fl">0.75</span>, <span class="fl">1.01</span>) <span class="sc">+</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="comp_bundes_liga_files/figure-html/min_sum-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'num_divergent'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> name)) <span class="sc">+</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span> </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Number of Divergent Transitions (sqrt scale)'</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_sqrt</span>() <span class="sc">+</span> </span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="comp_bundes_liga_files/figure-html/num_divergent-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'ebfmi'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> name)) <span class="sc">+</span> </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">'ebfmi'</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.3</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="cn">Inf</span>, <span class="at">y =</span> <span class="fl">0.33</span>, <span class="at">label =</span> <span class="st">"Acceptable"</span>, <span class="at">hjust =</span> <span class="fl">1.1</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="cn">Inf</span>, <span class="at">y =</span> <span class="fl">0.27</span>, <span class="at">label =</span> <span class="st">"Non-Acceptable"</span>, <span class="at">hjust =</span> <span class="fl">1.1</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="comp_bundes_liga_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb15" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Comparison of different models Bundesliga Dataset"</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Oliver Dürr"</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> </span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-title: "Table of Contents"</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-width: 6</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-height: 3</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co">    mathjax: true</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co">  # pdf:</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co">  #   toc: true</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co">  #   toc-title: "Table of Contents"</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co">  # filters:</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co">  #- webr</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="in">  library(tidyverse)</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="in">  library(kableExtra)</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="in">  set.seed(42)</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>The experiments take some time to run, therefore we used the R-Script to producte the results <span class="ot">&lt;https://github.com/oduerr/da/blob/master/website/Euro24/eval_performance_runner.R&gt;</span>.</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## Loading the data</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, asis=TRUE}</span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="in">  df = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23.csv')</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="in">  df &lt;- mutate(df, name = sub("^.*/", "", name))</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a><span class="in">  #Add additional run with home advantage</span></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="in">  df2 = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_home_adv.csv')</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a><span class="in">  df2 &lt;- mutate(df2, name = sub("^.*/", "", name))</span></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a><span class="in">  df &lt;- rbind(df, df2)</span></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a><span class="in">  # Add additional run with 18 games ahead</span></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a><span class="in">  df3 = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_18Ahead.csv')</span></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a><span class="in">  df = df3</span></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a><span class="in">  print("Using 24_18Ahead that means all data is averaged 18 games ahead.")</span></span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a><span class="in">  df_raw = read.csv('~/Documents/GitHub/da/website/Euro24/bundesliga2023.csv')</span></span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a><span class="in">  head(df_raw) %&gt;% kable()</span></span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model Comparisons</span></span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>We use the negative log likelihood (NLL) as a measure of the predictive performance of the models. The lower the NLL, the better the model. However, strictly speaking it is the negative log posterior predictive density (divided by $n$) evaluated at the $n$ games after the training data.</span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>\text{NLL} = -\frac{1}{n}\sum_{i=1}^n \log p(y_i | x_i, \theta)</span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a><span class="in">```{r hier-vs-non, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
+<span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a><span class="in">   # Assuming df is your dataframe</span></span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% filter(type == 'NLL_PRED') %&gt;% </span></span>
+<span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = name)) + </span></span>
+<span id="cb15-62"><a href="#cb15-62" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line() + </span></span>
+<span id="cb15-63"><a href="#cb15-63" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
+<span id="cb15-64"><a href="#cb15-64" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
+<span id="cb15-65"><a href="#cb15-65" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
+<span id="cb15-66"><a href="#cb15-66" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset', </span></span>
+<span id="cb15-67"><a href="#cb15-67" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
+<span id="cb15-68"><a href="#cb15-68" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Negative Log Likelihood'</span></span>
+<span id="cb15-69"><a href="#cb15-69" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
+<span id="cb15-70"><a href="#cb15-70" aria-hidden="true" tabindex="-1"></a><span class="in">    #ylim(2.9, 3.5) +</span></span>
+<span id="cb15-71"><a href="#cb15-71" aria-hidden="true" tabindex="-1"></a><span class="in">    #xlim(0,100) +</span></span>
+<span id="cb15-72"><a href="#cb15-72" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "top") +</span></span>
+<span id="cb15-73"><a href="#cb15-73" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
+<span id="cb15-74"><a href="#cb15-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-75"><a href="#cb15-75" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-76"><a href="#cb15-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-77"><a href="#cb15-77" aria-hidden="true" tabindex="-1"></a><span class="fu">### Observations</span></span>
+<span id="cb15-78"><a href="#cb15-78" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Especially for small training data, the hierarchical model performs better than the non-hierarchical model. </span>
+<span id="cb15-79"><a href="#cb15-79" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The Correlated Dataset model performs slightly better than non-correlated one</span>
+<span id="cb15-80"><a href="#cb15-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-81"><a href="#cb15-81" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>There is partically no difference in predictive performance when comparing the model with and without Cholesky decomposition. </span>
+<span id="cb15-82"><a href="#cb15-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-83"><a href="#cb15-83" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The negative binomial model performs comparable to Poisson model.</span>
+<span id="cb15-84"><a href="#cb15-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-85"><a href="#cb15-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-86"><a href="#cb15-86" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparison of predicted vs PSIS-LOO</span></span>
+<span id="cb15-87"><a href="#cb15-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-88"><a href="#cb15-88" aria-hidden="true" tabindex="-1"></a><span class="in">```{r pred-vs-loo, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
+<span id="cb15-89"><a href="#cb15-89" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% filter(type %in% c('NLL_PRED', 'NLL_PSIS', 'NLL_PRED_STAN')) %&gt;%</span></span>
+<span id="cb15-90"><a href="#cb15-90" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = type)) + </span></span>
+<span id="cb15-91"><a href="#cb15-91" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = type)) + </span></span>
+<span id="cb15-92"><a href="#cb15-92" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
+<span id="cb15-93"><a href="#cb15-93" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
+<span id="cb15-94"><a href="#cb15-94" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
+<span id="cb15-95"><a href="#cb15-95" aria-hidden="true" tabindex="-1"></a><span class="in">      title =  'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
+<span id="cb15-96"><a href="#cb15-96" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
+<span id="cb15-97"><a href="#cb15-97" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Negative Log Likelihood'</span></span>
+<span id="cb15-98"><a href="#cb15-98" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
+<span id="cb15-99"><a href="#cb15-99" aria-hidden="true" tabindex="-1"></a><span class="in">    ylim(2.5, 4) +</span></span>
+<span id="cb15-100"><a href="#cb15-100" aria-hidden="true" tabindex="-1"></a><span class="in">    facet_wrap(~name) +</span></span>
+<span id="cb15-101"><a href="#cb15-101" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") + </span></span>
+<span id="cb15-102"><a href="#cb15-102" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
+<span id="cb15-103"><a href="#cb15-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-104"><a href="#cb15-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-105"><a href="#cb15-105" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb15-106"><a href="#cb15-106" aria-hidden="true" tabindex="-1"></a><span class="fu">### Observations</span></span>
+<span id="cb15-107"><a href="#cb15-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-108"><a href="#cb15-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-109"><a href="#cb15-109" aria-hidden="true" tabindex="-1"></a><span class="fu">## NNL for win, draws and losses </span></span>
+<span id="cb15-110"><a href="#cb15-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-111"><a href="#cb15-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-112"><a href="#cb15-112" aria-hidden="true" tabindex="-1"></a><span class="in">```{r resultbases, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
+<span id="cb15-113"><a href="#cb15-113" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
+<span id="cb15-114"><a href="#cb15-114" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('NLL_RESULTS', 'NLL_BOOKIE')) %&gt;%</span></span>
+<span id="cb15-115"><a href="#cb15-115" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = type)) + </span></span>
+<span id="cb15-116"><a href="#cb15-116" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = name)) + </span></span>
+<span id="cb15-117"><a href="#cb15-117" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
+<span id="cb15-118"><a href="#cb15-118" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
+<span id="cb15-119"><a href="#cb15-119" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
+<span id="cb15-120"><a href="#cb15-120" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
+<span id="cb15-121"><a href="#cb15-121" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
+<span id="cb15-122"><a href="#cb15-122" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Negative Log Likelihood'</span></span>
+<span id="cb15-123"><a href="#cb15-123" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
+<span id="cb15-124"><a href="#cb15-124" aria-hidden="true" tabindex="-1"></a><span class="in">    ylim(0.75, 1.5) +</span></span>
+<span id="cb15-125"><a href="#cb15-125" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") + </span></span>
+<span id="cb15-126"><a href="#cb15-126" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
+<span id="cb15-127"><a href="#cb15-127" aria-hidden="true" tabindex="-1"></a><span class="in">```</span> </span>
+<span id="cb15-128"><a href="#cb15-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-129"><a href="#cb15-129" aria-hidden="true" tabindex="-1"></a><span class="fu">### Observations</span></span>
+<span id="cb15-130"><a href="#cb15-130" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The NLL for the bookie is always better than the NLL of the models, so we should not bet.</span>
+<span id="cb15-131"><a href="#cb15-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-132"><a href="#cb15-132" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ranked probability score</span></span>
+<span id="cb15-133"><a href="#cb15-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-134"><a href="#cb15-134" aria-hidden="true" tabindex="-1"></a><span class="in">```{r result rps, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
+<span id="cb15-135"><a href="#cb15-135" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
+<span id="cb15-136"><a href="#cb15-136" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('RPS', 'rps_booki')) %&gt;%</span></span>
+<span id="cb15-137"><a href="#cb15-137" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = type)) + </span></span>
+<span id="cb15-138"><a href="#cb15-138" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = name)) + </span></span>
+<span id="cb15-139"><a href="#cb15-139" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
+<span id="cb15-140"><a href="#cb15-140" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
+<span id="cb15-141"><a href="#cb15-141" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
+<span id="cb15-142"><a href="#cb15-142" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
+<span id="cb15-143"><a href="#cb15-143" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
+<span id="cb15-144"><a href="#cb15-144" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Ranked Probability Score'</span></span>
+<span id="cb15-145"><a href="#cb15-145" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
+<span id="cb15-146"><a href="#cb15-146" aria-hidden="true" tabindex="-1"></a><span class="in">    #ylim(0.75, 1.5) +</span></span>
+<span id="cb15-147"><a href="#cb15-147" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") + </span></span>
+<span id="cb15-148"><a href="#cb15-148" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
+<span id="cb15-149"><a href="#cb15-149" aria-hidden="true" tabindex="-1"></a><span class="in">```</span> </span>
+<span id="cb15-150"><a href="#cb15-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-151"><a href="#cb15-151" aria-hidden="true" tabindex="-1"></a>Averaged for the complete season:</span>
+<span id="cb15-152"><a href="#cb15-152" aria-hidden="true" tabindex="-1"></a><span class="in">```{r rps_season}</span></span>
+<span id="cb15-153"><a href="#cb15-153" aria-hidden="true" tabindex="-1"></a><span class="in">  dfres = df %&gt;% </span></span>
+<span id="cb15-154"><a href="#cb15-154" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('RPS', 'rps_booki')) %&gt;%</span></span>
+<span id="cb15-155"><a href="#cb15-155" aria-hidden="true" tabindex="-1"></a><span class="in">    group_by(name, type) %&gt;% </span></span>
+<span id="cb15-156"><a href="#cb15-156" aria-hidden="true" tabindex="-1"></a><span class="in">    summarise(rps = mean(res)) </span></span>
+<span id="cb15-157"><a href="#cb15-157" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb15-158"><a href="#cb15-158" aria-hidden="true" tabindex="-1"></a><span class="in">  rps_booki = dfres %&gt;% filter(type == 'rps_booki') </span></span>
+<span id="cb15-159"><a href="#cb15-159" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb15-160"><a href="#cb15-160" aria-hidden="true" tabindex="-1"></a><span class="in">  dfres2 = dfres %&gt;% filter(type == 'RPS') %&gt;% select(name, rps) </span></span>
+<span id="cb15-161"><a href="#cb15-161" aria-hidden="true" tabindex="-1"></a><span class="in">  dfres2 = rbind(dfres2, rps_booki[1,])</span></span>
+<span id="cb15-162"><a href="#cb15-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-163"><a href="#cb15-163" aria-hidden="true" tabindex="-1"></a><span class="in">  # Sort by RPS</span></span>
+<span id="cb15-164"><a href="#cb15-164" aria-hidden="true" tabindex="-1"></a><span class="in">  dfres2 = dfres2[order(dfres2$rps),]</span></span>
+<span id="cb15-165"><a href="#cb15-165" aria-hidden="true" tabindex="-1"></a><span class="in">  kable(dfres2)</span></span>
+<span id="cb15-166"><a href="#cb15-166" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-167"><a href="#cb15-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-168"><a href="#cb15-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-169"><a href="#cb15-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-170"><a href="#cb15-170" aria-hidden="true" tabindex="-1"></a><span class="fu">## Betting Returns</span></span>
+<span id="cb15-171"><a href="#cb15-171" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb15-172"><a href="#cb15-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-173"><a href="#cb15-173" aria-hidden="true" tabindex="-1"></a><span class="in">```{r betting, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
+<span id="cb15-174"><a href="#cb15-174" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
+<span id="cb15-175"><a href="#cb15-175" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('BET_RETURN')) %&gt;%</span></span>
+<span id="cb15-176"><a href="#cb15-176" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = name)) + </span></span>
+<span id="cb15-177"><a href="#cb15-177" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = name)) +  </span></span>
+<span id="cb15-178"><a href="#cb15-178" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
+<span id="cb15-179"><a href="#cb15-179" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
+<span id="cb15-180"><a href="#cb15-180" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
+<span id="cb15-181"><a href="#cb15-181" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
+<span id="cb15-182"><a href="#cb15-182" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
+<span id="cb15-183"><a href="#cb15-183" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Betting Returns'</span></span>
+<span id="cb15-184"><a href="#cb15-184" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
+<span id="cb15-185"><a href="#cb15-185" aria-hidden="true" tabindex="-1"></a><span class="in">    #ylim(0.75, 1.5) +</span></span>
+<span id="cb15-186"><a href="#cb15-186" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") +  </span></span>
+<span id="cb15-187"><a href="#cb15-187" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
+<span id="cb15-188"><a href="#cb15-188" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-189"><a href="#cb15-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-190"><a href="#cb15-190" aria-hidden="true" tabindex="-1"></a><span class="fu">### Observations</span></span>
+<span id="cb15-191"><a href="#cb15-191" aria-hidden="true" tabindex="-1"></a>We see quite some fluctuation in the betting return. Since the NLL shows that the odds from the booki are always better then the NLLs of the models we should not bet.  </span>
+<span id="cb15-192"><a href="#cb15-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-193"><a href="#cb15-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-194"><a href="#cb15-194" aria-hidden="true" tabindex="-1"></a><span class="fu">## Technical Details</span></span>
+<span id="cb15-195"><a href="#cb15-195" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb15-196"><a href="#cb15-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-197"><a href="#cb15-197" aria-hidden="true" tabindex="-1"></a><span class="in">```{r min_sum, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
+<span id="cb15-198"><a href="#cb15-198" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
+<span id="cb15-199"><a href="#cb15-199" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('MIN_SUM_PROB')) %&gt;%</span></span>
+<span id="cb15-200"><a href="#cb15-200" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = name)) + </span></span>
+<span id="cb15-201"><a href="#cb15-201" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = name)) + </span></span>
+<span id="cb15-202"><a href="#cb15-202" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
+<span id="cb15-203"><a href="#cb15-203" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
+<span id="cb15-204"><a href="#cb15-204" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
+<span id="cb15-205"><a href="#cb15-205" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
+<span id="cb15-206"><a href="#cb15-206" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
+<span id="cb15-207"><a href="#cb15-207" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Sum of Probabilities from 0 to 10 goals (should be 1)'</span></span>
+<span id="cb15-208"><a href="#cb15-208" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
+<span id="cb15-209"><a href="#cb15-209" aria-hidden="true" tabindex="-1"></a><span class="in">    ylim(0.75, 1.01) +</span></span>
+<span id="cb15-210"><a href="#cb15-210" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") + </span></span>
+<span id="cb15-211"><a href="#cb15-211" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
+<span id="cb15-212"><a href="#cb15-212" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-213"><a href="#cb15-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-214"><a href="#cb15-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r num_divergent, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
+<span id="cb15-215"><a href="#cb15-215" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
+<span id="cb15-216"><a href="#cb15-216" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('num_divergent')) %&gt;%</span></span>
+<span id="cb15-217"><a href="#cb15-217" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = name)) + </span></span>
+<span id="cb15-218"><a href="#cb15-218" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = name)) + </span></span>
+<span id="cb15-219"><a href="#cb15-219" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
+<span id="cb15-220"><a href="#cb15-220" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
+<span id="cb15-221"><a href="#cb15-221" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
+<span id="cb15-222"><a href="#cb15-222" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
+<span id="cb15-223"><a href="#cb15-223" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
+<span id="cb15-224"><a href="#cb15-224" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Number of Divergent Transitions (sqrt scale)'</span></span>
+<span id="cb15-225"><a href="#cb15-225" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
+<span id="cb15-226"><a href="#cb15-226" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") + </span></span>
+<span id="cb15-227"><a href="#cb15-227" aria-hidden="true" tabindex="-1"></a><span class="in">    scale_y_sqrt() + </span></span>
+<span id="cb15-228"><a href="#cb15-228" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area </span></span>
+<span id="cb15-229"><a href="#cb15-229" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-230"><a href="#cb15-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-231"><a href="#cb15-231" aria-hidden="true" tabindex="-1"></a><span class="in">```{r , fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
+<span id="cb15-232"><a href="#cb15-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-233"><a href="#cb15-233" aria-hidden="true" tabindex="-1"></a><span class="in">df %&gt;% </span></span>
+<span id="cb15-234"><a href="#cb15-234" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(type %in% c('ebfmi')) %&gt;%</span></span>
+<span id="cb15-235"><a href="#cb15-235" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot(aes(x = ntrain, y = res, color = name)) + </span></span>
+<span id="cb15-236"><a href="#cb15-236" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_line(aes(linetype = name)) + </span></span>
+<span id="cb15-237"><a href="#cb15-237" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_point() + </span></span>
+<span id="cb15-238"><a href="#cb15-238" aria-hidden="true" tabindex="-1"></a><span class="in">  theme_minimal() + </span></span>
+<span id="cb15-239"><a href="#cb15-239" aria-hidden="true" tabindex="-1"></a><span class="in">  labs(</span></span>
+<span id="cb15-240"><a href="#cb15-240" aria-hidden="true" tabindex="-1"></a><span class="in">    title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
+<span id="cb15-241"><a href="#cb15-241" aria-hidden="true" tabindex="-1"></a><span class="in">    x = 'Number of training data', </span></span>
+<span id="cb15-242"><a href="#cb15-242" aria-hidden="true" tabindex="-1"></a><span class="in">    y = 'ebfmi'</span></span>
+<span id="cb15-243"><a href="#cb15-243" aria-hidden="true" tabindex="-1"></a><span class="in">  ) + </span></span>
+<span id="cb15-244"><a href="#cb15-244" aria-hidden="true" tabindex="-1"></a><span class="in">  theme(legend.position = "bottom") + </span></span>
+<span id="cb15-245"><a href="#cb15-245" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_hline(yintercept = 0.3, linetype = "dashed", color = "red") +</span></span>
+<span id="cb15-246"><a href="#cb15-246" aria-hidden="true" tabindex="-1"></a><span class="in">  annotate("text", x = Inf, y = 0.33, label = "Acceptable", hjust = 1.1, color = "red") +</span></span>
+<span id="cb15-247"><a href="#cb15-247" aria-hidden="true" tabindex="-1"></a><span class="in">  annotate("text", x = Inf, y = 0.27, label = "Non-Acceptable", hjust = 1.1, color = "red") +</span></span>
+<span id="cb15-248"><a href="#cb15-248" aria-hidden="true" tabindex="-1"></a><span class="in">  coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
+<span id="cb15-249"><a href="#cb15-249" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

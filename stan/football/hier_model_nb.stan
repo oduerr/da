@@ -1,13 +1,16 @@
 data {
-  int<lower=0> nt; //number of teams
-  int<lower=0> ng; //number of games
-  int<lower=0> ht[ng]; //home team index
-  int<lower=0> at[ng]; //away team index
-  int<lower=0> s1[ng]; //score home team
-  int<lower=0> s2[ng]; //score away team
-  int<lower=0> np; //number of predicted games
-  int<lower=0> htnew[np]; //home team index for prediction
-  int<lower=0> atnew[np]; //away team index for prediction
+  int<lower=0> nt; // number of teams
+  int<lower=0> ng; // number of games
+  array[ng] int<lower=0> ht; // home team index
+  array[ng] int<lower=0> at; // away team index
+  array[ng] int<lower=0> s1; // score home team
+  array[ng] int<lower=0> s2; // score away team
+  
+  int<lower=0> np; // number of predicted games if zero, no prediction
+  array[np] int<lower=0> htnew; // home team index for prediction
+  array[np] int<lower=0> atnew; // away team index for prediction
+  array[np] int<lower=0> s1new; // score home team for prediction
+  array[np] int<lower=0> s2new; // score away team for prediction
 }
 
 parameters {
@@ -27,15 +30,17 @@ parameters {
 }
 
 transformed parameters {
-  vector[ng] theta1; //score probability of home team
-  vector[ng] theta2; //score probability of away team
+  array[ng] real theta1; // score probability of home team
+  array[ng] real theta2; // score probability of away team
 
-  //See https://mc-stan.org/docs/2_18/stan-users-guide/parameterizing-centered-vectors.html
+  // See https://mc-stan.org/docs/2_18/stan-users-guide/parameterizing-centered-vectors.html
   vector[nt] att = append_row(att_raw, -sum(att_raw));
   vector[nt] def = append_row(def_raw, -sum(def_raw));
   
-  theta1 = exp(home + att[ht] - def[at]);
-  theta2 = exp(att[at] - def[ht]);
+ for (i in 1:ng) {
+    theta1[i] = exp(att[ht[i]] - def[at[i]]);
+    theta2[i] = exp(att[at[i]] - def[ht[i]]);
+  }
 
 }
 
@@ -62,14 +67,31 @@ generated quantities {
 //generate predictions
   vector[np] theta1new; //score probability of home team
   vector[np] theta2new; //score probability of away team
-  real s1new[np]; //predicted score
-  real s2new[np]; //predicted score
+  //real s1new[np]; //predicted score
+  //real s2new[np]; //predicted score
+  array[ng] real log_lik;
+  real log_lik_pred;
+
+  for (i in 1:np) {
+    theta1new[i] = exp(att[htnew[i]] - def[atnew[i]]);
+    theta2new[i] = exp(att[atnew[i]] - def[htnew[i]]);
+    //s1new[i] = poisson_rng(theta1new[i]);
+    //s2new[i] = poisson_rng(theta2new[i]);
+  }
+
+  for (n in 1:ng) {
+    log_lik[n] = poisson_lpmf(s1[n] | theta1[n]) + poisson_lpmf(s2[n] | theta2[n]);
+  }
 
 
-  theta1new = exp(home + att[htnew] - def[atnew]);
-  theta2new = exp(att[atnew] - def[htnew]);
-
-  s1new = poisson_rng(theta1new);
-  s2new = poisson_rng(theta2new);
+   // log likelihood on the prediction data
+  log_lik_pred = 0;
+  for (n in 1:np) {
+    log_lik_pred += poisson_lpmf(s1new[n] | theta1new[n]) + poisson_lpmf(s2new[n] | theta2new[n]);
+  }
+  log_lik_pred /= np;
+  
+  
+  
 }
 

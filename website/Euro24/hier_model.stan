@@ -1,3 +1,5 @@
+// A hierchical model for football prediction
+// The model centers the attack and defence abilities of each team
 data {
   int<lower=0> nt; // number of teams
   int<lower=0> ng; // number of games
@@ -5,9 +7,12 @@ data {
   array[ng] int<lower=0> at; // away team index
   array[ng] int<lower=0> s1; // score home team
   array[ng] int<lower=0> s2; // score away team
-  int<lower=0> np; // number of predicted games
+  
+  int<lower=0> np; // number of predicted games if zero, no prediction
   array[np] int<lower=0> htnew; // home team index for prediction
   array[np] int<lower=0> atnew; // away team index for prediction
+  array[np] int<lower=0> s1new; // score home team for prediction
+  array[np] int<lower=0> s2new; // score away team for prediction
 }
 
 parameters {
@@ -54,18 +59,28 @@ model {
 generated quantities {
   array[np] real theta1new; // score probability of home team
   array[np] real theta2new; // score probability of away team
-  array[np] real s1new; // predicted score
-  array[np] real s2new; // predicted score
+  //array[np] real s1new; // predicted score
+  //array[np] real s2new; // predicted score
   array[ng] real log_lik;
+  real log_lik_pred;
 
   for (i in 1:np) {
     theta1new[i] = exp(att[htnew[i]] - def[atnew[i]]);
     theta2new[i] = exp(att[atnew[i]] - def[htnew[i]]);
-    s1new[i] = poisson_rng(theta1new[i]);
-    s2new[i] = poisson_rng(theta2new[i]);
+    //s1new[i] = poisson_rng(theta1new[i]);
+    //s2new[i] = poisson_rng(theta2new[i]);
   }
   
   for (n in 1:ng) {
     log_lik[n] = poisson_lpmf(s1[n] | theta1[n]) + poisson_lpmf(s2[n] | theta2[n]);
   }
+  
+  // log likelihood on the prediction data
+  log_lik_pred = 0;
+  for (n in 1:np) {
+    log_lik_pred += poisson_lpmf(s1new[n] | theta1new[n]) + poisson_lpmf(s2new[n] | theta2new[n]);
+  }
+  log_lik_pred /= np;
+  
+  
 }
