@@ -1,0 +1,208 @@
+---
+output:
+  pdf_document:
+    highlight: pygments
+  html_document: 
+    default
+params:
+  lsg: TRUE
+---
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE}
+  #The variable lsg is used to control the visibility of the solutions and needs to be set
+  if (exists("lsg") == FALSE){ 
+    lsg <- params$lsg
+  }
+```
+
+# Correlated Hierarchical Model
+
+This notebook introduces correlated hierarchical model for football for the Bundesliga 2023/2024 
+
+## Data preparation
+
+### Loading
+We first load the data. The data comes from <https://www.football-data.co.uk/germanym.php>. You can you the data via:
+```{r,  echo = TRUE, eval=FALSE}
+  data_complete = read.csv('https://raw.githubusercontent.com/oduerr/da/master/lab/football_2/bundesliga2023.csv', stringsAsFactors = FALSE)
+```
+
+```{r, echo = FALSE, eval=TRUE, warning=FALSE}
+  #data_complete = read.csv('https://raw.githubusercontent.com/oduerr/da/master/lab/football_2/bundesliga2023.csv', stringsAsFactors = FALSE)
+  data_complete = read.csv('~/Documents/GitHub/da/website/Euro24/bundesliga2023.csv', stringsAsFactors = FALSE)
+```
+
+### Preprocessing
+You need to apply the following preprocessing
+```{r, echo=TRUE, eval=TRUE, message=FALSE}
+  library(magrittr)
+  library(dplyr)
+  data <- data_complete %>%
+    select(Home = HomeTeam, score1 = FTHG, score2 = FTAG, Away = AwayTeam)
+  teams = unique(data$Home)
+  ng = nrow(data)
+  # We need to encode the teams as numbers
+  ht = unlist(sapply(1:ng, function(g) which(teams == data$Home[g])))
+  at = unlist(sapply(1:ng, function(g) which(teams == data$Away[g])))
+  cat('We have G =', ng, 'games \n')
+  nt = length(unique(data$Home))
+  cat('We have T = ', nt, 'teams \n')
+```
+
+### Convenience functions
+
+```{r, echo=TRUE, eval=TRUE}
+#### getting data for STAN ########
+# we will save the last np games to predict
+get_data = function(np){
+  ngob = ng-np #number of games to fit
+  my_data = list(
+    nt = nt, 
+    ng = ngob,
+    ht = ht[1:ngob], 
+    at = at[1:ngob], 
+    s1 = data$score1[1:ngob],
+    s2 = data$score2[1:ngob],
+    np = np,
+    htnew = ht[(ngob+1):ng],
+    atnew = at[(ngob+1):ng],
+    s1new = data$score1[(ngob+1):ng],
+    s2new = data$score2[(ngob+1):ng],
+    
+    score1 = data$score1, #Have all in one place
+    score2 = data$score2
+  )
+  return (my_data)
+}
+```
+
+
+# A Model for the goals scored 🥅
+
+We will assume that the number of goals scored by the home team $s_1$ and the away team $s_2$ follows a Poisson distribution. This has been shown to be a good model for the number of goals scored in a football match. We model the rate parameter $\theta$ of the Poisson distribution, related to the attack and defense strengths of the teams, as follows:
+
+$$
+	s_1 \sim \text{Pois}(\theta_1) \quad\text{goals scored by the home team}
+$$
+	
+$$
+	s_2 \sim \text{Pois}(\theta_2) \quad\text{goals scored by the away team}
+$$ 
+
+This is equivalent to performing two separate Poisson regressions, one for each team.
+
+We assume that:
+
+$$
+	\theta_1 = \exp(\text{home} + \text{att}_\text{ht} - \text{def}_\text{at})
+$$
+	
+$$
+	\theta_2 = \exp(\text{att}_\text{at} - \text{def}_\text{ht})
+$$
+
+
+
+# Correlated Hierarchical Model
+
+Football (soccer) is an ideal example to get a hand on hierarchical models with correlated priors. 
+
+
+## Multivariate Priors
+
+Let's start to understand multivariate priors, by telling the data generating story. We start to describe how the prior is generated. Without seeing any games, the attack and defence ability of a team $j$ is sampled from a multivariate normal MVN with the covariance matrix $K$ .
+
+$$
+ \begin{bmatrix}att_j \\ def_j \end{bmatrix} \sim N(0,K) = N (\begin{bmatrix}0 \\ 0 \end{bmatrix} ,\begin{bmatrix} \sigma^2_{\tt{att}} & cov(att,def) \\ cov(att,def) & \sigma^2_{\tt{def}} \end{bmatrix} 
+$$
+
+Averaged over all teams in the league, the attack abilities sum up to zero (at least for a huge league). The same is true for the defense abilities. To describe this model have 3 parameters: the spread of the defense and attack abilities $\sigma_\tt{att} \ge 0$ and $\sigma_\tt{def} \ge 0$ and the covariance $cov(\tt{att}, \tt{def})\in [-\infty, \infty]$ between both quantities. A more interpretable quantity then the covariance is the correlation $\rho_{1,2}=cor(\tt{att},\tt{def})\in[-1,1]$, which can be calculated via $cov(\tt{att}, \tt{def}) = cor(\tt{att},\tt{def}) \sigma_\tt{att} \sigma_\tt{def}$. In principle, we can construct the covariance matrix from the correlation matrix $\rho$ as follows ($\rho$ is the matrix in the middle) :
+
+$$ K = \begin{bmatrix} \sigma_{\tt{att}} & 0 \\ 0 & \sigma_{\tt{def}} \end{bmatrix} \cdot \begin{bmatrix} 1 & \rho_{1,2} \\ \rho_{1,2} & 1 \end{bmatrix} \cdot \begin{bmatrix} \sigma_{\tt{att}} & 0 \\ 0 & \sigma_{\tt{def}} \end{bmatrix}
+$$
+
+## Understand the stan code
+
+Have a look at the stan code 'hier_model_cor_nocholsky.stan' <https://github.com/oduerr/da/tree/master/lab/football_2> and try to understand it and sample via:
+
+```{r, warning=FALSE, message=FALSE, results="hide"}
+my_data = get_data(1) 
+options(mc.cores = parallel::detectCores())
+library(cmdstanr)
+kn_s.model <- cmdstan_model('~/Documents/GitHub/da/lab/football_2/hier_model_cor_nocholsky.stan')
+cfit = kn_s.model$sample(data=my_data) 
+```
+
+#### Checking the fit 
+Check the results of the sampling. What do you observe?
+
+```{r, checks}
+#shinystan::launch_shinystan(cfit) 
+cfit
+diagnostics <- cfit$diagnostic_summary()
+bayesplot::mcmc_rhat_hist(bayesplot::rhat(cfit))
+bayesplot::mcmc_neff_hist(bayesplot::neff_ratio(cfit))
+```
+
+
+```{r,echo=lsg, eval=FALSE}
+# There are quite some divergent transitions. 
+```
+
+# Analysis of the posterior (Tasks)
+
+## Task 1: Evaluate the Home Advantage
+```{r,echo=lsg, eval=lsg} 
+# The home advantage is given by the parameter home.
+# Extract the posterior of the home advantage and plot it.
+home = cfit$draws('home')
+plot(density(home))
+```
+
+## Task 2: Plot the attack and defense abilities
+Plot the attack and defense abilities of the team in the Bundesliga season 2024.  You can extract the average values and the quantiles of the posterior draws using e.g.the following code:
+
+```{r, echo=TRUE, eval=TRUE, message=FALSE}
+library(tidyverse)
+library(tidybayes)
+
+# Step 1: Gather draws and calculate summary statistics with credible intervals
+As = cfit %>% 
+  tidybayes::gather_draws(A[i, j]) %>%
+  group_by(i, j) %>%
+  summarise(
+    average_value = mean(.value),
+    lower = quantile(.value, 0.25),  # Lower bound 
+    upper = quantile(.value, 0.75),  # Upper bound 
+    .groups = "drop"
+  )
+A_avg = xtabs(average_value ~ i + j, data = As)
+A_lower = xtabs(lower ~ i + j, data = As)
+A_upper = xtabs(upper ~ i + j, data = As)
+A_avg
+```
+
+Hint:
+To plot the team names from the indices you can use the following code
+```{r, eval=FALSE}
+teams[1:4]
+```
+
+```{r, echo=lsg, eval=lsg, fig.width=7, fig.height=7}
+plot(A_avg[1,], A_avg[2,], pch=20, xlab='Attack', ylab='Defence', main='Attack vs Defence', xlim=c(-0.5,1), ylim=c(-0.2,0.5))
+
+
+# Step 4: Add team labels
+text(A_avg[1,], A_avg[2,], labels=teams, cex=0.7, adj=c(-0.05, -0.8))
+# Plot vertical error bars
+arrows(A_avg[1,], A_lower[2,], A_avg[1,], A_upper[2,], angle=90, code=3, length=0.05, col="lightblue")
+
+# Plot horizontal error bars
+arrows(A_lower[1,], A_avg[2,], A_upper[1,], A_avg[2,], angle=90, code=3, length=0.05, col="lightblue")
+```
+
+# Note 
+The direct parametrization is not the best choice. A better choice is the Cholesky decomposition. See e.g. <https://oduerr.github.io/da/Euro24/euro24.html> and refences therein.
+
+
+

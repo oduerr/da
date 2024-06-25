@@ -159,3 +159,5 @@ stan/football/hier_model_nb
 website/Euro24/hier_model
 website/Euro24/hier_model_cor
 website/Euro24/hier_model_cor_home
+/lab/football_2/Correlated_files
+lab/football_2/hier_model_cor_nocholsky

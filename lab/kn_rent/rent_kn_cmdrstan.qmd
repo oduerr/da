@@ -8,11 +8,12 @@ params:
   lsg: TRUE
 ---
 
-```{r, echo=FALSE, eval=TRUE, message=FALSE}
+```{r, echo=FALSE, eval=TRUE}
   #The variable lsg is used to control the visibility of the solutions and needs to be set
   if (exists("lsg") == FALSE){ 
     lsg <- params$lsg
   }
+  print(paste0("Using lsg = ", lsg))
 ```
 
 ## Rents in Konstanz
@@ -33,7 +34,6 @@ There are also some tasks to be solved at the end, which you might do with a sin
 
 ### Data Proprocessing
 ```{r data}
-  lsg = FALSE
   KN_Kreis = read.csv2('https://raw.githubusercontent.com/oduerr/da/master/stan/kn_rent/KN_Kreis.csv')
   KN_Kreis$X = NULL
   sum(is.na(KN_Kreis$totalRent))#51
@@ -197,19 +197,21 @@ These additional tasks can be done with any model you have fitted, one is enough
 
 ### Task (difference between Konstanz and Aach)
 Discuss the difference between Konstanz and Aach in the intercept and Slope.
-```{r Task1, echo=lsg, warning=FALSE,message=FALSE}
+
+```{r Task1, echo=lsg, eval=lsg, message=FALSE, warning=FALSE,  results="hide"}
 # Both intercept and slope are higher in Konstanz, this reflects the fact that the Konstanz is more expensive place. But
 # you also observe that Konstanz has a smaller spread than Aach. This is due to the fact that there are more data in Konstanz compared to Aach.
 ```
 
 ### Task (Increase in rent in with living space for Konstanz city)
 Repaet the plot from a above using unscaled variable. You may focuss on Konstanz only. Konstanz has the following id (variable j in the posterior)
+
 ```{r}
   cities_numbers %>% kableExtra::kable()
 ```
 
 
-```{r post_slope_kn, eval=lsg, echo=lsg, warning=FALSE,message=FALSE}
+```{r post_slope_kn, echo=lsg, eval=lsg, message=FALSE, warning=FALSE}
   slope_kn_scaled = spread_draws(kn_s, u[j,i]) %>%
    filter(i == 2) %>%  filter(j == 11) 
   slope_kn_scaled_unscaled = y_sd / x_sd * slope_kn_scaled 
@@ -224,8 +226,8 @@ Repaet the plot from a above using unscaled variable. You may focuss on Konstanz
 
 How probable is it that the increase in rent is larger than 13 Euro/sqm in Konstanz?
 
-```{r Task3, echo=lsg, eval=lsg, warning=FALSE,message=FALSE}
-  mean(slope_kn_scaled_unscaled > 13)
+```{r Task3, echo=lsg, eval=lsg, message=FALSE, warning=FALSE}
+  mean(slope_kn_scaled_unscaled$u > 13)
 ```
 
 

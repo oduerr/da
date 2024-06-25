@@ -27,5 +27,6 @@
 "/Users/oli/Documents/GitHub/da/lab/kn_rent/rent_kn_cmdrstan.qmd"
 
 #### Bayes Woche 7 (Multilevel 2) ###
-"/Users/oli/Documents/GitHub/da/lab/football1/Hierarchical.Rmd"
+"/Users/oli/Documents/GitHub/da/lab/football_2/Correlated.qmd"
+"/Users/oli/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_07_Bayes_7/bayes_7_compile.R"
 
