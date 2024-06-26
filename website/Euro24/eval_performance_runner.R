@@ -89,12 +89,12 @@ extract_name <- function(path) {
 ###### Main Loop ##########
 models = list()
 if (FALSE){
+  models = append(models,cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model_cor_nocholsky.stan'))
+  models = append(models,cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model.stan'))
+  models = append(models,cmdstan_model('~/Documents/GitHub/da/stan/football/non_hier_model.stan'))
+  models = append(models,cmdstan_model('~/Documents/GitHub/da/stan/football/hier_model_nb.stan'))
+  models = append(models,cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model_cor.stan'))
 }
-models = append(models,cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model_cor_nocholsky.stan'))
-models = append(models,cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model.stan'))
-models = append(models,cmdstan_model('~/Documents/GitHub/da/stan/football/non_hier_model.stan'))
-models = append(models,cmdstan_model('~/Documents/GitHub/da/stan/football/hier_model_nb.stan'))
-models = append(models,cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model_cor.stan'))
 models = append(models,cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model_cor_home.stan'))
          
 calc_prob <- function(observed, theta) {
@@ -137,6 +137,7 @@ calc_scores <- function(theta1new, theta2new, standat, ntrain, odds = NULL){
   nll = nll_res = nll_bookie= 0 
   bet_return = 0
   rps_booki = rps_total = 0
+  bets_placed = 0
   min_sum_prob = 10
   ahead = min(18, standat$np)
   for (j in 1:ahead){
@@ -186,16 +187,19 @@ calc_scores <- function(theta1new, theta2new, standat, ntrain, odds = NULL){
     
       rps_booki = rps_booki + calc_rps(prob_wdl=c(p365[1], p365[2], p365[3]), outcome)
       
-      
+      betting_margin = 0.05 # 10% margin
       # Bet if the we expect to be better than the bookie without the margin
-      if (prob_win > p365[1]) {
+      if (prob_win > p365[1] + betting_margin) {
         bet_return <- bet_return + (o[1] * (standat$s1new[j] > standat$s2new[j]) - 1)
+        bets_placed = bets_placed + 1
       }
-      if (prob_draw > p365[2]) {
+      if (prob_draw > p365[2] + betting_margin) {
         bet_return <- bet_return + (o[2] * (standat$s1new[j] == standat$s2new[j]) - 1)
+        bets_placed = bets_placed + 1
       }
-      if (prob_lose > p365[3]) {
+      if (prob_lose > p365[3] + betting_margin) {
         bet_return <- bet_return + (o[3] * (standat$s1new[j] < standat$s2new[j]) - 1)
+        bets_placed = bets_placed + 1
       }
       
       
@@ -204,7 +208,7 @@ calc_scores <- function(theta1new, theta2new, standat, ntrain, odds = NULL){
       
   } #Ahead loop
   return (data.frame(nll = -nll/ahead, nll_res = -nll_res/ahead, nll_bookie = as.numeric(nll_bookie/ahead), 
-                     bet_return=as.numeric(bet_return/ahead), min_sum_prob = min_sum_prob, 
+                     bet_return=as.numeric(bet_return/bets_placed), bets_placed=bets_placed, min_sum_prob = min_sum_prob, 
                      rps = rps_total/ahead, rps_booki = rps_booki/ahead))
 }             
 
@@ -252,8 +256,10 @@ for (ntrain in ntrains){
     res.df = rbind(res.df, data.frame(ntrain=ntrain, res=scores$nll_res, type = 'NLL_RESULTS', name =  name))
     res.df = rbind(res.df, data.frame(ntrain=ntrain, res=scores$nll_bookie, type = 'NLL_BOOKIE', name =  name))
     res.df = rbind(res.df, data.frame(ntrain=ntrain, res=scores$bet_return, type = 'BET_RETURN', name =  name))
+    res.df = rbind(res.df, data.frame(ntrain=ntrain, res=scores$bets_placed, type = 'bets_placed', name =  name))
     res.df = rbind(res.df, data.frame(ntrain=ntrain, res=scores$rps, type = 'RPS', name =  name))
     res.df = rbind(res.df, data.frame(ntrain=ntrain, res=scores$rps_booki, type = 'rps_booki', name =  name))
+    
     
     # Calculate the log likelihood of the prediction
     lp = -spread_draws(s, log_lik_pred)
@@ -269,7 +275,7 @@ for (ntrain in ntrains){
     pb$tick()
     })
   }
-  write.csv(res.df, '~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_18Ahead.csv', row.names = FALSE)
+  write.csv(res.df, '~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_bets05_18Ahead.csv', row.names = FALSE)
 }
 
 # Writing the results to a file

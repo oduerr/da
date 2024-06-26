@@ -41,10 +41,134 @@ The experiments take some time to run, therefore we used the R-Script to product
   df = df3
   print("Using 24_18Ahead that means all data is averaged 18 games ahead.")
   
+  #df = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_bets05_18Ahead.csv')
+  
   df_raw = read.csv('~/Documents/GitHub/da/website/Euro24/bundesliga2023.csv')
   head(df_raw) %>% kable()
 ```
 
+## Exploratory Analysis
+```{r}
+#str(df_raw)
+#Full Time Home Goals, Full Time Away Goals
+home_wins = df_raw$FTHG > df_raw$FTAG
+away_wins = df_raw$FTHG < df_raw$FTAG
+draws = df_raw$FTHG == df_raw$FTAG
+
+# Betting on home wins would have some log(0) --> -Inf
+
+# Betting according frequency
+# This is a bit cheating, since we use the future data to calculate
+ps_naive = c(sum(home_wins), sum(draws), sum(away_wins))/nrow(df_raw)
+NLL_NAIVE = sum(
+  -home_wins*log(ps_naive[1])
+  -draws*log(ps_naive[2])
+  -away_wins*log(ps_naive[3])
+)/nrow(df_raw)
+NLL_NAIVE
+```
+
+
+## Exploratory Analysis
+```{r}
+#str(df_raw)
+
+# Load necessary libraries
+library(dplyr)
+
+# Load your data
+# df_raw <- read.csv('path_to_your_data.csv') # Replace with the actual data loading method
+
+# Example data frame structure for reference
+# df_raw <- data.frame(
+#   B365H = c(7.5, 2.7, 2.3), B365D = c(6.5, 3.6, 3.6), B365A = c(1.3, 2.45, 2.9),
+#   FTR = c("A", "D", "A")
+# )
+
+# Calculate implied probabilities
+df_raw <- df_raw %>%
+  mutate(
+    ImpliedProb_H = 1 / B365H,
+    ImpliedProb_D = 1 / B365D,
+    ImpliedProb_A = 1 / B365A
+  ) %>%
+  mutate(
+    SumImpliedProbs = ImpliedProb_H + ImpliedProb_D + ImpliedProb_A,
+    ImpliedProb_H = ImpliedProb_H / SumImpliedProbs,
+    ImpliedProb_D = ImpliedProb_D / SumImpliedProbs,
+    ImpliedProb_A = ImpliedProb_A / SumImpliedProbs
+  )
+
+# Convert actual outcomes to binary indicators
+df_raw <- df_raw %>%
+  mutate(
+    Outcome_H = ifelse(FTR == "H", 1, 0),
+    Outcome_D = ifelse(FTR == "D", 1, 0),
+    Outcome_A = ifelse(FTR == "A", 1, 0)
+  )
+
+# Calculate negative log-likelihood for the given strategy
+df_raw <- df_raw %>%
+  mutate(
+    NLL_H = Outcome_H * log(ImpliedProb_H),
+    NLL_D = Outcome_D * log(ImpliedProb_D),
+    NLL_A = Outcome_A * log(ImpliedProb_A),
+    NLL = -(NLL_H + NLL_D + NLL_A)
+  )
+
+# Mean negative log-likelihood for the given strategy
+mean_nll <- mean(df_raw$NLL, na.rm = TRUE)
+
+cat("Mean Negative Log-Likelihood for given strategy:", mean_nll, "\n")
+
+# Calculate negative log-likelihood for uniform betting (1/3 for each outcome)
+baseline_prob <- 1 / 3
+df_raw <- df_raw %>%
+  mutate(
+    BaselineNLL_H = Outcome_H * log(baseline_prob),
+    BaselineNLL_D = Outcome_D * log(baseline_prob),
+    BaselineNLL_A = Outcome_A * log(baseline_prob),
+    BaselineNLL = -(BaselineNLL_H + BaselineNLL_D + BaselineNLL_A)
+  )
+
+# Mean negative log-likelihood for uniform betting
+mean_baseline_nll <- mean(df_raw$BaselineNLL, na.rm = TRUE)
+
+cat("Mean Negative Log-Likelihood for uniform betting:", mean_baseline_nll, "\n")
+
+# Calculate negative log-likelihood for always betting on home win
+df_raw <- df_raw %>%
+  mutate(
+    AlwaysHomeNLL_H = -log(baseline_prob) * Outcome_H,
+    AlwaysHomeNLL_L = -log(1 - baseline_prob) * (1 - Outcome_H),
+    AlwaysHomeNLL = AlwaysHomeNLL_H + AlwaysHomeNLL_L
+  )
+mean_always_home_nll <- mean(df_raw$AlwaysHomeNLL, na.rm = TRUE)
+
+cat("Mean Negative Log-Likelihood for always betting on home win:", mean_always_home_nll, "\n")
+
+# Calculate negative log-likelihood for always betting on away win
+df_raw <- df_raw %>%
+  mutate(
+    AlwaysAwayNLL_A = -log(baseline_prob) * Outcome_A,
+    AlwaysAwayNLL_L = -log(1 - baseline_prob) * (1 - Outcome_A),
+    AlwaysAwayNLL = AlwaysAwayNLL_A + AlwaysAwayNLL_L
+  )
+mean_always_away_nll <- mean(df_raw$AlwaysAwayNLL, na.rm = TRUE)
+
+cat("Mean Negative Log-Likelihood for always betting on away win:", mean_always_away_nll, "\n")
+
+# Calculate negative log-likelihood for always betting on draw
+df_raw <- df_raw %>%
+  mutate(
+    AlwaysDrawNLL_D = -log(baseline_prob) * Outcome_D,
+    AlwaysDrawNLL_L = -log(1 - baseline_prob) * (1 - Outcome_D),
+    AlwaysDrawNLL = AlwaysDrawNLL_D + AlwaysDrawNLL_L
+  )
+mean_always_draw_nll <- mean(df_raw$AlwaysDrawNLL, na.rm = TRUE)
+
+cat("Mean Negative Log-Likelihood for always betting on draw:", mean_always_draw_nll, "\n")
+```
 
 ## Model Comparisons
 We use the negative log likelihood (NLL) as a measure of the predictive performance of the models. The lower the NLL, the better the model. However, strictly speaking it is the negative log posterior predictive density (divided by $n$) evaluated at the $n$ games after the training data.
@@ -122,8 +246,20 @@ $$
       y = 'Negative Log Likelihood'
     ) + 
     ylim(0.75, 1.5) +
+    geom_hline(yintercept = NLL_NAIVE, col = "green", alpha=0.5) +
     theme(legend.position = "bottom") + 
     coord_cartesian(clip = "off") # Allow lines to go outside the plot area
+
+
+#### Booki mean
+  dfp = df %>% 
+    filter(type %in% c('NLL_RESULTS', 'NLL_BOOKIE')) %>%
+    group_by(name, type) %>% 
+    summarise(nll = mean(res)) 
+  
+  dfp = rbind(dfp, data.frame(name = "NLL_NAIVE", type = "NLL_NAIVE", nll = NLL_NAIVE))
+  # Remove all but one NLL_BOOKIE
+  kableExtra::kable(dfp, digits = 3)
 ``` 
 
 ### Observations
@@ -150,6 +286,7 @@ $$
 
 Averaged for the complete season:
 ```{r rps_season}
+  library(dplyr)
   dfres = df %>% 
     filter(type %in% c('RPS', 'rps_booki')) %>%
     group_by(name, type) %>% 
@@ -157,7 +294,7 @@ Averaged for the complete season:
   
   rps_booki = dfres %>% filter(type == 'rps_booki') 
   
-  dfres2 = dfres %>% filter(type == 'RPS') %>% select(name, rps) 
+  dfres2 = dfres %>% filter(type == 'RPS') %>% dplyr::select(name, rps) 
   dfres2 = rbind(dfres2, rps_booki[1,])
 
   # Sort by RPS
@@ -185,6 +322,10 @@ Averaged for the complete season:
     #ylim(0.75, 1.5) +
     theme(legend.position = "bottom") +  
     coord_cartesian(clip = "off") # Allow lines to go outside the plot area
+  df %>% 
+    filter(type %in% c('BET_RETURN')) %>%
+    group_by(name) %>% 
+    summarise(mean(res))
 ```
 
 ### Observations

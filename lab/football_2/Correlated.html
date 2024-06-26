@@ -111,7 +111,23 @@ window.Quarto = {
 
 <section id="correlated-hierarchical-model" class="level1">
 <h1>Correlated Hierarchical Model</h1>
-<p>This notebook introduces correlated hierarchical model for football for the Bundesliga 2023/2024</p>
+<p>This notebook introduces correlated hierarchical model for football for the Bundesliga 2023/2024.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Direct Parametrization
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>The direct parametrization used here is not the best choice of the Gaussian but it is easier to understand so we use it here for didactic reasons. A numerical more stable choice is the Cholesky decomposition. See e.g.&nbsp;<a href="https://oduerr.github.io/da/Euro24/euro24.html" class="uri">https://oduerr.github.io/da/Euro24/euro24.html</a> and refences therein.</p>
+</div>
+</div>
+</div>
 <section id="data-preparation" class="level2">
 <h2 class="anchored" data-anchor-id="data-preparation">Data preparation</h2>
 <section id="loading" class="level3">
@@ -127,14 +143,13 @@ window.Quarto = {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(magrittr)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(dplyr)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> data_complete <span class="sc">%&gt;%</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="at">Home =</span> HomeTeam, <span class="at">score1 =</span> FTHG, <span class="at">score2 =</span> FTAG, <span class="at">Away =</span> AwayTeam)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  teams <span class="ot">=</span> <span class="fu">unique</span>(data<span class="sc">$</span>Home)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  ng <span class="ot">=</span> <span class="fu">nrow</span>(data)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># We need to encode the teams as numbers</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  ht <span class="ot">=</span> <span class="fu">unlist</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>ng, <span class="cf">function</span>(g) <span class="fu">which</span>(teams <span class="sc">==</span> data<span class="sc">$</span>Home[g])))</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  at <span class="ot">=</span> <span class="fu">unlist</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>ng, <span class="cf">function</span>(g) <span class="fu">which</span>(teams <span class="sc">==</span> data<span class="sc">$</span>Away[g])))</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">'We have G ='</span>, ng, <span class="st">'games </span><span class="sc">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> data_complete <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="at">Home =</span> HomeTeam, <span class="at">score1 =</span> FTHG, <span class="at">score2 =</span> FTAG, <span class="at">Away =</span> AwayTeam)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  teams <span class="ot">=</span> <span class="fu">unique</span>(data<span class="sc">$</span>Home)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  ng <span class="ot">=</span> <span class="fu">nrow</span>(data)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># We need to encode the teams as numbers</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  ht <span class="ot">=</span> <span class="fu">unlist</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>ng, <span class="cf">function</span>(g) <span class="fu">which</span>(teams <span class="sc">==</span> data<span class="sc">$</span>Home[g])))</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  at <span class="ot">=</span> <span class="fu">unlist</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>ng, <span class="cf">function</span>(g) <span class="fu">which</span>(teams <span class="sc">==</span> data<span class="sc">$</span>Away[g])))</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">'We have G ='</span>, ng, <span class="st">'games </span><span class="sc">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>We have G = 306 games </code></pre>
 </div>
@@ -175,7 +190,7 @@ window.Quarto = {
 </section>
 </section>
 <section id="a-model-for-the-goals-scored" class="level1">
-<h1>A Model for the goals scored 🥅</h1>
+<h1>A Model for the goals scored</h1>
 <p>We will assume that the number of goals scored by the home team <span class="math inline">\(s_1\)</span> and the away team <span class="math inline">\(s_2\)</span> follows a Poisson distribution. This has been shown to be a good model for the number of goals scored in a football match. We model the rate parameter <span class="math inline">\(\theta\)</span> of the Poisson distribution, related to the attack and defense strengths of the teams, as follows:</p>
 <p><span class="math display">\[
     s_1 \sim \text{Pois}(\theta_1) \quad\text{goals scored by the home team}
@@ -223,22 +238,22 @@ window.Quarto = {
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>cfit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> variable    mean  median   sd  mad      q5     q95 rhat ess_bulk ess_tail
-   lp__   -411.27 -411.07 5.07 5.14 -420.08 -403.36 1.00      761     1456
-   A[1,1]    0.10    0.11 0.15 0.16   -0.15    0.36 1.00     1573     2351
-   A[2,1]   -0.02   -0.01 0.13 0.12   -0.24    0.18 1.00     1278     1864
-   A[1,2]    0.13    0.14 0.16 0.16   -0.13    0.39 1.00     1216     1881
-   A[2,2]   -0.09   -0.08 0.14 0.13   -0.32    0.12 1.01      674     1421
-   A[1,3]    0.38    0.38 0.15 0.14    0.12    0.61 1.00     1068     1490
-   A[2,3]   -0.14   -0.13 0.15 0.15   -0.39    0.10 1.01      464      911
-   A[1,4]    0.70    0.70 0.14 0.14    0.46    0.93 1.01      604     1146
-   A[2,4]    0.48    0.47 0.15 0.16    0.23    0.74 1.00     1788     2037
-   A[1,5]    0.56    0.56 0.15 0.15    0.32    0.79 1.01      699     1642
+   lp__   -411.07 -410.95 5.19 4.81 -419.77 -402.52 1.01      415      124
+   A[1,1]    0.10    0.10 0.15 0.15   -0.15    0.35 1.01     1142     1621
+   A[2,1]   -0.02   -0.02 0.13 0.13   -0.25    0.19 1.01      849     2038
+   A[1,2]    0.13    0.13 0.15 0.15   -0.13    0.38 1.00     1080     2084
+   A[2,2]   -0.09   -0.09 0.13 0.13   -0.33    0.11 1.01      647     1168
+   A[1,3]    0.38    0.38 0.15 0.15    0.13    0.62 1.02      624     1002
+   A[2,3]   -0.15   -0.15 0.15 0.15   -0.40    0.11 1.02      333      126
+   A[1,4]    0.69    0.70 0.14 0.15    0.46    0.91 1.02      276      832
+   A[2,4]    0.47    0.46 0.16 0.15    0.23    0.74 1.00     2151     2827
+   A[1,5]    0.56    0.56 0.14 0.14    0.32    0.79 1.02      474      762
 
  # showing 10 of 963 rows (change via 'max_rows' argument or 'cmdstanr_max_rows' option)</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>diagnostics <span class="ot">&lt;-</span> cfit<span class="sc">$</span><span class="fu">diagnostic_summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: 568 of 4000 (14.0%) transitions ended with a divergence.
+<pre><code>Warning: 343 of 4000 (9.0%) transitions ended with a divergence.
 See https://mc-stan.org/misc/warnings for details.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bayesplot<span class="sc">::</span><span class="fu">mcmc_rhat_hist</span>(bayesplot<span class="sc">::</span><span class="fu">rhat</span>(cfit))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -311,38 +326,41 @@ See https://mc-stan.org/misc/warnings for details.</code></pre>
 <span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>A_avg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   j
-i              1            2            3            4            5
-  1  0.104635363  0.134465906  0.378851239  0.699482664  0.556279117
-  2 -0.019657221 -0.085700513 -0.136305785  0.478167929  0.217549077
+i             1           2           3           4           5           6
+  1  0.09908619  0.12702657  0.37541604  0.69380192  0.55627358 -0.02096691
+  2 -0.02270356 -0.09483980 -0.14586450  0.46939043  0.21475029 -0.03150281
    j
-i              6            7            8            9           10
-  1 -0.011389318  0.430600736 -0.208072619  0.167246454  0.547468536
-  2 -0.027583123  0.152346820 -0.093132419  0.041834508  0.220031257
+i             7           8           9          10          11          12
+  1  0.42324336 -0.20598276  0.15764461  0.54944707 -0.04483198 -0.32392581
+  2  0.14593631 -0.09512907  0.03284365  0.21459369 -0.26022628 -0.39316650
    j
-i             11           12           13           14           15
-  1 -0.038684410 -0.324994573 -0.337090050  0.041979253  0.139399342
-  2 -0.252809696 -0.388258952 -0.123102049 -0.071308572 -0.025146718
-   j
-i             16           17           18
-  1  0.224624847 -0.103634679  0.734924339
-  2 -0.158776044 -0.005338994  0.157704621</code></pre>
+i            13          14          15          16          17          18
+  1 -0.33685268  0.04213288  0.13744046  0.22144786 -0.10688967  0.72566738
+  2 -0.12854388 -0.07332457 -0.02978364 -0.16598333 -0.00781493  0.14139445</code></pre>
 </div>
 </div>
 <p>Hint: To plot the team names from the indices you can use the following code</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>teams[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>teams[<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(teams)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Werder Bremen" "Augsburg"      "Hoffenheim"    "Leverkusen"   
+ [5] "Stuttgart"     "Wolfsburg"     "Dortmund"      "Union Berlin" 
+ [9] "Ein Frankfurt" "RB Leipzig"    "Bochum"        "Darmstadt"    
+[13] "FC Koln"       "Freiburg"      "Heidenheim"    "M'gladbach"   
+[17] "Mainz"         "Bayern Munich"</code></pre>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(A_avg[<span class="dv">1</span>,], A_avg[<span class="dv">2</span>,], <span class="at">pch=</span><span class="dv">20</span>, <span class="at">xlab=</span><span class="st">'Attack'</span>, <span class="at">ylab=</span><span class="st">'Defence'</span>, <span class="at">main=</span><span class="st">'Attack vs Defence'</span>, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.5</span>,<span class="dv">1</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.2</span>,<span class="fl">0.5</span>))</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Add team labels</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(A_avg[<span class="dv">1</span>,], A_avg[<span class="dv">2</span>,], <span class="at">labels=</span>teams, <span class="at">cex=</span><span class="fl">0.7</span>, <span class="at">adj=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.05</span>, <span class="sc">-</span><span class="fl">0.8</span>))</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot vertical error bars</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(A_avg[<span class="dv">1</span>,], A_lower[<span class="dv">2</span>,], A_avg[<span class="dv">1</span>,], A_upper[<span class="dv">2</span>,], <span class="at">angle=</span><span class="dv">90</span>, <span class="at">code=</span><span class="dv">3</span>, <span class="at">length=</span><span class="fl">0.05</span>, <span class="at">col=</span><span class="st">"lightblue"</span>)</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot horizontal error bars</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(A_lower[<span class="dv">1</span>,], A_avg[<span class="dv">2</span>,], A_upper[<span class="dv">1</span>,], A_avg[<span class="dv">2</span>,], <span class="at">angle=</span><span class="dv">90</span>, <span class="at">code=</span><span class="dv">3</span>, <span class="at">length=</span><span class="fl">0.05</span>, <span class="at">col=</span><span class="st">"lightblue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(A_avg[<span class="dv">1</span>,], A_avg[<span class="dv">2</span>,], <span class="at">pch=</span><span class="dv">20</span>, <span class="at">xlab=</span><span class="st">'Attack'</span>, <span class="at">ylab=</span><span class="st">'Defence'</span>, <span class="at">main=</span><span class="st">'Attack vs Defence'</span>, <span class="at">xlim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.5</span>,<span class="dv">1</span>), <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.5</span>,<span class="fl">0.5</span>))</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Add team labels</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(A_avg[<span class="dv">1</span>,], A_avg[<span class="dv">2</span>,], <span class="at">labels=</span>teams, <span class="at">cex=</span><span class="fl">0.7</span>, <span class="at">adj=</span><span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.05</span>, <span class="sc">-</span><span class="fl">0.8</span>))</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot vertical error bars</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(A_avg[<span class="dv">1</span>,], A_lower[<span class="dv">2</span>,], A_avg[<span class="dv">1</span>,], A_upper[<span class="dv">2</span>,], <span class="at">angle=</span><span class="dv">90</span>, <span class="at">code=</span><span class="dv">3</span>, <span class="at">length=</span><span class="fl">0.05</span>, <span class="at">col=</span><span class="st">"lightblue"</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot horizontal error bars</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(A_lower[<span class="dv">1</span>,], A_avg[<span class="dv">2</span>,], A_upper[<span class="dv">1</span>,], A_avg[<span class="dv">2</span>,], <span class="at">angle=</span><span class="dv">90</span>, <span class="at">code=</span><span class="dv">3</span>, <span class="at">length=</span><span class="fl">0.05</span>, <span class="at">col=</span><span class="st">"lightblue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -352,10 +370,139 @@ i             16           17           18
 </div>
 </div>
 </section>
+<section id="task-3-predict-the-probability-of-home-win-draw-and-away-win-for-a-game" class="level2">
+<h2 class="anchored" data-anchor-id="task-3-predict-the-probability-of-home-win-draw-and-away-win-for-a-game">Task 3: Predict the probability of home win, draw, and away win for a game</h2>
+<p>Predict the number of goals for the next games, between the teams Freiburg and Leverkusen with Freiburg being the home team. You can use the following code to extract the posterior distributions for the attack and defense abilities of the teams Leverkusen and Freiburg.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidybayes)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract team indices</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>id1 <span class="ot">=</span> <span class="fu">which</span>(teams <span class="sc">==</span> <span class="st">'Leverkusen'</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>id2 <span class="ot">=</span> <span class="fu">which</span>(teams <span class="sc">==</span> <span class="st">'Freiburg'</span>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>attack_leverkusen <span class="ot">&lt;-</span> cfit <span class="sc">%&gt;%</span> <span class="fu">spread_draws</span>(A[i, j]) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(j <span class="sc">==</span> id1, i <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(A) <span class="sc">%&gt;%</span> <span class="fu">pull</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Adding missing grouping variables: `i`, `j`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>defense_leverkusen <span class="ot">&lt;-</span> cfit <span class="sc">%&gt;%</span> <span class="fu">spread_draws</span>(A[i, j]) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(j <span class="sc">==</span> id1, i <span class="sc">==</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(A) <span class="sc">%&gt;%</span> <span class="fu">pull</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Adding missing grouping variables: `i`, `j`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>attack_freiburg <span class="ot">&lt;-</span> cfit <span class="sc">%&gt;%</span> <span class="fu">spread_draws</span>(A[i, j]) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(j <span class="sc">==</span> id2, i <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(A) <span class="sc">%&gt;%</span> <span class="fu">pull</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Adding missing grouping variables: `i`, `j`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>defense_freiburg <span class="ot">&lt;-</span> cfit <span class="sc">%&gt;%</span> <span class="fu">spread_draws</span>(A[i, j]) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(j <span class="sc">==</span> id2, i <span class="sc">==</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(A) <span class="sc">%&gt;%</span> <span class="fu">pull</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Adding missing grouping variables: `i`, `j`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>home <span class="ot">=</span> cfit <span class="sc">%&gt;%</span> <span class="fu">spread_draws</span>(home) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(home) <span class="sc">%&gt;%</span> <span class="fu">pull</span>()</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="do">### Example code</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>num_draws <span class="ot">=</span> num_home <span class="ot">=</span> num_away <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(home)){</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># goals_freiburg =</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># goals_leverkusen =</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># if (...)</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   num_home = num_home + 1</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># if (...)</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   num_away = num_away + 1</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># if (...)</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   num_draws = num_draws + 1</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To caclulate the posterior predictive distribution for the number of goals scored by Leverkusen and Freiburg, you can draw the goals for a game from the Poisson distribution with the rate parameter <span class="math inline">\(\theta\)</span> given by the attack and defense abilities of the teams.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>num_draws <span class="ot">=</span> num_home <span class="ot">=</span> num_away <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(home)){</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    goals_freiburg <span class="ot">=</span> <span class="fu">rpois</span>(<span class="dv">1</span>, <span class="at">lambda =</span> <span class="fu">exp</span>(home <span class="sc">+</span> attack_freiburg <span class="sc">-</span> defense_leverkusen))</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    goals_leverkusen <span class="ot">=</span> <span class="fu">rpois</span>(<span class="dv">1</span>, <span class="at">lambda =</span> <span class="fu">exp</span>(attack_leverkusen <span class="sc">-</span> defense_freiburg))</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (goals_freiburg <span class="sc">&gt;</span> goals_leverkusen)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>      num_home <span class="ot">=</span> num_home <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (goals_freiburg <span class="sc">&lt;</span> goals_leverkusen)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>      num_away <span class="ot">=</span> num_away <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (goals_freiburg <span class="sc">==</span> goals_leverkusen)</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>      num_draws <span class="ot">=</span> num_draws <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>p_bayes <span class="ot">=</span> <span class="fu">c</span>(num_home, num_draws, num_away)<span class="sc">/</span><span class="fu">length</span>(home)</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>p_bayes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.06750 0.10825 0.82425</code></pre>
+</div>
+</div>
 </section>
-<section id="note" class="level1">
-<h1>Note</h1>
-<p>The direct parametrization is not the best choice. A better choice is the Cholesky decomposition. See e.g.&nbsp;<a href="https://oduerr.github.io/da/Euro24/euro24.html" class="uri">https://oduerr.github.io/da/Euro24/euro24.html</a> and refences therein.</p>
+<section id="task-4-predict-the-results-of-the-next-games-wo-bayes" class="level2">
+<h2 class="anchored" data-anchor-id="task-4-predict-the-results-of-the-next-games-wo-bayes">Task 4: Predict the results of the next games w/o Bayes</h2>
+<p>In this task, we will predict the results of the next games between Freiburg and Leverkusen without using Bayesian methods. Instead, we will use the mean values of the posterior distributions for the attack and defense abilities of the teams as well as the home advantage parameter. Discuss the results.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>num_draws <span class="ot">=</span> num_home <span class="ot">=</span> num_away <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>attack_freiburg_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(attack_freiburg)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>defense_freiburg_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(defense_freiburg)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>attack_leverkusen_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(attack_leverkusen)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>defense_leverkusen_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(defense_leverkusen)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>home_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(home)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>) <span class="co"># For reproducibility</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>num_simulations <span class="ot">&lt;-</span> <span class="dv">10000</span> <span class="co"># Number of simulations</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>num_home <span class="ot">&lt;-</span> num_draws <span class="ot">&lt;-</span> num_away <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate the outcomes</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>num_simulations) {</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  goals_freiburg <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="dv">1</span>, <span class="at">lambda =</span> <span class="fu">exp</span>(home_mean <span class="sc">+</span> attack_freiburg_mean <span class="sc">-</span> defense_leverkusen_mean))</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>  goals_leverkusen <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="dv">1</span>, <span class="at">lambda =</span> <span class="fu">exp</span>(attack_leverkusen_mean <span class="sc">-</span> defense_freiburg_mean))</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (goals_freiburg <span class="sc">&gt;</span> goals_leverkusen) {</span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>    num_home <span class="ot">&lt;-</span> num_home <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (goals_freiburg <span class="sc">&lt;</span> goals_leverkusen) {</span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>    num_away <span class="ot">&lt;-</span> num_away <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>    num_draws <span class="ot">&lt;-</span> num_draws <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a>p <span class="ot">=</span> <span class="fu">c</span>(num_home, num_draws, num_away)<span class="sc">/</span>num_simulations</span>
+<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.1484 0.1946 0.6570</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Home Win"</span>, <span class="st">"Draw"</span>, <span class="st">"Away Win"</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>barplot_height <span class="ot">&lt;-</span> <span class="fu">rbind</span>(p, p_bayes)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(barplot_height) <span class="ot">&lt;-</span> results</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(barplot_height) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Mean Values"</span>, <span class="st">"Bayesian"</span>)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the bar plot</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(barplot_height, <span class="at">beside=</span><span class="cn">TRUE</span>, <span class="at">col=</span><span class="fu">c</span>(<span class="st">"skyblue"</span>, <span class="st">"red"</span>), </span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.text=</span><span class="cn">TRUE</span>, <span class="at">args.legend=</span><span class="fu">list</span>(<span class="at">x=</span><span class="st">"topright"</span>, <span class="at">bty=</span><span class="st">"n"</span>),</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">main=</span><span class="st">"Probability of Game Outcomes: Mean Values vs Full Bayesian"</span>,</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab=</span><span class="st">"Result"</span>, <span class="at">ylab=</span><span class="st">"Probability"</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Correlated_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Mean Values: Home Win: "</span>, p[<span class="dv">1</span>], <span class="st">", Draw: "</span>, p[<span class="dv">2</span>], <span class="st">", Away Win: "</span>, p[<span class="dv">3</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Mean Values: Home Win:  0.1484 , Draw:  0.1946 , Away Win:  0.657"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Bayesian: Home Win: "</span>, p_bayes[<span class="dv">1</span>], <span class="st">", Draw: "</span>, p_bayes[<span class="dv">2</span>], <span class="st">", Away Win: "</span>, p_bayes[<span class="dv">3</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Bayesian: Home Win:  0.0675 , Draw:  0.10825 , Away Win:  0.82425"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span><span class="fu">sum</span>(p<span class="sc">*</span><span class="fu">log</span>(p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8776339</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span><span class="fu">sum</span>(p_bayes<span class="sc">*</span><span class="fu">log</span>(p_bayes))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5819406</code></pre>
+</div>
+</div>
+<p>cat(’::: {.callout-caution collapse=“false”} # Direct Parametrization 2 The direct parametrization used here is not the best choice of the Gaussian but it is easier to understand so we use it here for didactic reasons. A numerical more stable choice is the Cholesky decomposition. See e.g.&nbsp;<a href="https://oduerr.github.io/da/Euro24/euro24.html" class="uri">https://oduerr.github.io/da/Euro24/euro24.html</a> and refences therein. ::: }</p>
+</section>
 </section>
 
 </main>

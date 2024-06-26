@@ -6,6 +6,9 @@
 "/Users/oli/Documents/GitHub/da/website/about.qmd" # Some note how to render the website
 "/Users/oli/Documents/GitHub/da/website/lecture_notes/MCMC/MCMC.qmd"
 
+## Other
+"/Users/oli/Documents/GitHub/da/website/Euro24/Euro24.qmd"
+
 
 ### Arbeitsblätter
 
@@ -27,6 +30,8 @@
 "/Users/oli/Documents/GitHub/da/lab/kn_rent/rent_kn_cmdrstan.qmd"
 
 #### Bayes Woche 7 (Multilevel 2) ###
+"/Users/oli/Documents/GitHub/da/stan/gp/Modelling2D_Gauss.R"
+"/Users/oli/Documents/GitHub/da/stan/gp/Modelling2D_Gauss_Solution.R"
 "/Users/oli/Documents/GitHub/da/lab/football_2/Correlated.qmd"
 "/Users/oli/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_07_Bayes_7/bayes_7_compile.R"
 
