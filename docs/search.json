@@ -77,6 +77,104 @@
     "text": "This is a collection of bits and pieces useful in connection with data analysis."
   },
   {
+    "objectID": "Euro24/comp_premier_league.html",
+    "href": "Euro24/comp_premier_league.html",
+    "title": "Comparison of different models on the Premier League 2019 dataset",
+    "section": "",
+    "text": "The experiments take some time to run, therefore we used the R-Script to producte the results https://github.com/oduerr/da/blob/master/website/Euro24/eval_performance_runner.R."
+  },
+  {
+    "objectID": "Euro24/comp_premier_league.html#loading-the-data",
+    "href": "Euro24/comp_premier_league.html#loading-the-data",
+    "title": "Comparison of different models on the Premier League 2019 dataset",
+    "section": "Loading the data",
+    "text": "Loading the data\n\n\nCode\n  df = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_premier_league_2019.csv')\n  df %&gt;% tail() %&gt;% kable()\n\n\n\n\n\n\n\nntrain\nres\ntype\nname\n\n\n\n\n2620\n375\n2.9454859\nNLL_PRED\nda/stan/football/hier_model_nb\n\n\n2621\n375\n0.8050755\nNLL_RESULTS\nda/stan/football/hier_model_nb\n\n\n2622\n375\n0.6949439\nNLL_BOOKIE\nda/stan/football/hier_model_nb\n\n\n2623\n375\n-0.8080000\nBET_RETURN\nda/stan/football/hier_model_nb\n\n\n2624\n375\n2.9883916\nNLL_PRED_STAN\nda/stan/football/hier_model_nb\n\n\n2625\n375\n2.9566802\nNLL_PSIS\nda/stan/football/hier_model_nb\n\n\n\n\n\n\n\n\nCode\n  df &lt;- mutate(df, name = sub(\"^.*/\", \"\", name))\n  \n  df_raw = read.csv('~/Documents/GitHub/da/website/Euro24/premierleague2019.csv')\n  head(df_raw) %&gt;% kable()\n\n\n\n\n\n\nDiv\nDate\nTime\nHomeTeam\nAwayTeam\nFTHG\nFTAG\nFTR\nHTHG\nHTAG\nHTR\nReferee\nHS\nAS\nHST\nAST\nHF\nAF\nHC\nAC\nHY\nAY\nHR\nAR\nB365H\nB365D\nB365A\nBWH\nBWD\nBWA\nIWH\nIWD\nIWA\nPSH\nPSD\nPSA\nWHH\nWHD\nWHA\nVCH\nVCD\nVCA\nMaxH\nMaxD\nMaxA\nAvgH\nAvgD\nAvgA\nB365.2.5\nB365.2.5.1\nP.2.5\nP.2.5.1\nMax.2.5\nMax.2.5.1\nAvg.2.5\nAvg.2.5.1\nAHh\nB365AHH\nB365AHA\nPAHH\nPAHA\nMaxAHH\nMaxAHA\nAvgAHH\nAvgAHA\nB365CH\nB365CD\nB365CA\nBWCH\nBWCD\nBWCA\nIWCH\nIWCD\nIWCA\nPSCH\nPSCD\nPSCA\nWHCH\nWHCD\nWHCA\nVCCH\nVCCD\nVCCA\nMaxCH\nMaxCD\nMaxCA\nAvgCH\nAvgCD\nAvgCA\nB365C.2.5\nB365C.2.5.1\nPC.2.5\nPC.2.5.1\nMaxC.2.5\nMaxC.2.5.1\nAvgC.2.5\nAvgC.2.5.1\nAHCh\nB365CAHH\nB365CAHA\nPCAHH\nPCAHA\nMaxCAHH\nMaxCAHA\nAvgCAHH\nAvgCAHA\n\n\n\n\nE0\n09/08/2019\n20:00\nLiverpool\nNorwich\n4\n1\nH\n4\n0\nH\nM Oliver\n15\n12\n7\n5\n9\n9\n11\n2\n0\n2\n0\n0\n1.14\n10.00\n19.00\n1.14\n8.25\n18.50\n1.15\n8.00\n18.00\n1.15\n9.59\n18.05\n1.12\n8.5\n21.00\n1.14\n9.5\n23.00\n1.16\n10.00\n23.00\n1.14\n8.75\n19.83\n1.40\n3.00\n1.40\n3.11\n1.45\n3.11\n1.41\n2.92\n-2.25\n1.96\n1.94\n1.97\n1.95\n1.97\n2.00\n1.94\n1.94\n1.14\n9.50\n21.00\n1.14\n9.0\n20.00\n1.15\n8.00\n18.00\n1.14\n10.43\n19.63\n1.11\n9.50\n21.00\n1.14\n9.50\n23.00\n1.16\n10.50\n23.00\n1.14\n9.52\n19.18\n1.3\n3.50\n1.34\n3.44\n1.36\n3.76\n1.32\n3.43\n-2.25\n1.91\n1.99\n1.94\n1.98\n1.99\n2.07\n1.90\n1.99\n\n\nE0\n10/08/2019\n12:30\nWest Ham\nMan City\n0\n5\nA\n0\n1\nA\nM Dean\n5\n14\n3\n9\n6\n13\n1\n1\n2\n2\n0\n0\n12.00\n6.50\n1.22\n11.50\n5.75\n1.26\n11.00\n6.10\n1.25\n11.68\n6.53\n1.26\n13.00\n6.0\n1.24\n12.00\n6.5\n1.25\n13.00\n6.75\n1.29\n11.84\n6.28\n1.25\n1.44\n2.75\n1.49\n2.77\n1.51\n2.77\n1.48\n2.65\n1.75\n2.00\n1.90\n2.02\n1.90\n2.02\n1.92\n1.99\n1.89\n12.00\n7.00\n1.25\n11.00\n6.0\n1.26\n11.00\n6.10\n1.25\n11.11\n6.68\n1.27\n11.00\n6.50\n1.24\n12.00\n6.50\n1.25\n13.00\n7.00\n1.29\n11.14\n6.46\n1.26\n1.4\n3.00\n1.43\n3.03\n1.50\n3.22\n1.41\n2.91\n1.75\n1.95\n1.95\n1.96\n1.97\n2.07\n1.98\n1.97\n1.92\n\n\nE0\n10/08/2019\n15:00\nBournemouth\nSheffield United\n1\n1\nD\n0\n0\nD\nK Friend\n13\n8\n3\n3\n10\n19\n3\n4\n2\n1\n0\n0\n1.95\n3.60\n3.60\n1.95\n3.60\n3.90\n1.97\n3.55\n3.80\n2.04\n3.57\n3.90\n2.00\n3.5\n3.80\n2.00\n3.6\n4.00\n2.06\n3.65\n4.00\n2.01\n3.53\n3.83\n1.90\n1.90\n1.96\n1.96\n2.00\n1.99\n1.90\n1.93\n-0.50\n2.01\n1.89\n2.04\n1.88\n2.04\n1.91\n2.00\n1.88\n1.95\n3.70\n4.20\n1.95\n3.6\n3.90\n1.97\n3.55\n3.85\n1.98\n3.67\n4.06\n1.95\n3.60\n3.90\n2.00\n3.60\n4.00\n2.03\n3.70\n4.20\n1.98\n3.58\n3.96\n1.9\n1.90\n1.94\n1.97\n1.97\n1.98\n1.91\n1.92\n-0.50\n1.95\n1.95\n1.98\n1.95\n2.00\n1.96\n1.96\n1.92\n\n\nE0\n10/08/2019\n15:00\nBurnley\nSouthampton\n3\n0\nH\n0\n0\nD\nG Scott\n10\n11\n4\n3\n6\n12\n2\n7\n0\n0\n0\n0\n2.62\n3.20\n2.75\n2.65\n3.20\n2.75\n2.65\n3.20\n2.75\n2.71\n3.31\n2.81\n2.70\n3.2\n2.75\n2.70\n3.3\n2.80\n2.80\n3.33\n2.85\n2.68\n3.22\n2.78\n2.10\n1.72\n2.17\n1.77\n2.20\n1.78\n2.12\n1.73\n0.00\n1.92\n1.98\n1.93\n2.00\n1.94\n2.00\n1.91\n1.98\n2.70\n3.25\n2.90\n2.65\n3.1\n2.85\n2.60\n3.20\n2.85\n2.71\n3.19\n2.90\n2.62\n3.20\n2.80\n2.70\n3.25\n2.90\n2.72\n3.26\n2.95\n2.65\n3.18\n2.88\n2.1\n1.72\n2.19\n1.76\n2.25\n1.78\n2.17\n1.71\n0.00\n1.87\n2.03\n1.89\n2.03\n1.90\n2.07\n1.86\n2.02\n\n\nE0\n10/08/2019\n15:00\nCrystal Palace\nEverton\n0\n0\nD\n0\n0\nD\nJ Moss\n6\n10\n2\n3\n16\n14\n6\n2\n2\n1\n0\n1\n3.00\n3.25\n2.37\n3.20\n3.20\n2.35\n3.10\n3.20\n2.40\n3.21\n3.37\n2.39\n3.10\n3.3\n2.35\n3.20\n3.3\n2.45\n3.21\n3.40\n2.52\n3.13\n3.27\n2.40\n2.20\n1.66\n2.23\n1.74\n2.25\n1.74\n2.18\n1.70\n0.25\n1.85\n2.05\n1.88\n2.05\n1.88\n2.09\n1.84\n2.04\n3.40\n3.50\n2.25\n3.30\n3.3\n2.25\n3.40\n3.30\n2.20\n3.37\n3.45\n2.27\n3.30\n3.30\n2.25\n3.40\n3.30\n2.25\n3.55\n3.50\n2.34\n3.41\n3.37\n2.23\n2.2\n1.66\n2.22\n1.74\n2.28\n1.77\n2.17\n1.71\n0.25\n1.82\n2.08\n1.97\n1.96\n2.03\n2.08\n1.96\n1.93\n\n\nE0\n10/08/2019\n15:00\nWatford\nBrighton\n0\n3\nA\n0\n1\nA\nC Pawson\n11\n5\n3\n3\n15\n11\n5\n2\n0\n1\n0\n0\n1.90\n3.40\n4.00\n1.90\n3.40\n4.33\n1.93\n3.40\n4.25\n1.98\n3.44\n4.37\n1.95\n3.4\n4.20\n1.95\n3.5\n4.33\n2.00\n3.50\n4.60\n1.94\n3.41\n4.26\n2.10\n1.72\n2.19\n1.76\n2.24\n1.76\n2.16\n1.71\n-0.50\n1.95\n1.95\n1.98\n1.95\n1.98\n1.98\n1.94\n1.94\n2.10\n3.25\n4.20\n2.10\n3.1\n4.00\n2.05\n3.20\n4.00\n2.05\n3.38\n4.12\n2.05\n3.25\n4.00\n2.15\n3.30\n3.90\n2.15\n3.38\n4.20\n2.07\n3.27\n4.04\n2.1\n1.72\n2.16\n1.78\n2.20\n1.78\n2.14\n1.73\n-0.50\n2.04\n1.86\n2.05\n1.88\n2.12\n1.91\n2.05\n1.84"
+  },
+  {
+    "objectID": "Euro24/comp_premier_league.html#model-comparisons",
+    "href": "Euro24/comp_premier_league.html#model-comparisons",
+    "title": "Comparison of different models on the Premier League 2019 dataset",
+    "section": "Model Comparisons",
+    "text": "Model Comparisons\n\n\nCode\n   # Assuming df is your dataframe\n  df %&gt;% filter(type == 'NLL_PRED') %&gt;% \n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line() + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models on the Premier League 2019 dataset', \n      x = 'Number of training data', \n      y = 'Negative Log Likelihood'\n    ) + \n    ylim(2.5, 4) +\n    theme(legend.position = \"bottom\") +\n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\nObservations\n\nEspecially for small training data, the hierarchical model performs better than the non-hierarchical model.\nThe Correlated Dataset model performs slightly better than non-correlated one\nThere is partically no difference in predictive performance when comparing the model with and without Cholesky decomposition.\nThe negative binomial model performs comparable to Poisson model.\nAll models start to deteriorate at around 280 training data. This is due to the interruped season in 2019/2020 due to the COVID-19 pandemic."
+  },
+  {
+    "objectID": "Euro24/comp_premier_league.html#comparison-of-predicted-vs-psis-loo",
+    "href": "Euro24/comp_premier_league.html#comparison-of-predicted-vs-psis-loo",
+    "title": "Comparison of different models on the Premier League 2019 dataset",
+    "section": "Comparison of predicted vs PSIS-LOO",
+    "text": "Comparison of predicted vs PSIS-LOO\n\n\nCode\n  df %&gt;% filter(type %in% c('NLL_PRED', 'NLL_PSIS', 'NLL_PRED_STAN')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = type)) + \n    geom_line(aes(linetype = type)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models on the Premier League 2019 dataset', \n      x = 'Number of training data', \n      y = 'Negative Log Likelihood'\n    ) + \n    ylim(2.5, 4) +\n    facet_wrap(~name) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\nObservations\n\nFor few training data, PSIS-LOO estimator is"
+  },
+  {
+    "objectID": "Euro24/comp_premier_league.html#result-nlls",
+    "href": "Euro24/comp_premier_league.html#result-nlls",
+    "title": "Comparison of different models on the Premier League 2019 dataset",
+    "section": "Result NLLs",
+    "text": "Result NLLs\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('NLL_RESULTS', 'NLL_BOOKIE')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = type)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models on the Premier League 2019 dataset', \n      x = 'Number of training data', \n      y = 'Negative Log Likelihood'\n    ) + \n    ylim(0.75, 1.5) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area"
+  },
+  {
+    "objectID": "Euro24/comp_premier_league.html#betting-returns",
+    "href": "Euro24/comp_premier_league.html#betting-returns",
+    "title": "Comparison of different models on the Premier League 2019 dataset",
+    "section": "Betting Returns",
+    "text": "Betting Returns\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('BET_RETURN')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models on the Premier League 2019 dataset', \n      x = 'Number of training data', \n      y = 'Betting Returns'\n    ) + \n    #ylim(0.75, 1.5) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area"
+  },
+  {
+    "objectID": "Euro24/comp_premier_league.html#technical-details",
+    "href": "Euro24/comp_premier_league.html#technical-details",
+    "title": "Comparison of different models on the Premier League 2019 dataset",
+    "section": "Technical Details",
+    "text": "Technical Details\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('MIN_SUM_PROB')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models on the Premier League 2019 dataset', \n      x = 'Number of training data', \n      y = 'Sum of Probabilities from 0 to 10 goals (should be 1)'\n    ) + \n    ylim(0.75, 1.01) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area"
+  },
+  {
+    "objectID": "Euro24/comp_bundes_liga_2000.html",
+    "href": "Euro24/comp_bundes_liga_2000.html",
+    "title": "Comparison of different models Bundesliga Dataset",
+    "section": "",
+    "text": "The experiments take some time to run, therefore we used the R-Script to producte the results https://github.com/oduerr/da/blob/master/website/Euro24/eval_performance_runner.R."
+  },
+  {
+    "objectID": "Euro24/comp_bundes_liga_2000.html#loading-the-data",
+    "href": "Euro24/comp_bundes_liga_2000.html#loading-the-data",
+    "title": "Comparison of different models Bundesliga Dataset",
+    "section": "Loading the data",
+    "text": "Loading the data\n\n\nCode\n  df = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_20.csv')\n  df &lt;- mutate(df, name = sub(\"^.*/\", \"\", name))\n  \n  \n  df_raw = read.csv('~/Documents/GitHub/da/website/Euro24/bundesliga2000.csv')\n  head(df_raw) %&gt;% kable()\n\n\n\n\n\n\nDiv\nDate\nHomeTeam\nAwayTeam\nFTHG\nFTAG\nFTR\nHTHG\nHTAG\nHTR\nAttendance\nReferee\nHS\nAS\nHST\nAST\nHHW\nAHW\nHC\nAC\nHF\nAF\nHO\nAO\nHY\nAY\nHR\nAR\nHBP\nABP\nGBH\nGBD\nGBA\nIWH\nIWD\nIWA\nLBH\nLBD\nLBA\nSBH\nSBD\nSBA\nWHH\nWHD\nWHA\n\n\n\n\nD1\n11/08/00\nDortmund\nHansa Rostock\n1\n0\nH\n0\n0\nD\n61000\nJ&lt;f6&gt;rg Kessler\n17\n5\n7\n2\n0\n0\n7\n3\n25\n19\n4\n8\n1\n5\n0\n0\n10\n50\n1.5\n3.4\n5.0\n1.45\n3.5\n5.0\nNA\nNA\nNA\n1.50\n3.50\n6.00\n1.44\n3.6\n6.5\n\n\nD1\n12/08/00\nBayern Munich\nHertha\n4\n1\nH\n1\n0\nH\n57000\nMarkus Merk\n14\n11\n6\n5\n1\n0\n4\n9\n13\n12\n3\n3\n1\n0\n0\n0\n10\n0\n1.3\n4.5\n6.0\n1.45\n3.5\n5.0\nNA\nNA\nNA\n1.40\n3.75\n7.00\n1.44\n3.6\n6.5\n\n\nD1\n12/08/00\nFreiburg\nStuttgart\n4\n0\nH\n2\n0\nH\n22500\nHelmut Krug\n15\n18\n7\n5\n0\n0\n4\n7\n22\n17\n0\n0\n1\n1\n0\n0\n10\n10\n2.4\n3.1\n2.5\n2.30\n2.9\n2.5\nNA\nNA\nNA\n2.60\n3.25\n2.38\n2.40\n3.2\n2.5\n\n\nD1\n12/08/00\nHamburg\nMunich 1860\n2\n2\nD\n2\n2\nD\n35000\nHerbert Fandel\n18\n9\n5\n7\n1\n0\n5\n3\n0\n0\n0\n0\n2\n2\n0\n1\n20\n45\n1.8\n3.3\n3.8\n1.80\n3.0\n3.5\nNA\nNA\nNA\n1.75\n3.30\n4.00\n1.66\n3.3\n4.5\n\n\nD1\n12/08/00\nKaiserslautern\nBochum\n0\n1\nA\n0\n0\nD\n38000\nHelmut Fleischer\n11\n5\n2\n2\n0\n0\n5\n5\n9\n8\n0\n0\n1\n0\n0\n0\n10\n0\n1.5\n3.4\n4.6\n1.45\n3.5\n5.0\nNA\nNA\nNA\n1.44\n3.80\n6.00\n1.50\n3.6\n5.5\n\n\nD1\n12/08/00\nLeverkusen\nWolfsburg\n2\n0\nH\n2\n0\nH\n22500\nEdgar Steinborn\n18\n5\n5\n5\n0\n0\n6\n4\n25\n22\n0\n0\n0\n2\n0\n0\n0\n20\n1.4\n4.0\n5.5\n1.55\n3.3\n4.5\nNA\nNA\nNA\n1.44\n3.80\n6.00\n1.44\n3.6\n6.5"
+  },
+  {
+    "objectID": "Euro24/comp_bundes_liga_2000.html#model-comparisons",
+    "href": "Euro24/comp_bundes_liga_2000.html#model-comparisons",
+    "title": "Comparison of different models Bundesliga Dataset",
+    "section": "Model Comparisons",
+    "text": "Model Comparisons\nWe use the negative log likelihood (NLL) as a measure of the predictive performance of the models. The lower the NLL, the better the model. However, strictly speaking it is the negative log posterior predictive density (divided by \\(n\\)) evaluated at the \\(n\\) games after the training data.\n\\[\n\\text{NLL} = -\\frac{1}{n}\\sum_{i=1}^n \\log p(y_i | x_i, \\theta)\n\\]\n\n\nCode\n   # Assuming df is your dataframe\n  df %&gt;% filter(type == 'NLL_PRED') %&gt;% \n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line() + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2000 dataset', \n      x = 'Number of training data', \n      y = 'Negative Log Likelihood'\n    ) + \n    ylim(2.5, 4) +\n    theme(legend.position = \"bottom\") +\n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\nObservations\n\nEspecially for small training data, the hierarchical model performs better than the non-hierarchical model.\nThe Correlated Dataset model performs slightly better than non-correlated one\nThere is partically no difference in predictive performance when comparing the model with and without Cholesky decomposition.\nThe negative binomial model performs comparable to Poisson model."
+  },
+  {
+    "objectID": "Euro24/comp_bundes_liga_2000.html#comparison-of-predicted-vs-psis-loo",
+    "href": "Euro24/comp_bundes_liga_2000.html#comparison-of-predicted-vs-psis-loo",
+    "title": "Comparison of different models Bundesliga Dataset",
+    "section": "Comparison of predicted vs PSIS-LOO",
+    "text": "Comparison of predicted vs PSIS-LOO\n\n\nCode\n  df %&gt;% filter(type %in% c('NLL_PRED', 'NLL_PSIS', 'NLL_PRED_STAN')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = type)) + \n    geom_line(aes(linetype = type)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title =  'Comparison of different models for the Bundesliga 2000 dataset',\n      x = 'Number of training data', \n      y = 'Negative Log Likelihood'\n    ) + \n    ylim(2.5, 4) +\n    facet_wrap(~name) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\nObservations"
+  },
+  {
+    "objectID": "Euro24/comp_bundes_liga_2000.html#nnl-for-win-draws-and-losses",
+    "href": "Euro24/comp_bundes_liga_2000.html#nnl-for-win-draws-and-losses",
+    "title": "Comparison of different models Bundesliga Dataset",
+    "section": "NNL for win, draws and losses",
+    "text": "NNL for win, draws and losses\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('NLL_RESULTS', 'NLL_BOOKIE')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = type)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2000 dataset',\n      x = 'Number of training data', \n      y = 'Negative Log Likelihood'\n    ) + \n    ylim(0.75, 1.5) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\nObservations\n\nThe NLL for the bookie is always better than the NLL of the models, so we should not bet."
+  },
+  {
+    "objectID": "Euro24/comp_bundes_liga_2000.html#betting-returns",
+    "href": "Euro24/comp_bundes_liga_2000.html#betting-returns",
+    "title": "Comparison of different models Bundesliga Dataset",
+    "section": "Betting Returns",
+    "text": "Betting Returns\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('BET_RETURN')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line(aes(linetype = name)) +  \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2000 dataset',\n      x = 'Number of training data', \n      y = 'Betting Returns'\n    ) + \n    #ylim(0.75, 1.5) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\nObservations\nWe see quite some fluctuation in the betting return. Since the NLL shows that the odds from the booki are always better then the NLLs of the models we should not bet."
+  },
+  {
+    "objectID": "Euro24/comp_bundes_liga_2000.html#technical-details",
+    "href": "Euro24/comp_bundes_liga_2000.html#technical-details",
+    "title": "Comparison of different models Bundesliga Dataset",
+    "section": "Technical Details",
+    "text": "Technical Details\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('MIN_SUM_PROB')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2000 dataset',\n      x = 'Number of training data', \n      y = 'Sum of Probabilities from 0 to 10 goals (should be 1)'\n    ) + \n    ylim(0.75, 1.01) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('num_divergent')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2000 dataset',\n      x = 'Number of training data', \n      y = 'Number of Divergent Transitions (sqrt scale)'\n    ) + \n    theme(legend.position = \"bottom\") + \n    scale_y_sqrt() + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\n\nCode\ndf %&gt;% \n  filter(type %in% c('ebfmi')) %&gt;%\n  ggplot(aes(x = ntrain, y = res, color = name)) + \n  geom_line(aes(linetype = name)) + \n  geom_point() + \n  theme_minimal() + \n  labs(\n    title = 'Comparison of different models for the Bundesliga 2000 dataset',\n    x = 'Number of training data', \n    y = 'ebfmi' \n  ) + \n  theme(legend.position = \"bottom\") + \n  geom_hline(yintercept = 0.3, linetype = \"dashed\", color = \"red\") + \n  annotate(\"text\", x = Inf, y = 0.33, label = \"Acceptable\", hjust = 1.1, color = \"red\") + \n  annotate(\"text\", x = Inf, y = 0.27, label = \"Non-Acceptable\", hjust = 1.1, color = \"red\") +\n  coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area"
+  },
+  {
     "objectID": "lecture_notes/MCMC/MCMC.html",
     "href": "lecture_notes/MCMC/MCMC.html",
     "title": "Lecture Notes on MCMC",
@@ -165,7 +263,7 @@
     "href": "Euro24/euro24.html#conditioning-on-the-data-fitting-the-model",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
     "section": "Conditioning on the data / Fitting the model",
-    "text": "Conditioning on the data / Fitting the model\nAfter we state the model we fit the model to the data, or in Bayesian parlance, we update our degree of belief after seeing the data.\n\n\n\n\n\n\nDetails of the model MCMC sampling with Stan\n\n\n\n\n\nThe model is written in the probabilistic programming language Stan and can be found at https://github.com/oduerr/da/blob/master/website/Euro24/hier_model_cor.stan. This model used a Cholesky decomposition to model the correlation between the attack and defense strength of the teams. While this produces very effective sampling and is numerically stable, the Cholesky decomposition adds another layer of complexity to the model. We also provide a model without the Cholesky decomposition at https://github.com/oduerr/da/blob/master/website/Euro24/hier_model_cor_nocholesky.stan which is easier to understand but which is, besides the numerical difficulties, equivalent to the model with the Cholesky decomposition.\n\n\nCode\nlibrary(cmdstanr)\noptions(mc.cores = parallel::detectCores())\nhmodel &lt;- cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model_cor.stan')\n#hmodel &lt;- cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model_cor_nocholsky.stan')\nhfit = hmodel$sample(data = my_data)\n## Running MCMC with 4 chains, at most 10 in parallel...\n## \n## Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) \n## Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) \n## Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) \n## Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) \n## Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) \n## Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) \n## Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) \n## Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) \n## Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) \n## Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) \n## Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) \n## Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) \n## Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) \n## Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) \n## Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) \n## Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) \n## Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) \n## Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) \n## Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) \n## Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) \n## Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) \n## Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) \n## Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) \n## Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) \n## Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) \n## Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) \n## Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) \n## Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) \n## Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) \n## Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) \n## Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) \n## Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) \n## Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) \n## Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) \n## Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) \n## Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) \n## Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) \n## Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) \n## Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) \n## Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) \n## Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) \n## Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) \n## Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) \n## Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) \n## Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) \n## Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) \n## Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) \n## Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) \n## Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) \n## Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) \n## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) \n## Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) \n## Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) \n## Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) \n## Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) \n## Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) \n## Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) \n## Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) \n## Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) \n## Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) \n## Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) \n## Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) \n## Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) \n## Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) \n## Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) \n## Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) \n## Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) \n## Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) \n## Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) \n## Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) \n## Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) \n## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) \n## Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) \n## Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) \n## Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) \n## Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) \n## Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) \n## Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) \n## Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) \n## Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) \n## Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) \n## Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) \n## Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) \n## Chain 4 finished in 0.7 seconds.\n## Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) \n## Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) \n## Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) \n## Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) \n## Chain 2 finished in 0.8 seconds.\n## Chain 3 finished in 0.8 seconds.\n## Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) \n## Chain 1 finished in 1.0 seconds.\n## \n## All 4 chains finished successfully.\n## Mean chain execution time: 0.8 seconds.\n## Total execution time: 1.1 seconds.\np1 = bayesplot::mcmc_rhat_hist(bayesplot::rhat(hfit))\np2 = bayesplot::mcmc_neff_hist(bayesplot::neff_ratio(hfit))\nggpubr::ggarrange(p1, p2, ncol=2)\n\n\n\n\n\n\n\n\n\nThe fitting of the model is good, as the Rhat values are close to 1 and we have no divergent transitions. The effective sample size is also good."
+    "text": "Conditioning on the data / Fitting the model\nAfter we state the model we fit the model to the data, or in Bayesian parlance, we update our degree of belief after seeing the data.\n\n\n\n\n\n\nDetails of the model MCMC sampling with Stan\n\n\n\n\n\nThe model is written in the probabilistic programming language Stan and can be found at https://github.com/oduerr/da/blob/master/website/Euro24/hier_model_cor.stan. This model used a Cholesky decomposition to model the correlation between the attack and defense strength of the teams. While this produces very effective sampling and is numerically stable, the Cholesky decomposition adds another layer of complexity to the model. We also provide a model without the Cholesky decomposition at https://github.com/oduerr/da/blob/master/website/Euro24/hier_model_cor_nocholesky.stan which is easier to understand but which is, besides the numerical difficulties, equivalent to the model with the Cholesky decomposition.\n\n\nCode\nlibrary(cmdstanr)\noptions(mc.cores = parallel::detectCores())\nhmodel &lt;- cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model_cor.stan')\n#hmodel &lt;- cmdstan_model('~/Documents/GitHub/da/website/Euro24/hier_model_cor_nocholsky.stan')\nhfit = hmodel$sample(data = my_data)\n## Running MCMC with 4 chains, at most 10 in parallel...\n## \n## Chain 1 Iteration:    1 / 2000 [  0%]  (Warmup) \n## Chain 2 Iteration:    1 / 2000 [  0%]  (Warmup) \n## Chain 2 Iteration:  100 / 2000 [  5%]  (Warmup) \n## Chain 2 Iteration:  200 / 2000 [ 10%]  (Warmup) \n## Chain 2 Iteration:  300 / 2000 [ 15%]  (Warmup) \n## Chain 3 Iteration:    1 / 2000 [  0%]  (Warmup) \n## Chain 3 Iteration:  100 / 2000 [  5%]  (Warmup) \n## Chain 3 Iteration:  200 / 2000 [ 10%]  (Warmup) \n## Chain 3 Iteration:  300 / 2000 [ 15%]  (Warmup) \n## Chain 4 Iteration:    1 / 2000 [  0%]  (Warmup) \n## Chain 4 Iteration:  100 / 2000 [  5%]  (Warmup) \n## Chain 4 Iteration:  200 / 2000 [ 10%]  (Warmup) \n## Chain 4 Iteration:  300 / 2000 [ 15%]  (Warmup) \n## Chain 1 Iteration:  100 / 2000 [  5%]  (Warmup) \n## Chain 1 Iteration:  200 / 2000 [ 10%]  (Warmup) \n## Chain 1 Iteration:  300 / 2000 [ 15%]  (Warmup) \n## Chain 2 Iteration:  400 / 2000 [ 20%]  (Warmup) \n## Chain 2 Iteration:  500 / 2000 [ 25%]  (Warmup) \n## Chain 2 Iteration:  600 / 2000 [ 30%]  (Warmup) \n## Chain 2 Iteration:  700 / 2000 [ 35%]  (Warmup) \n## Chain 3 Iteration:  400 / 2000 [ 20%]  (Warmup) \n## Chain 3 Iteration:  500 / 2000 [ 25%]  (Warmup) \n## Chain 3 Iteration:  600 / 2000 [ 30%]  (Warmup) \n## Chain 3 Iteration:  700 / 2000 [ 35%]  (Warmup) \n## Chain 4 Iteration:  400 / 2000 [ 20%]  (Warmup) \n## Chain 4 Iteration:  500 / 2000 [ 25%]  (Warmup) \n## Chain 4 Iteration:  600 / 2000 [ 30%]  (Warmup) \n## Chain 4 Iteration:  700 / 2000 [ 35%]  (Warmup) \n## Chain 4 Iteration:  800 / 2000 [ 40%]  (Warmup) \n## Chain 1 Iteration:  400 / 2000 [ 20%]  (Warmup) \n## Chain 1 Iteration:  500 / 2000 [ 25%]  (Warmup) \n## Chain 1 Iteration:  600 / 2000 [ 30%]  (Warmup) \n## Chain 1 Iteration:  700 / 2000 [ 35%]  (Warmup) \n## Chain 2 Iteration:  800 / 2000 [ 40%]  (Warmup) \n## Chain 2 Iteration:  900 / 2000 [ 45%]  (Warmup) \n## Chain 2 Iteration: 1000 / 2000 [ 50%]  (Warmup) \n## Chain 2 Iteration: 1001 / 2000 [ 50%]  (Sampling) \n## Chain 3 Iteration:  800 / 2000 [ 40%]  (Warmup) \n## Chain 3 Iteration:  900 / 2000 [ 45%]  (Warmup) \n## Chain 3 Iteration: 1000 / 2000 [ 50%]  (Warmup) \n## Chain 3 Iteration: 1001 / 2000 [ 50%]  (Sampling) \n## Chain 3 Iteration: 1100 / 2000 [ 55%]  (Sampling) \n## Chain 4 Iteration:  900 / 2000 [ 45%]  (Warmup) \n## Chain 4 Iteration: 1000 / 2000 [ 50%]  (Warmup) \n## Chain 4 Iteration: 1001 / 2000 [ 50%]  (Sampling) \n## Chain 4 Iteration: 1100 / 2000 [ 55%]  (Sampling) \n## Chain 1 Iteration:  800 / 2000 [ 40%]  (Warmup) \n## Chain 1 Iteration:  900 / 2000 [ 45%]  (Warmup) \n## Chain 1 Iteration: 1000 / 2000 [ 50%]  (Warmup) \n## Chain 1 Iteration: 1001 / 2000 [ 50%]  (Sampling) \n## Chain 2 Iteration: 1100 / 2000 [ 55%]  (Sampling) \n## Chain 2 Iteration: 1200 / 2000 [ 60%]  (Sampling) \n## Chain 3 Iteration: 1200 / 2000 [ 60%]  (Sampling) \n## Chain 3 Iteration: 1300 / 2000 [ 65%]  (Sampling) \n## Chain 4 Iteration: 1200 / 2000 [ 60%]  (Sampling) \n## Chain 4 Iteration: 1300 / 2000 [ 65%]  (Sampling) \n## Chain 4 Iteration: 1400 / 2000 [ 70%]  (Sampling) \n## Chain 1 Iteration: 1100 / 2000 [ 55%]  (Sampling) \n## Chain 1 Iteration: 1200 / 2000 [ 60%]  (Sampling) \n## Chain 2 Iteration: 1300 / 2000 [ 65%]  (Sampling) \n## Chain 2 Iteration: 1400 / 2000 [ 70%]  (Sampling) \n## Chain 3 Iteration: 1400 / 2000 [ 70%]  (Sampling) \n## Chain 3 Iteration: 1500 / 2000 [ 75%]  (Sampling) \n## Chain 4 Iteration: 1500 / 2000 [ 75%]  (Sampling) \n## Chain 4 Iteration: 1600 / 2000 [ 80%]  (Sampling) \n## Chain 1 Iteration: 1300 / 2000 [ 65%]  (Sampling) \n## Chain 1 Iteration: 1400 / 2000 [ 70%]  (Sampling) \n## Chain 2 Iteration: 1500 / 2000 [ 75%]  (Sampling) \n## Chain 2 Iteration: 1600 / 2000 [ 80%]  (Sampling) \n## Chain 3 Iteration: 1600 / 2000 [ 80%]  (Sampling) \n## Chain 3 Iteration: 1700 / 2000 [ 85%]  (Sampling) \n## Chain 4 Iteration: 1700 / 2000 [ 85%]  (Sampling) \n## Chain 4 Iteration: 1800 / 2000 [ 90%]  (Sampling) \n## Chain 4 Iteration: 1900 / 2000 [ 95%]  (Sampling) \n## Chain 1 Iteration: 1500 / 2000 [ 75%]  (Sampling) \n## Chain 1 Iteration: 1600 / 2000 [ 80%]  (Sampling) \n## Chain 1 Iteration: 1700 / 2000 [ 85%]  (Sampling) \n## Chain 2 Iteration: 1700 / 2000 [ 85%]  (Sampling) \n## Chain 2 Iteration: 1800 / 2000 [ 90%]  (Sampling) \n## Chain 2 Iteration: 1900 / 2000 [ 95%]  (Sampling) \n## Chain 3 Iteration: 1800 / 2000 [ 90%]  (Sampling) \n## Chain 3 Iteration: 1900 / 2000 [ 95%]  (Sampling) \n## Chain 4 Iteration: 2000 / 2000 [100%]  (Sampling) \n## Chain 4 finished in 0.7 seconds.\n## Chain 1 Iteration: 1800 / 2000 [ 90%]  (Sampling) \n## Chain 1 Iteration: 1900 / 2000 [ 95%]  (Sampling) \n## Chain 2 Iteration: 2000 / 2000 [100%]  (Sampling) \n## Chain 3 Iteration: 2000 / 2000 [100%]  (Sampling) \n## Chain 2 finished in 0.8 seconds.\n## Chain 3 finished in 0.8 seconds.\n## Chain 1 Iteration: 2000 / 2000 [100%]  (Sampling) \n## Chain 1 finished in 0.9 seconds.\n## \n## All 4 chains finished successfully.\n## Mean chain execution time: 0.8 seconds.\n## Total execution time: 1.1 seconds.\np1 = bayesplot::mcmc_rhat_hist(bayesplot::rhat(hfit))\np2 = bayesplot::mcmc_neff_hist(bayesplot::neff_ratio(hfit))\nggpubr::ggarrange(p1, p2, ncol=2)\n\n\n\n\n\n\n\n\n\nThe fitting of the model is good, as the Rhat values are close to 1 and we have no divergent transitions. The effective sample size is also good."
   },
   {
     "objectID": "Euro24/euro24.html#the-fitted-model",
@@ -210,11 +308,11 @@
     "text": "4 Italy vs Albania"
   },
   {
-    "objectID": "Euro24/euro24.html#serbia-vs-england",
-    "href": "Euro24/euro24.html#serbia-vs-england",
+    "objectID": "Euro24/euro24.html#poland-vs-netherlands",
+    "href": "Euro24/euro24.html#poland-vs-netherlands",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "7 Serbia vs England",
-    "text": "7 Serbia vs England"
+    "section": "5 Poland vs Netherlands",
+    "text": "5 Poland vs Netherlands"
   },
   {
     "objectID": "Euro24/euro24.html#slovenia-vs-denmark",
@@ -224,18 +322,18 @@
     "text": "6 Slovenia vs Denmark"
   },
   {
-    "objectID": "Euro24/euro24.html#poland-vs-netherlands",
-    "href": "Euro24/euro24.html#poland-vs-netherlands",
+    "objectID": "Euro24/euro24.html#serbia-vs-england",
+    "href": "Euro24/euro24.html#serbia-vs-england",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "5 Poland vs Netherlands",
-    "text": "5 Poland vs Netherlands"
+    "section": "7 Serbia vs England",
+    "text": "7 Serbia vs England"
   },
   {
-    "objectID": "Euro24/euro24.html#austria-vs-france",
-    "href": "Euro24/euro24.html#austria-vs-france",
+    "objectID": "Euro24/euro24.html#romania-vs-ukraine",
+    "href": "Euro24/euro24.html#romania-vs-ukraine",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "10 Austria vs France",
-    "text": "10 Austria vs France"
+    "section": "8 Romania vs Ukraine",
+    "text": "8 Romania vs Ukraine"
   },
   {
     "objectID": "Euro24/euro24.html#belgium-vs-slovakia",
@@ -245,11 +343,11 @@
     "text": "9 Belgium vs Slovakia"
   },
   {
-    "objectID": "Euro24/euro24.html#romania-vs-ukraine",
-    "href": "Euro24/euro24.html#romania-vs-ukraine",
+    "objectID": "Euro24/euro24.html#austria-vs-france",
+    "href": "Euro24/euro24.html#austria-vs-france",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "8 Romania vs Ukraine",
-    "text": "8 Romania vs Ukraine"
+    "section": "10 Austria vs France",
+    "text": "10 Austria vs France"
   },
   {
     "objectID": "Euro24/euro24.html#türkiye-vs-georgia",
@@ -266,11 +364,11 @@
     "text": "12 Portugal vs Czechia"
   },
   {
-    "objectID": "Euro24/euro24.html#scotland-vs-switzerland",
-    "href": "Euro24/euro24.html#scotland-vs-switzerland",
+    "objectID": "Euro24/euro24.html#croatia-vs-albania",
+    "href": "Euro24/euro24.html#croatia-vs-albania",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "15 Scotland vs Switzerland",
-    "text": "15 Scotland vs Switzerland"
+    "section": "13 Croatia vs Albania",
+    "text": "13 Croatia vs Albania"
   },
   {
     "objectID": "Euro24/euro24.html#germany-vs-hungary",
@@ -280,11 +378,11 @@
     "text": "14 Germany vs Hungary"
   },
   {
-    "objectID": "Euro24/euro24.html#croatia-vs-albania",
-    "href": "Euro24/euro24.html#croatia-vs-albania",
+    "objectID": "Euro24/euro24.html#scotland-vs-switzerland",
+    "href": "Euro24/euro24.html#scotland-vs-switzerland",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "13 Croatia vs Albania",
-    "text": "13 Croatia vs Albania"
+    "section": "15 Scotland vs Switzerland",
+    "text": "15 Scotland vs Switzerland"
   },
   {
     "objectID": "Euro24/euro24.html#spain-vs-italy",
@@ -294,18 +392,18 @@
     "text": "16 Spain vs Italy"
   },
   {
-    "objectID": "Euro24/euro24.html#denmark-vs-england",
-    "href": "Euro24/euro24.html#denmark-vs-england",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "18 Denmark vs England",
-    "text": "18 Denmark vs England"
-  },
-  {
     "objectID": "Euro24/euro24.html#slovenia-vs-serbia",
     "href": "Euro24/euro24.html#slovenia-vs-serbia",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
     "section": "17 Slovenia vs Serbia",
     "text": "17 Slovenia vs Serbia"
+  },
+  {
+    "objectID": "Euro24/euro24.html#denmark-vs-england",
+    "href": "Euro24/euro24.html#denmark-vs-england",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "18 Denmark vs England",
+    "text": "18 Denmark vs England"
   },
   {
     "objectID": "Euro24/euro24.html#poland-vs-austria",
@@ -364,13 +462,6 @@
     "text": "26 Scotland vs Hungary"
   },
   {
-    "objectID": "Euro24/euro24.html#albania-vs-spain",
-    "href": "Euro24/euro24.html#albania-vs-spain",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "28 Albania vs Spain",
-    "text": "28 Albania vs Spain"
-  },
-  {
     "objectID": "Euro24/euro24.html#croatia-vs-italy",
     "href": "Euro24/euro24.html#croatia-vs-italy",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
@@ -378,18 +469,11 @@
     "text": "27 Croatia vs Italy"
   },
   {
-    "objectID": "Euro24/euro24.html#england-vs-slovenia",
-    "href": "Euro24/euro24.html#england-vs-slovenia",
+    "objectID": "Euro24/euro24.html#albania-vs-spain",
+    "href": "Euro24/euro24.html#albania-vs-spain",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "31 England vs Slovenia",
-    "text": "31 England vs Slovenia"
-  },
-  {
-    "objectID": "Euro24/euro24.html#denmark-vs-serbia",
-    "href": "Euro24/euro24.html#denmark-vs-serbia",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "32 Denmark vs Serbia",
-    "text": "32 Denmark vs Serbia"
+    "section": "28 Albania vs Spain",
+    "text": "28 Albania vs Spain"
   },
   {
     "objectID": "Euro24/euro24.html#netherlands-vs-austria",
@@ -406,6 +490,20 @@
     "text": "30 France vs Poland"
   },
   {
+    "objectID": "Euro24/euro24.html#england-vs-slovenia",
+    "href": "Euro24/euro24.html#england-vs-slovenia",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "31 England vs Slovenia",
+    "text": "31 England vs Slovenia"
+  },
+  {
+    "objectID": "Euro24/euro24.html#denmark-vs-serbia",
+    "href": "Euro24/euro24.html#denmark-vs-serbia",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "32 Denmark vs Serbia",
+    "text": "32 Denmark vs Serbia"
+  },
+  {
     "objectID": "Euro24/euro24.html#slovakia-vs-romania",
     "href": "Euro24/euro24.html#slovakia-vs-romania",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
@@ -420,13 +518,6 @@
     "text": "34 Ukraine vs Belgium"
   },
   {
-    "objectID": "Euro24/euro24.html#georgia-vs-portugal",
-    "href": "Euro24/euro24.html#georgia-vs-portugal",
-    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
-    "section": "36 Georgia vs Portugal",
-    "text": "36 Georgia vs Portugal"
-  },
-  {
     "objectID": "Euro24/euro24.html#czechia-vs-türkiye",
     "href": "Euro24/euro24.html#czechia-vs-türkiye",
     "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
@@ -434,39 +525,11 @@
     "text": "35 Czechia vs Türkiye"
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "Internal Notes for authoring the website\n\nHow to add a new page\n\nCreate a new quarto file in the root directory or subdirectory. Put the quarto-file in website directory (or subdirectory). Make sure that you do not have self-contained: true in the qmd file, otherwise file gets to large. An example is website/lecture_notes/MCMC/MCMC.qmd\n\n\n---\ntitle: \"Lecture Notes on MCMC\"\nauthor: \"Oliver Dürr\"\nformat: \n  html:\n    toc: true\n    toc-title: \"Table of Contents\"\n    toc-depth: 3\n    fig-width: 6\n    fig-height: 3\n    code-fold: true\n    code-tools: true\n    mathjax: true\n  #  self-contained: true &lt;------ NEEDS TO BE COMMENTED OUT (or not there at all)\n  # pdf:\n  #   toc: true\n  #   toc-title: \"Table of Contents\"\nfilters:\n  - webr\n---\n\n\n\nHow to render the website\n\nRender and move to docs folder\n\nquarto render \n\nCheck in the changes in the docs folder\n\n\n\nDevelopment (in da/website)\nquarto preview lecture_notes/MCMC/MCMC.qmd #For a single file\nquarto preview #For the complete website"
-  },
-  {
-    "objectID": "Euro24/comp_premier_league.html",
-    "href": "Euro24/comp_premier_league.html",
-    "title": "Comparison of different models on the Premier League 2019 dataset",
-    "section": "",
-    "text": "The experiments take some time to run, therefore we used the R-Script to producte the results https://github.com/oduerr/da/blob/master/website/Euro24/eval_performance_runner.R."
-  },
-  {
-    "objectID": "Euro24/comp_premier_league.html#loading",
-    "href": "Euro24/comp_premier_league.html#loading",
-    "title": "Comparison of different models on the Premier League 2019 dataset",
-    "section": "Loading",
-    "text": "Loading\n\n\nCode\n  df = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_premier_league_2019.csv')\n  df %&gt;% tail() %&gt;% kable()\n\n\n\n\n\n\n\nntrain\nres\ntype\nname\n\n\n\n\n645\n325\n3.049470\nNLL_PRED\nda/website/Euro24/hier_model\n\n\n646\n325\n2.961091\nNLL_PSIS\nda/website/Euro24/hier_model\n\n\n647\n325\n3.059964\nNLL_PRED\nda/stan/football/non_hier_model\n\n\n648\n325\n2.897446\nNLL_PSIS\nda/stan/football/non_hier_model\n\n\n649\n325\n3.054317\nNLL_PRED\nda/stan/football/hier_model_nb\n\n\n650\n325\n2.960970\nNLL_PSIS\nda/stan/football/hier_model_nb\n\n\n\n\n\n\n\n\nCode\n  df &lt;- mutate(df, name = sub(\"^.*/\", \"\", name))"
-  },
-  {
-    "objectID": "Euro24/comp_premier_league.html#hierarchical-vs-non-hierarchical-model",
-    "href": "Euro24/comp_premier_league.html#hierarchical-vs-non-hierarchical-model",
-    "title": "Comparison of different models on the Premier League 2019 dataset",
-    "section": "Hierarchical vs Non-Hierarchical Model",
-    "text": "Hierarchical vs Non-Hierarchical Model\n\n\nCode\n   # Assuming df is your dataframe\n  df %&gt;% filter(type == 'NLL_PRED') %&gt;% \n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line() + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models on the Premier League 2019 dataset', \n      x = 'Number of training data', \n      y = 'Negative Log Likelihood'\n    ) + \n    ylim(2.5, 4) +\n    theme(legend.position = \"bottom\") +\n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\nObservations\n\nEspecially for small training data, the hierarchical model performs better than the non-hierarchical model.\nThe Correlated Dataset model performs slightly better than non-correlated one\nThere is partically no difference in predictive performance when comparing the model with and without Cholesky decomposition.\nThe negative binomial model performs comparable to Poisson model.\nAll models start to deteriorate at around 280 training data. This is due to the interruped season in 2019/2020 due to the COVID-19 pandemic."
-  },
-  {
-    "objectID": "Euro24/comp_premier_league.html#comparison-of-predicted-vs-psis-loo",
-    "href": "Euro24/comp_premier_league.html#comparison-of-predicted-vs-psis-loo",
-    "title": "Comparison of different models on the Premier League 2019 dataset",
-    "section": "Comparison of predicted vs PSIS-LOO",
-    "text": "Comparison of predicted vs PSIS-LOO\n\n\nCode\n  df %&gt;% filter(type %in% c('NLL_PRED', 'NLL_PSIS', 'NLL_PRED_STAN')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = type)) + \n    geom_line(aes(linetype = type)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models on the Premier League 2019 dataset', \n      x = 'Number of training data', \n      y = 'Negative Log Likelihood'\n    ) + \n    ylim(2.5, 4) +\n    facet_wrap(~name) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\nObservations\n\nFor few training data, PSIS-LOO estimator is"
+    "objectID": "Euro24/euro24.html#georgia-vs-portugal",
+    "href": "Euro24/euro24.html#georgia-vs-portugal",
+    "title": "Bayes is coming home - Predicting the Euro 2024 with Stan",
+    "section": "36 Georgia vs Portugal",
+    "text": "36 Georgia vs Portugal"
   },
   {
     "objectID": "Euro24/comp_bundes_liga.html",
@@ -480,7 +543,21 @@
     "href": "Euro24/comp_bundes_liga.html#loading-the-data",
     "title": "Comparison of different models Bundesliga Dataset",
     "section": "Loading the data",
-    "text": "Loading the data\n\n\nCode\n  df = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23.csv')\n  df &lt;- mutate(df, name = sub(\"^.*/\", \"\", name))\n  \n  #Add additional run with home advantage\n  df2 = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_home_adv.csv')\n  df2 &lt;- mutate(df2, name = sub(\"^.*/\", \"\", name))\n  df &lt;- rbind(df, df2)\n  \n  # Add additional run with 18 games ahead\n  df3 = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_18Ahead.csv')\n  df = df3\n  print(\"Using 24_18Ahead that means all data is averaged 18 games ahead.\")\n\n\n[1] \"Using 24_18Ahead that means all data is averaged 18 games ahead.\"\n\n\nCode\n  df_raw = read.csv('~/Documents/GitHub/da/website/Euro24/bundesliga2023.csv')\n  head(df_raw) %&gt;% kable()\n\n\n\n\n\n\nDiv\nDate\nTime\nHomeTeam\nAwayTeam\nFTHG\nFTAG\nFTR\nHTHG\nHTAG\nHTR\nHS\nAS\nHST\nAST\nHF\nAF\nHC\nAC\nHY\nAY\nHR\nAR\nB365H\nB365D\nB365A\nBWH\nBWD\nBWA\nIWH\nIWD\nIWA\nPSH\nPSD\nPSA\nWHH\nWHD\nWHA\nVCH\nVCD\nVCA\nMaxH\nMaxD\nMaxA\nAvgH\nAvgD\nAvgA\nB365.2.5\nB365.2.5.1\nP.2.5\nP.2.5.1\nMax.2.5\nMax.2.5.1\nAvg.2.5\nAvg.2.5.1\nAHh\nB365AHH\nB365AHA\nPAHH\nPAHA\nMaxAHH\nMaxAHA\nAvgAHH\nAvgAHA\nB365CH\nB365CD\nB365CA\nBWCH\nBWCD\nBWCA\nIWCH\nIWCD\nIWCA\nPSCH\nPSCD\nPSCA\nWHCH\nWHCD\nWHCA\nVCCH\nVCCD\nVCCA\nMaxCH\nMaxCD\nMaxCA\nAvgCH\nAvgCD\nAvgCA\nB365C.2.5\nB365C.2.5.1\nPC.2.5\nPC.2.5.1\nMaxC.2.5\nMaxC.2.5.1\nAvgC.2.5\nAvgC.2.5.1\nAHCh\nB365CAHH\nB365CAHA\nPCAHH\nPCAHA\nMaxCAHH\nMaxCAHA\nAvgCAHH\nAvgCAHA\n\n\n\n\nD1\n18/08/2023\n19:30\nWerder Bremen\nBayern Munich\n0\n4\nA\n0\n1\nA\n6\n25\n1\n10\n16\n11\n0\n6\n2\n1\n0\n0\n7.50\n6.50\n1.30\n8.00\n6.0\n1.31\n7.00\n5.25\n1.40\n8.59\n6.36\n1.33\n8.00\n5.50\n1.22\n9.00\n6.0\n1.30\n9.50\n6.50\n1.40\n8.50\n6.09\n1.32\n1.33\n3.4\n1.35\n3.41\n1.37\n3.55\n1.33\n3.34\n1.75\n1.87\n2.06\n1.84\n2.07\nNA\nNA\n1.84\n2.01\n8.50\n6.0\n1.30\n8.50\n6.0\n1.3\n7.00\n5.25\n1.40\n8.80\n6.30\n1.31\n8.00\n5.50\n1.22\n9.50\n6.00\n1.29\n9.50\n6.50\n1.40\n8.69\n6.05\n1.31\n1.36\n3.20\n1.34\n3.38\n1.40\n3.58\n1.34\n3.29\n1.75\n1.85\n2.08\n1.88\n2.03\n1.92\n2.09\n1.85\n2.00\n\n\nD1\n19/08/2023\n14:30\nAugsburg\nM'gladbach\n4\n4\nD\n3\n3\nD\n20\n9\n8\n6\n9\n14\n8\n7\n1\n2\n0\n0\n2.70\n3.60\n2.45\n2.70\n3.5\n2.45\n2.75\n3.60\n2.45\n2.74\n3.78\n2.51\n2.50\n3.40\n2.30\n2.70\n3.7\n2.45\n2.80\n3.88\n2.54\n2.72\n3.69\n2.47\n1.62\n2.3\n1.63\n2.39\n1.66\n2.43\n1.61\n2.34\n0.00\n2.03\n1.87\n2.04\n1.87\n2.07\n1.90\n2.02\n1.84\n2.80\n3.6\n2.38\n2.75\n3.6\n2.4\n2.75\n3.65\n2.45\n2.92\n3.72\n2.43\n2.50\n3.40\n2.30\n2.75\n3.75\n2.38\n2.92\n3.87\n2.51\n2.79\n3.67\n2.42\n1.62\n2.30\n1.67\n2.33\n1.67\n2.40\n1.62\n2.31\n0.25\n1.82\n2.11\n1.83\n2.11\n1.83\n2.18\n1.77\n2.09\n\n\nD1\n19/08/2023\n14:30\nHoffenheim\nFreiburg\n1\n2\nA\n0\n2\nA\n24\n17\n5\n8\n9\n9\n4\n2\n0\n1\n0\n0\n2.30\n3.60\n2.90\n2.25\n3.5\n3.10\n2.30\n3.55\n2.95\n2.43\n3.67\n2.92\n2.10\n3.40\n2.80\n2.38\n3.6\n2.88\n2.50\n3.85\n3.10\n2.35\n3.63\n2.94\n1.67\n2.2\n1.67\n2.30\n1.71\n2.32\n1.66\n2.24\n-0.25\n2.06\n1.84\n2.11\n1.82\n2.11\n1.88\n2.03\n1.82\n2.15\n3.6\n3.10\n2.20\n3.6\n3.1\n2.25\n3.60\n3.00\n2.20\n3.74\n3.32\n2.10\n3.40\n2.80\n2.15\n3.75\n3.13\n2.30\n3.87\n3.32\n2.20\n3.68\n3.15\n1.67\n2.20\n1.69\n2.28\n1.70\n2.36\n1.65\n2.26\n-0.25\n1.91\n2.02\n1.92\n2.01\n1.98\n2.02\n1.91\n1.95\n\n\nD1\n19/08/2023\n14:30\nLeverkusen\nRB Leipzig\n3\n2\nH\n2\n1\nH\n11\n13\n7\n6\n13\n10\n4\n5\n1\n2\n0\n0\n2.45\n3.60\n2.75\n2.45\n3.6\n2.70\n2.50\n3.55\n2.70\n2.50\n3.61\n2.85\n2.30\n3.25\n2.60\n2.45\n3.6\n2.75\n2.56\n3.75\n2.91\n2.47\n3.62\n2.78\n1.67\n2.2\n1.70\n2.24\n1.77\n2.28\n1.68\n2.20\n0.00\n1.83\n2.07\n1.83\n2.09\n1.89\n2.11\n1.82\n2.05\n2.38\n3.6\n2.80\n2.37\n3.5\n2.8\n2.50\n3.60\n2.70\n2.48\n3.63\n2.98\n2.30\n3.25\n2.60\n2.40\n3.60\n2.80\n2.50\n3.78\n2.99\n2.44\n3.60\n2.81\n1.67\n2.20\n1.74\n2.20\n1.75\n2.32\n1.68\n2.19\n-0.25\n2.11\n1.82\n2.14\n1.84\n2.14\n1.84\n2.09\n1.78\n\n\nD1\n19/08/2023\n14:30\nStuttgart\nBochum\n5\n0\nH\n2\n0\nH\n19\n4\n9\n1\n5\n12\n7\n0\n1\n1\n0\n0\n1.65\n4.33\n4.50\n1.68\n4.0\n4.75\n1.70\n4.10\n4.50\n1.70\n4.25\n4.78\n1.57\n3.90\n4.33\n1.70\n4.1\n4.60\n1.77\n4.40\n5.00\n1.69\n4.17\n4.69\n1.62\n2.3\n1.66\n2.32\n1.71\n2.38\n1.64\n2.29\n-0.75\n1.88\n2.02\n1.89\n2.01\n1.95\n2.04\n1.86\n1.98\n1.73\n4.2\n4.20\n1.77\n3.9\n4.2\n1.77\n4.10\n4.20\n1.78\n4.16\n4.52\n1.67\n3.60\n4.00\n1.73\n4.10\n4.33\n1.85\n4.20\n4.52\n1.76\n4.02\n4.32\n1.62\n2.30\n1.67\n2.33\n1.70\n2.35\n1.64\n2.26\n-0.75\n1.98\n1.95\n1.99\n1.93\n2.06\n1.96\n1.95\n1.89\n\n\nD1\n19/08/2023\n14:30\nWolfsburg\nHeidenheim\n2\n0\nH\n2\n0\nH\n18\n13\n8\n1\n10\n9\n1\n7\n3\n0\n0\n0\n1.60\n4.20\n5.25\n1.61\n4.2\n5.25\n1.63\n4.20\n5.25\n1.62\n4.49\n5.24\n1.50\n4.00\n4.75\n1.60\n4.4\n5.00\n1.66\n4.60\n5.50\n1.62\n4.31\n5.19\n1.62\n2.3\n1.63\n2.39\n1.66\n2.44\n1.61\n2.34\n-1.00\n2.03\n1.87\n2.03\n1.88\n2.07\n1.88\n2.01\n1.84\n1.62\n4.2\n5.00\n1.65\n4.1\n4.8\n1.65\n4.20\n4.90\n1.66\n4.42\n5.16\n1.50\n4.00\n4.75\n1.62\n4.33\n5.00\n1.69\n4.50\n5.25\n1.64\n4.28\n5.03\n1.57\n2.38\n1.60\n2.49\n1.67\n2.49\n1.59\n2.39\n-1.00\n2.13\n1.81\n2.10\n1.82\n2.14\n1.85\n2.07\n1.80"
+    "text": "Loading the data\n\n\nCode\n  df = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23.csv')\n  df &lt;- mutate(df, name = sub(\"^.*/\", \"\", name))\n  \n  #Add additional run with home advantage\n  df2 = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_home_adv.csv')\n  df2 &lt;- mutate(df2, name = sub(\"^.*/\", \"\", name))\n  df &lt;- rbind(df, df2)\n  \n  # Add additional run with 18 games ahead\n  df3 = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_18Ahead.csv')\n  df = df3\n  print(\"Using 24_18Ahead that means all data is averaged 18 games ahead.\")\n\n\n[1] \"Using 24_18Ahead that means all data is averaged 18 games ahead.\"\n\n\nCode\n  #df = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_bets05_18Ahead.csv')\n  \n  df_raw = read.csv('~/Documents/GitHub/da/website/Euro24/bundesliga2023.csv')\n  head(df_raw) %&gt;% kable()\n\n\n\n\n\n\nDiv\nDate\nTime\nHomeTeam\nAwayTeam\nFTHG\nFTAG\nFTR\nHTHG\nHTAG\nHTR\nHS\nAS\nHST\nAST\nHF\nAF\nHC\nAC\nHY\nAY\nHR\nAR\nB365H\nB365D\nB365A\nBWH\nBWD\nBWA\nIWH\nIWD\nIWA\nPSH\nPSD\nPSA\nWHH\nWHD\nWHA\nVCH\nVCD\nVCA\nMaxH\nMaxD\nMaxA\nAvgH\nAvgD\nAvgA\nB365.2.5\nB365.2.5.1\nP.2.5\nP.2.5.1\nMax.2.5\nMax.2.5.1\nAvg.2.5\nAvg.2.5.1\nAHh\nB365AHH\nB365AHA\nPAHH\nPAHA\nMaxAHH\nMaxAHA\nAvgAHH\nAvgAHA\nB365CH\nB365CD\nB365CA\nBWCH\nBWCD\nBWCA\nIWCH\nIWCD\nIWCA\nPSCH\nPSCD\nPSCA\nWHCH\nWHCD\nWHCA\nVCCH\nVCCD\nVCCA\nMaxCH\nMaxCD\nMaxCA\nAvgCH\nAvgCD\nAvgCA\nB365C.2.5\nB365C.2.5.1\nPC.2.5\nPC.2.5.1\nMaxC.2.5\nMaxC.2.5.1\nAvgC.2.5\nAvgC.2.5.1\nAHCh\nB365CAHH\nB365CAHA\nPCAHH\nPCAHA\nMaxCAHH\nMaxCAHA\nAvgCAHH\nAvgCAHA\n\n\n\n\nD1\n18/08/2023\n19:30\nWerder Bremen\nBayern Munich\n0\n4\nA\n0\n1\nA\n6\n25\n1\n10\n16\n11\n0\n6\n2\n1\n0\n0\n7.50\n6.50\n1.30\n8.00\n6.0\n1.31\n7.00\n5.25\n1.40\n8.59\n6.36\n1.33\n8.00\n5.50\n1.22\n9.00\n6.0\n1.30\n9.50\n6.50\n1.40\n8.50\n6.09\n1.32\n1.33\n3.4\n1.35\n3.41\n1.37\n3.55\n1.33\n3.34\n1.75\n1.87\n2.06\n1.84\n2.07\nNA\nNA\n1.84\n2.01\n8.50\n6.0\n1.30\n8.50\n6.0\n1.3\n7.00\n5.25\n1.40\n8.80\n6.30\n1.31\n8.00\n5.50\n1.22\n9.50\n6.00\n1.29\n9.50\n6.50\n1.40\n8.69\n6.05\n1.31\n1.36\n3.20\n1.34\n3.38\n1.40\n3.58\n1.34\n3.29\n1.75\n1.85\n2.08\n1.88\n2.03\n1.92\n2.09\n1.85\n2.00\n\n\nD1\n19/08/2023\n14:30\nAugsburg\nM'gladbach\n4\n4\nD\n3\n3\nD\n20\n9\n8\n6\n9\n14\n8\n7\n1\n2\n0\n0\n2.70\n3.60\n2.45\n2.70\n3.5\n2.45\n2.75\n3.60\n2.45\n2.74\n3.78\n2.51\n2.50\n3.40\n2.30\n2.70\n3.7\n2.45\n2.80\n3.88\n2.54\n2.72\n3.69\n2.47\n1.62\n2.3\n1.63\n2.39\n1.66\n2.43\n1.61\n2.34\n0.00\n2.03\n1.87\n2.04\n1.87\n2.07\n1.90\n2.02\n1.84\n2.80\n3.6\n2.38\n2.75\n3.6\n2.4\n2.75\n3.65\n2.45\n2.92\n3.72\n2.43\n2.50\n3.40\n2.30\n2.75\n3.75\n2.38\n2.92\n3.87\n2.51\n2.79\n3.67\n2.42\n1.62\n2.30\n1.67\n2.33\n1.67\n2.40\n1.62\n2.31\n0.25\n1.82\n2.11\n1.83\n2.11\n1.83\n2.18\n1.77\n2.09\n\n\nD1\n19/08/2023\n14:30\nHoffenheim\nFreiburg\n1\n2\nA\n0\n2\nA\n24\n17\n5\n8\n9\n9\n4\n2\n0\n1\n0\n0\n2.30\n3.60\n2.90\n2.25\n3.5\n3.10\n2.30\n3.55\n2.95\n2.43\n3.67\n2.92\n2.10\n3.40\n2.80\n2.38\n3.6\n2.88\n2.50\n3.85\n3.10\n2.35\n3.63\n2.94\n1.67\n2.2\n1.67\n2.30\n1.71\n2.32\n1.66\n2.24\n-0.25\n2.06\n1.84\n2.11\n1.82\n2.11\n1.88\n2.03\n1.82\n2.15\n3.6\n3.10\n2.20\n3.6\n3.1\n2.25\n3.60\n3.00\n2.20\n3.74\n3.32\n2.10\n3.40\n2.80\n2.15\n3.75\n3.13\n2.30\n3.87\n3.32\n2.20\n3.68\n3.15\n1.67\n2.20\n1.69\n2.28\n1.70\n2.36\n1.65\n2.26\n-0.25\n1.91\n2.02\n1.92\n2.01\n1.98\n2.02\n1.91\n1.95\n\n\nD1\n19/08/2023\n14:30\nLeverkusen\nRB Leipzig\n3\n2\nH\n2\n1\nH\n11\n13\n7\n6\n13\n10\n4\n5\n1\n2\n0\n0\n2.45\n3.60\n2.75\n2.45\n3.6\n2.70\n2.50\n3.55\n2.70\n2.50\n3.61\n2.85\n2.30\n3.25\n2.60\n2.45\n3.6\n2.75\n2.56\n3.75\n2.91\n2.47\n3.62\n2.78\n1.67\n2.2\n1.70\n2.24\n1.77\n2.28\n1.68\n2.20\n0.00\n1.83\n2.07\n1.83\n2.09\n1.89\n2.11\n1.82\n2.05\n2.38\n3.6\n2.80\n2.37\n3.5\n2.8\n2.50\n3.60\n2.70\n2.48\n3.63\n2.98\n2.30\n3.25\n2.60\n2.40\n3.60\n2.80\n2.50\n3.78\n2.99\n2.44\n3.60\n2.81\n1.67\n2.20\n1.74\n2.20\n1.75\n2.32\n1.68\n2.19\n-0.25\n2.11\n1.82\n2.14\n1.84\n2.14\n1.84\n2.09\n1.78\n\n\nD1\n19/08/2023\n14:30\nStuttgart\nBochum\n5\n0\nH\n2\n0\nH\n19\n4\n9\n1\n5\n12\n7\n0\n1\n1\n0\n0\n1.65\n4.33\n4.50\n1.68\n4.0\n4.75\n1.70\n4.10\n4.50\n1.70\n4.25\n4.78\n1.57\n3.90\n4.33\n1.70\n4.1\n4.60\n1.77\n4.40\n5.00\n1.69\n4.17\n4.69\n1.62\n2.3\n1.66\n2.32\n1.71\n2.38\n1.64\n2.29\n-0.75\n1.88\n2.02\n1.89\n2.01\n1.95\n2.04\n1.86\n1.98\n1.73\n4.2\n4.20\n1.77\n3.9\n4.2\n1.77\n4.10\n4.20\n1.78\n4.16\n4.52\n1.67\n3.60\n4.00\n1.73\n4.10\n4.33\n1.85\n4.20\n4.52\n1.76\n4.02\n4.32\n1.62\n2.30\n1.67\n2.33\n1.70\n2.35\n1.64\n2.26\n-0.75\n1.98\n1.95\n1.99\n1.93\n2.06\n1.96\n1.95\n1.89\n\n\nD1\n19/08/2023\n14:30\nWolfsburg\nHeidenheim\n2\n0\nH\n2\n0\nH\n18\n13\n8\n1\n10\n9\n1\n7\n3\n0\n0\n0\n1.60\n4.20\n5.25\n1.61\n4.2\n5.25\n1.63\n4.20\n5.25\n1.62\n4.49\n5.24\n1.50\n4.00\n4.75\n1.60\n4.4\n5.00\n1.66\n4.60\n5.50\n1.62\n4.31\n5.19\n1.62\n2.3\n1.63\n2.39\n1.66\n2.44\n1.61\n2.34\n-1.00\n2.03\n1.87\n2.03\n1.88\n2.07\n1.88\n2.01\n1.84\n1.62\n4.2\n5.00\n1.65\n4.1\n4.8\n1.65\n4.20\n4.90\n1.66\n4.42\n5.16\n1.50\n4.00\n4.75\n1.62\n4.33\n5.00\n1.69\n4.50\n5.25\n1.64\n4.28\n5.03\n1.57\n2.38\n1.60\n2.49\n1.67\n2.49\n1.59\n2.39\n-1.00\n2.13\n1.81\n2.10\n1.82\n2.14\n1.85\n2.07\n1.80"
+  },
+  {
+    "objectID": "Euro24/comp_bundes_liga.html#exploratory-analysis",
+    "href": "Euro24/comp_bundes_liga.html#exploratory-analysis",
+    "title": "Comparison of different models Bundesliga Dataset",
+    "section": "Exploratory Analysis",
+    "text": "Exploratory Analysis\n\n\nCode\n#str(df_raw)\n#Full Time Home Goals, Full Time Away Goals\nhome_wins = df_raw$FTHG &gt; df_raw$FTAG\naway_wins = df_raw$FTHG &lt; df_raw$FTAG\ndraws = df_raw$FTHG == df_raw$FTAG\n\n# Betting on home wins would have some log(0) --&gt; -Inf\n\n# Betting according frequency\n# This is a bit cheating, since we use the future data to calculate\nps_naive = c(sum(home_wins), sum(draws), sum(away_wins))/nrow(df_raw)\nNLL_NAIVE = sum(\n  -home_wins*log(ps_naive[1])\n  -draws*log(ps_naive[2])\n  -away_wins*log(ps_naive[3])\n)/nrow(df_raw)\nNLL_NAIVE\n\n\n[1] 1.074078"
+  },
+  {
+    "objectID": "Euro24/comp_bundes_liga.html#exploratory-analysis-1",
+    "href": "Euro24/comp_bundes_liga.html#exploratory-analysis-1",
+    "title": "Comparison of different models Bundesliga Dataset",
+    "section": "Exploratory Analysis",
+    "text": "Exploratory Analysis\n\n\nCode\n#str(df_raw)\n\n# Load necessary libraries\nlibrary(dplyr)\n\n# Load your data\n# df_raw &lt;- read.csv('path_to_your_data.csv') # Replace with the actual data loading method\n\n# Example data frame structure for reference\n# df_raw &lt;- data.frame(\n#   B365H = c(7.5, 2.7, 2.3), B365D = c(6.5, 3.6, 3.6), B365A = c(1.3, 2.45, 2.9),\n#   FTR = c(\"A\", \"D\", \"A\")\n# )\n\n# Calculate implied probabilities\ndf_raw &lt;- df_raw %&gt;%\n  mutate(\n    ImpliedProb_H = 1 / B365H,\n    ImpliedProb_D = 1 / B365D,\n    ImpliedProb_A = 1 / B365A\n  ) %&gt;%\n  mutate(\n    SumImpliedProbs = ImpliedProb_H + ImpliedProb_D + ImpliedProb_A,\n    ImpliedProb_H = ImpliedProb_H / SumImpliedProbs,\n    ImpliedProb_D = ImpliedProb_D / SumImpliedProbs,\n    ImpliedProb_A = ImpliedProb_A / SumImpliedProbs\n  )\n\n# Convert actual outcomes to binary indicators\ndf_raw &lt;- df_raw %&gt;%\n  mutate(\n    Outcome_H = ifelse(FTR == \"H\", 1, 0),\n    Outcome_D = ifelse(FTR == \"D\", 1, 0),\n    Outcome_A = ifelse(FTR == \"A\", 1, 0)\n  )\n\n# Calculate negative log-likelihood for the given strategy\ndf_raw &lt;- df_raw %&gt;%\n  mutate(\n    NLL_H = Outcome_H * log(ImpliedProb_H),\n    NLL_D = Outcome_D * log(ImpliedProb_D),\n    NLL_A = Outcome_A * log(ImpliedProb_A),\n    NLL = -(NLL_H + NLL_D + NLL_A)\n  )\n\n# Mean negative log-likelihood for the given strategy\nmean_nll &lt;- mean(df_raw$NLL, na.rm = TRUE)\n\ncat(\"Mean Negative Log-Likelihood for given strategy:\", mean_nll, \"\\n\")\n\n\nMean Negative Log-Likelihood for given strategy: 0.9463587 \n\n\nCode\n# Calculate negative log-likelihood for uniform betting (1/3 for each outcome)\nbaseline_prob &lt;- 1 / 3\ndf_raw &lt;- df_raw %&gt;%\n  mutate(\n    BaselineNLL_H = Outcome_H * log(baseline_prob),\n    BaselineNLL_D = Outcome_D * log(baseline_prob),\n    BaselineNLL_A = Outcome_A * log(baseline_prob),\n    BaselineNLL = -(BaselineNLL_H + BaselineNLL_D + BaselineNLL_A)\n  )\n\n# Mean negative log-likelihood for uniform betting\nmean_baseline_nll &lt;- mean(df_raw$BaselineNLL, na.rm = TRUE)\n\ncat(\"Mean Negative Log-Likelihood for uniform betting:\", mean_baseline_nll, \"\\n\")\n\n\nMean Negative Log-Likelihood for uniform betting: 1.098612 \n\n\nCode\n# Calculate negative log-likelihood for always betting on home win\ndf_raw &lt;- df_raw %&gt;%\n  mutate(\n    AlwaysHomeNLL_H = -log(baseline_prob) * Outcome_H,\n    AlwaysHomeNLL_L = -log(1 - baseline_prob) * (1 - Outcome_H),\n    AlwaysHomeNLL = AlwaysHomeNLL_H + AlwaysHomeNLL_L\n  )\nmean_always_home_nll &lt;- mean(df_raw$AlwaysHomeNLL, na.rm = TRUE)\n\ncat(\"Mean Negative Log-Likelihood for always betting on home win:\", mean_always_home_nll, \"\\n\")\n\n\nMean Negative Log-Likelihood for always betting on home win: 0.7090001 \n\n\nCode\n# Calculate negative log-likelihood for always betting on away win\ndf_raw &lt;- df_raw %&gt;%\n  mutate(\n    AlwaysAwayNLL_A = -log(baseline_prob) * Outcome_A,\n    AlwaysAwayNLL_L = -log(1 - baseline_prob) * (1 - Outcome_A),\n    AlwaysAwayNLL = AlwaysAwayNLL_A + AlwaysAwayNLL_L\n  )\nmean_always_away_nll &lt;- mean(df_raw$AlwaysAwayNLL, na.rm = TRUE)\n\ncat(\"Mean Negative Log-Likelihood for always betting on away win:\", mean_always_away_nll, \"\\n\")\n\n\nMean Negative Log-Likelihood for always betting on away win: 0.6115971 \n\n\nCode\n# Calculate negative log-likelihood for always betting on draw\ndf_raw &lt;- df_raw %&gt;%\n  mutate(\n    AlwaysDrawNLL_D = -log(baseline_prob) * Outcome_D,\n    AlwaysDrawNLL_L = -log(1 - baseline_prob) * (1 - Outcome_D),\n    AlwaysDrawNLL = AlwaysDrawNLL_D + AlwaysDrawNLL_L\n  )\nmean_always_draw_nll &lt;- mean(df_raw$AlwaysDrawNLL, na.rm = TRUE)\n\ncat(\"Mean Negative Log-Likelihood for always betting on draw:\", mean_always_draw_nll, \"\\n\")\n\n\nMean Negative Log-Likelihood for always betting on draw: 0.5889452"
   },
   {
     "objectID": "Euro24/comp_bundes_liga.html#model-comparisons",
@@ -501,14 +578,14 @@
     "href": "Euro24/comp_bundes_liga.html#nnl-for-win-draws-and-losses",
     "title": "Comparison of different models Bundesliga Dataset",
     "section": "NNL for win, draws and losses",
-    "text": "NNL for win, draws and losses\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('NLL_RESULTS', 'NLL_BOOKIE')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = type)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2023 dataset',\n      x = 'Number of training data', \n      y = 'Negative Log Likelihood'\n    ) + \n    ylim(0.75, 1.5) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\nObservations\n\nThe NLL for the bookie is always better than the NLL of the models, so we should not bet.\n\n\n\nRanked probability score\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('RPS', 'rps_booki')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = type)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2023 dataset',\n      x = 'Number of training data', \n      y = 'Ranked Probability Score'\n    ) + \n    #ylim(0.75, 1.5) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\nAveraged for the complete season:\n\n\nCode\n  dfres = df %&gt;% \n    filter(type %in% c('RPS', 'rps_booki')) %&gt;%\n    group_by(name, type) %&gt;% \n    summarise(rps = mean(res)) \n\n\n`summarise()` has grouped output by 'name'. You can override using the\n`.groups` argument.\n\n\nCode\n  rps_booki = dfres %&gt;% filter(type == 'rps_booki') \n  \n  dfres2 = dfres %&gt;% filter(type == 'RPS') %&gt;% select(name, rps) \n  dfres2 = rbind(dfres2, rps_booki[1,])\n\n  # Sort by RPS\n  dfres2 = dfres2[order(dfres2$rps),]\n  kable(dfres2)\n\n\n\n\n\n\nname\nrps\ntype\n\n\n\n\nda/stan/football/hier_model_nb\n0.1865408\nrps_booki\n\n\nda/website/Euro24/hier_model_cor_home\n0.1979763\nNA\n\n\nda/stan/football/hier_model_nb\n0.1982434\nNA\n\n\nda/website/Euro24/hier_model\n0.1984227\nNA\n\n\nda/website/Euro24/hier_model_cor\n0.1993777\nNA\n\n\nda/website/Euro24/hier_model_cor_nocholsky\n0.1994641\nNA\n\n\nda/stan/football/non_hier_model\n0.2032188\nNA"
+    "text": "NNL for win, draws and losses\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('NLL_RESULTS', 'NLL_BOOKIE')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = type)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2023 dataset',\n      x = 'Number of training data', \n      y = 'Negative Log Likelihood'\n    ) + \n    ylim(0.75, 1.5) +\n    geom_hline(yintercept = NLL_NAIVE, col = \"green\", alpha=0.5) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\nCode\n#### Booki mean\n  dfp = df %&gt;% \n    filter(type %in% c('NLL_RESULTS', 'NLL_BOOKIE')) %&gt;%\n    group_by(name, type) %&gt;% \n    summarise(nll = mean(res)) \n  \n  dfp = rbind(dfp, data.frame(name = \"NLL_NAIVE\", type = \"NLL_NAIVE\", nll = NLL_NAIVE))\n  # Remove all but one NLL_BOOKIE\n  kableExtra::kable(dfp, digits = 3)\n\n\n\n\n\n\nname\ntype\nnll\n\n\n\n\nda/stan/football/hier_model_nb\nNLL_BOOKIE\n0.953\n\n\nda/stan/football/hier_model_nb\nNLL_RESULTS\n0.983\n\n\nda/stan/football/non_hier_model\nNLL_BOOKIE\n0.953\n\n\nda/stan/football/non_hier_model\nNLL_RESULTS\n1.011\n\n\nda/website/Euro24/hier_model\nNLL_BOOKIE\n0.953\n\n\nda/website/Euro24/hier_model\nNLL_RESULTS\n0.983\n\n\nda/website/Euro24/hier_model_cor\nNLL_BOOKIE\n0.953\n\n\nda/website/Euro24/hier_model_cor\nNLL_RESULTS\n0.992\n\n\nda/website/Euro24/hier_model_cor_home\nNLL_BOOKIE\n0.953\n\n\nda/website/Euro24/hier_model_cor_home\nNLL_RESULTS\n0.992\n\n\nda/website/Euro24/hier_model_cor_nocholsky\nNLL_BOOKIE\n0.953\n\n\nda/website/Euro24/hier_model_cor_nocholsky\nNLL_RESULTS\n0.992\n\n\nNLL_NAIVE\nNLL_NAIVE\n1.074\n\n\n\n\n\n\n\n\n\nObservations\n\nThe NLL for the bookie is always better than the NLL of the models, so we should not bet.\n\n\n\nRanked probability score\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('RPS', 'rps_booki')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = type)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2023 dataset',\n      x = 'Number of training data', \n      y = 'Ranked Probability Score'\n    ) + \n    #ylim(0.75, 1.5) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\nAveraged for the complete season:\n\n\nCode\n  library(dplyr)\n  dfres = df %&gt;% \n    filter(type %in% c('RPS', 'rps_booki')) %&gt;%\n    group_by(name, type) %&gt;% \n    summarise(rps = mean(res)) \n\n\n`summarise()` has grouped output by 'name'. You can override using the\n`.groups` argument.\n\n\nCode\n  rps_booki = dfres %&gt;% filter(type == 'rps_booki') \n  \n  dfres2 = dfres %&gt;% filter(type == 'RPS') %&gt;% dplyr::select(name, rps) \n  dfres2 = rbind(dfres2, rps_booki[1,])\n\n  # Sort by RPS\n  dfres2 = dfres2[order(dfres2$rps),]\n  kable(dfres2)\n\n\n\n\n\n\nname\nrps\ntype\n\n\n\n\nda/stan/football/hier_model_nb\n0.1865408\nrps_booki\n\n\nda/website/Euro24/hier_model_cor_home\n0.1979763\nNA\n\n\nda/stan/football/hier_model_nb\n0.1982434\nNA\n\n\nda/website/Euro24/hier_model\n0.1984227\nNA\n\n\nda/website/Euro24/hier_model_cor\n0.1993777\nNA\n\n\nda/website/Euro24/hier_model_cor_nocholsky\n0.1994641\nNA\n\n\nda/stan/football/non_hier_model\n0.2032188\nNA"
   },
   {
     "objectID": "Euro24/comp_bundes_liga.html#betting-returns",
     "href": "Euro24/comp_bundes_liga.html#betting-returns",
     "title": "Comparison of different models Bundesliga Dataset",
     "section": "Betting Returns",
-    "text": "Betting Returns\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('BET_RETURN')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line(aes(linetype = name)) +  \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2023 dataset',\n      x = 'Number of training data', \n      y = 'Betting Returns'\n    ) + \n    #ylim(0.75, 1.5) +\n    theme(legend.position = \"bottom\") +  \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\nObservations\nWe see quite some fluctuation in the betting return. Since the NLL shows that the odds from the booki are always better then the NLLs of the models we should not bet."
+    "text": "Betting Returns\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('BET_RETURN')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line(aes(linetype = name)) +  \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2023 dataset',\n      x = 'Number of training data', \n      y = 'Betting Returns'\n    ) + \n    #ylim(0.75, 1.5) +\n    theme(legend.position = \"bottom\") +  \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('BET_RETURN')) %&gt;%\n    group_by(name) %&gt;% \n    summarise(mean(res))\n\n\n# A tibble: 6 × 2\n  name                                       `mean(res)`\n  &lt;chr&gt;                                            &lt;dbl&gt;\n1 da/stan/football/hier_model_nb                  0.0635\n2 da/stan/football/non_hier_model                 0.0137\n3 da/website/Euro24/hier_model                    0.0660\n4 da/website/Euro24/hier_model_cor               -0.120 \n5 da/website/Euro24/hier_model_cor_home          -0.0905\n6 da/website/Euro24/hier_model_cor_nocholsky     -0.122 \n\n\n\nObservations\nWe see quite some fluctuation in the betting return. Since the NLL shows that the odds from the booki are always better then the NLLs of the models we should not bet."
   },
   {
     "objectID": "Euro24/comp_bundes_liga.html#technical-details",
@@ -518,87 +595,10 @@
     "text": "Technical Details\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('MIN_SUM_PROB')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2023 dataset',\n      x = 'Number of training data', \n      y = 'Sum of Probabilities from 0 to 10 goals (should be 1)'\n    ) + \n    ylim(0.75, 1.01) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('num_divergent')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2023 dataset',\n      x = 'Number of training data', \n      y = 'Number of Divergent Transitions (sqrt scale)'\n    ) + \n    theme(legend.position = \"bottom\") + \n    scale_y_sqrt() + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area \n\n\n\n\n\n\n\n\n\n\n\nCode\ndf %&gt;% \n  filter(type %in% c('ebfmi')) %&gt;%\n  ggplot(aes(x = ntrain, y = res, color = name)) + \n  geom_line(aes(linetype = name)) + \n  geom_point() + \n  theme_minimal() + \n  labs(\n    title = 'Comparison of different models for the Bundesliga 2023 dataset',\n    x = 'Number of training data', \n    y = 'ebfmi'\n  ) + \n  theme(legend.position = \"bottom\") + \n  geom_hline(yintercept = 0.3, linetype = \"dashed\", color = \"red\") +\n  annotate(\"text\", x = Inf, y = 0.33, label = \"Acceptable\", hjust = 1.1, color = \"red\") +\n  annotate(\"text\", x = Inf, y = 0.27, label = \"Non-Acceptable\", hjust = 1.1, color = \"red\") +\n  coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area"
   },
   {
-    "objectID": "Euro24/comp_premier_league.html#loading-the-data",
-    "href": "Euro24/comp_premier_league.html#loading-the-data",
-    "title": "Comparison of different models on the Premier League 2019 dataset",
-    "section": "Loading the data",
-    "text": "Loading the data\n\n\nCode\n  df = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_premier_league_2019.csv')\n  df %&gt;% tail() %&gt;% kable()\n\n\n\n\n\n\n\nntrain\nres\ntype\nname\n\n\n\n\n2620\n375\n2.9454859\nNLL_PRED\nda/stan/football/hier_model_nb\n\n\n2621\n375\n0.8050755\nNLL_RESULTS\nda/stan/football/hier_model_nb\n\n\n2622\n375\n0.6949439\nNLL_BOOKIE\nda/stan/football/hier_model_nb\n\n\n2623\n375\n-0.8080000\nBET_RETURN\nda/stan/football/hier_model_nb\n\n\n2624\n375\n2.9883916\nNLL_PRED_STAN\nda/stan/football/hier_model_nb\n\n\n2625\n375\n2.9566802\nNLL_PSIS\nda/stan/football/hier_model_nb\n\n\n\n\n\n\n\n\nCode\n  df &lt;- mutate(df, name = sub(\"^.*/\", \"\", name))\n  \n  df_raw = read.csv('~/Documents/GitHub/da/website/Euro24/premierleague2019.csv')\n  head(df_raw) %&gt;% kable()\n\n\n\n\n\n\nDiv\nDate\nTime\nHomeTeam\nAwayTeam\nFTHG\nFTAG\nFTR\nHTHG\nHTAG\nHTR\nReferee\nHS\nAS\nHST\nAST\nHF\nAF\nHC\nAC\nHY\nAY\nHR\nAR\nB365H\nB365D\nB365A\nBWH\nBWD\nBWA\nIWH\nIWD\nIWA\nPSH\nPSD\nPSA\nWHH\nWHD\nWHA\nVCH\nVCD\nVCA\nMaxH\nMaxD\nMaxA\nAvgH\nAvgD\nAvgA\nB365.2.5\nB365.2.5.1\nP.2.5\nP.2.5.1\nMax.2.5\nMax.2.5.1\nAvg.2.5\nAvg.2.5.1\nAHh\nB365AHH\nB365AHA\nPAHH\nPAHA\nMaxAHH\nMaxAHA\nAvgAHH\nAvgAHA\nB365CH\nB365CD\nB365CA\nBWCH\nBWCD\nBWCA\nIWCH\nIWCD\nIWCA\nPSCH\nPSCD\nPSCA\nWHCH\nWHCD\nWHCA\nVCCH\nVCCD\nVCCA\nMaxCH\nMaxCD\nMaxCA\nAvgCH\nAvgCD\nAvgCA\nB365C.2.5\nB365C.2.5.1\nPC.2.5\nPC.2.5.1\nMaxC.2.5\nMaxC.2.5.1\nAvgC.2.5\nAvgC.2.5.1\nAHCh\nB365CAHH\nB365CAHA\nPCAHH\nPCAHA\nMaxCAHH\nMaxCAHA\nAvgCAHH\nAvgCAHA\n\n\n\n\nE0\n09/08/2019\n20:00\nLiverpool\nNorwich\n4\n1\nH\n4\n0\nH\nM Oliver\n15\n12\n7\n5\n9\n9\n11\n2\n0\n2\n0\n0\n1.14\n10.00\n19.00\n1.14\n8.25\n18.50\n1.15\n8.00\n18.00\n1.15\n9.59\n18.05\n1.12\n8.5\n21.00\n1.14\n9.5\n23.00\n1.16\n10.00\n23.00\n1.14\n8.75\n19.83\n1.40\n3.00\n1.40\n3.11\n1.45\n3.11\n1.41\n2.92\n-2.25\n1.96\n1.94\n1.97\n1.95\n1.97\n2.00\n1.94\n1.94\n1.14\n9.50\n21.00\n1.14\n9.0\n20.00\n1.15\n8.00\n18.00\n1.14\n10.43\n19.63\n1.11\n9.50\n21.00\n1.14\n9.50\n23.00\n1.16\n10.50\n23.00\n1.14\n9.52\n19.18\n1.3\n3.50\n1.34\n3.44\n1.36\n3.76\n1.32\n3.43\n-2.25\n1.91\n1.99\n1.94\n1.98\n1.99\n2.07\n1.90\n1.99\n\n\nE0\n10/08/2019\n12:30\nWest Ham\nMan City\n0\n5\nA\n0\n1\nA\nM Dean\n5\n14\n3\n9\n6\n13\n1\n1\n2\n2\n0\n0\n12.00\n6.50\n1.22\n11.50\n5.75\n1.26\n11.00\n6.10\n1.25\n11.68\n6.53\n1.26\n13.00\n6.0\n1.24\n12.00\n6.5\n1.25\n13.00\n6.75\n1.29\n11.84\n6.28\n1.25\n1.44\n2.75\n1.49\n2.77\n1.51\n2.77\n1.48\n2.65\n1.75\n2.00\n1.90\n2.02\n1.90\n2.02\n1.92\n1.99\n1.89\n12.00\n7.00\n1.25\n11.00\n6.0\n1.26\n11.00\n6.10\n1.25\n11.11\n6.68\n1.27\n11.00\n6.50\n1.24\n12.00\n6.50\n1.25\n13.00\n7.00\n1.29\n11.14\n6.46\n1.26\n1.4\n3.00\n1.43\n3.03\n1.50\n3.22\n1.41\n2.91\n1.75\n1.95\n1.95\n1.96\n1.97\n2.07\n1.98\n1.97\n1.92\n\n\nE0\n10/08/2019\n15:00\nBournemouth\nSheffield United\n1\n1\nD\n0\n0\nD\nK Friend\n13\n8\n3\n3\n10\n19\n3\n4\n2\n1\n0\n0\n1.95\n3.60\n3.60\n1.95\n3.60\n3.90\n1.97\n3.55\n3.80\n2.04\n3.57\n3.90\n2.00\n3.5\n3.80\n2.00\n3.6\n4.00\n2.06\n3.65\n4.00\n2.01\n3.53\n3.83\n1.90\n1.90\n1.96\n1.96\n2.00\n1.99\n1.90\n1.93\n-0.50\n2.01\n1.89\n2.04\n1.88\n2.04\n1.91\n2.00\n1.88\n1.95\n3.70\n4.20\n1.95\n3.6\n3.90\n1.97\n3.55\n3.85\n1.98\n3.67\n4.06\n1.95\n3.60\n3.90\n2.00\n3.60\n4.00\n2.03\n3.70\n4.20\n1.98\n3.58\n3.96\n1.9\n1.90\n1.94\n1.97\n1.97\n1.98\n1.91\n1.92\n-0.50\n1.95\n1.95\n1.98\n1.95\n2.00\n1.96\n1.96\n1.92\n\n\nE0\n10/08/2019\n15:00\nBurnley\nSouthampton\n3\n0\nH\n0\n0\nD\nG Scott\n10\n11\n4\n3\n6\n12\n2\n7\n0\n0\n0\n0\n2.62\n3.20\n2.75\n2.65\n3.20\n2.75\n2.65\n3.20\n2.75\n2.71\n3.31\n2.81\n2.70\n3.2\n2.75\n2.70\n3.3\n2.80\n2.80\n3.33\n2.85\n2.68\n3.22\n2.78\n2.10\n1.72\n2.17\n1.77\n2.20\n1.78\n2.12\n1.73\n0.00\n1.92\n1.98\n1.93\n2.00\n1.94\n2.00\n1.91\n1.98\n2.70\n3.25\n2.90\n2.65\n3.1\n2.85\n2.60\n3.20\n2.85\n2.71\n3.19\n2.90\n2.62\n3.20\n2.80\n2.70\n3.25\n2.90\n2.72\n3.26\n2.95\n2.65\n3.18\n2.88\n2.1\n1.72\n2.19\n1.76\n2.25\n1.78\n2.17\n1.71\n0.00\n1.87\n2.03\n1.89\n2.03\n1.90\n2.07\n1.86\n2.02\n\n\nE0\n10/08/2019\n15:00\nCrystal Palace\nEverton\n0\n0\nD\n0\n0\nD\nJ Moss\n6\n10\n2\n3\n16\n14\n6\n2\n2\n1\n0\n1\n3.00\n3.25\n2.37\n3.20\n3.20\n2.35\n3.10\n3.20\n2.40\n3.21\n3.37\n2.39\n3.10\n3.3\n2.35\n3.20\n3.3\n2.45\n3.21\n3.40\n2.52\n3.13\n3.27\n2.40\n2.20\n1.66\n2.23\n1.74\n2.25\n1.74\n2.18\n1.70\n0.25\n1.85\n2.05\n1.88\n2.05\n1.88\n2.09\n1.84\n2.04\n3.40\n3.50\n2.25\n3.30\n3.3\n2.25\n3.40\n3.30\n2.20\n3.37\n3.45\n2.27\n3.30\n3.30\n2.25\n3.40\n3.30\n2.25\n3.55\n3.50\n2.34\n3.41\n3.37\n2.23\n2.2\n1.66\n2.22\n1.74\n2.28\n1.77\n2.17\n1.71\n0.25\n1.82\n2.08\n1.97\n1.96\n2.03\n2.08\n1.96\n1.93\n\n\nE0\n10/08/2019\n15:00\nWatford\nBrighton\n0\n3\nA\n0\n1\nA\nC Pawson\n11\n5\n3\n3\n15\n11\n5\n2\n0\n1\n0\n0\n1.90\n3.40\n4.00\n1.90\n3.40\n4.33\n1.93\n3.40\n4.25\n1.98\n3.44\n4.37\n1.95\n3.4\n4.20\n1.95\n3.5\n4.33\n2.00\n3.50\n4.60\n1.94\n3.41\n4.26\n2.10\n1.72\n2.19\n1.76\n2.24\n1.76\n2.16\n1.71\n-0.50\n1.95\n1.95\n1.98\n1.95\n1.98\n1.98\n1.94\n1.94\n2.10\n3.25\n4.20\n2.10\n3.1\n4.00\n2.05\n3.20\n4.00\n2.05\n3.38\n4.12\n2.05\n3.25\n4.00\n2.15\n3.30\n3.90\n2.15\n3.38\n4.20\n2.07\n3.27\n4.04\n2.1\n1.72\n2.16\n1.78\n2.20\n1.78\n2.14\n1.73\n-0.50\n2.04\n1.86\n2.05\n1.88\n2.12\n1.91\n2.05\n1.84"
-  },
-  {
-    "objectID": "Euro24/comp_premier_league.html#model-comparisons",
-    "href": "Euro24/comp_premier_league.html#model-comparisons",
-    "title": "Comparison of different models on the Premier League 2019 dataset",
-    "section": "Model Comparisons",
-    "text": "Model Comparisons\n\n\nCode\n   # Assuming df is your dataframe\n  df %&gt;% filter(type == 'NLL_PRED') %&gt;% \n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line() + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models on the Premier League 2019 dataset', \n      x = 'Number of training data', \n      y = 'Negative Log Likelihood'\n    ) + \n    ylim(2.5, 4) +\n    theme(legend.position = \"bottom\") +\n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\nObservations\n\nEspecially for small training data, the hierarchical model performs better than the non-hierarchical model.\nThe Correlated Dataset model performs slightly better than non-correlated one\nThere is partically no difference in predictive performance when comparing the model with and without Cholesky decomposition.\nThe negative binomial model performs comparable to Poisson model.\nAll models start to deteriorate at around 280 training data. This is due to the interruped season in 2019/2020 due to the COVID-19 pandemic."
-  },
-  {
-    "objectID": "Euro24/comp_premier_league.html#result-nlls",
-    "href": "Euro24/comp_premier_league.html#result-nlls",
-    "title": "Comparison of different models on the Premier League 2019 dataset",
-    "section": "Result NLLs",
-    "text": "Result NLLs\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('NLL_RESULTS', 'NLL_BOOKIE')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = type)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models on the Premier League 2019 dataset', \n      x = 'Number of training data', \n      y = 'Negative Log Likelihood'\n    ) + \n    ylim(0.75, 1.5) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area"
-  },
-  {
-    "objectID": "Euro24/comp_premier_league.html#betting-returns",
-    "href": "Euro24/comp_premier_league.html#betting-returns",
-    "title": "Comparison of different models on the Premier League 2019 dataset",
-    "section": "Betting Returns",
-    "text": "Betting Returns\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('BET_RETURN')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models on the Premier League 2019 dataset', \n      x = 'Number of training data', \n      y = 'Betting Returns'\n    ) + \n    #ylim(0.75, 1.5) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area"
-  },
-  {
-    "objectID": "Euro24/comp_premier_league.html#technical-details",
-    "href": "Euro24/comp_premier_league.html#technical-details",
-    "title": "Comparison of different models on the Premier League 2019 dataset",
-    "section": "Technical Details",
-    "text": "Technical Details\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('MIN_SUM_PROB')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models on the Premier League 2019 dataset', \n      x = 'Number of training data', \n      y = 'Sum of Probabilities from 0 to 10 goals (should be 1)'\n    ) + \n    ylim(0.75, 1.01) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area"
-  },
-  {
-    "objectID": "Euro24/comp_bundes_liga_2000.html",
-    "href": "Euro24/comp_bundes_liga_2000.html",
-    "title": "Comparison of different models Bundesliga Dataset",
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
     "section": "",
-    "text": "The experiments take some time to run, therefore we used the R-Script to producte the results https://github.com/oduerr/da/blob/master/website/Euro24/eval_performance_runner.R."
-  },
-  {
-    "objectID": "Euro24/comp_bundes_liga_2000.html#loading-the-data",
-    "href": "Euro24/comp_bundes_liga_2000.html#loading-the-data",
-    "title": "Comparison of different models Bundesliga Dataset",
-    "section": "Loading the data",
-    "text": "Loading the data\n\n\nCode\n  df = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_20.csv')\n  df &lt;- mutate(df, name = sub(\"^.*/\", \"\", name))\n  \n  \n  df_raw = read.csv('~/Documents/GitHub/da/website/Euro24/bundesliga2000.csv')\n  head(df_raw) %&gt;% kable()\n\n\n\n\n\n\nDiv\nDate\nHomeTeam\nAwayTeam\nFTHG\nFTAG\nFTR\nHTHG\nHTAG\nHTR\nAttendance\nReferee\nHS\nAS\nHST\nAST\nHHW\nAHW\nHC\nAC\nHF\nAF\nHO\nAO\nHY\nAY\nHR\nAR\nHBP\nABP\nGBH\nGBD\nGBA\nIWH\nIWD\nIWA\nLBH\nLBD\nLBA\nSBH\nSBD\nSBA\nWHH\nWHD\nWHA\n\n\n\n\nD1\n11/08/00\nDortmund\nHansa Rostock\n1\n0\nH\n0\n0\nD\n61000\nJ&lt;f6&gt;rg Kessler\n17\n5\n7\n2\n0\n0\n7\n3\n25\n19\n4\n8\n1\n5\n0\n0\n10\n50\n1.5\n3.4\n5.0\n1.45\n3.5\n5.0\nNA\nNA\nNA\n1.50\n3.50\n6.00\n1.44\n3.6\n6.5\n\n\nD1\n12/08/00\nBayern Munich\nHertha\n4\n1\nH\n1\n0\nH\n57000\nMarkus Merk\n14\n11\n6\n5\n1\n0\n4\n9\n13\n12\n3\n3\n1\n0\n0\n0\n10\n0\n1.3\n4.5\n6.0\n1.45\n3.5\n5.0\nNA\nNA\nNA\n1.40\n3.75\n7.00\n1.44\n3.6\n6.5\n\n\nD1\n12/08/00\nFreiburg\nStuttgart\n4\n0\nH\n2\n0\nH\n22500\nHelmut Krug\n15\n18\n7\n5\n0\n0\n4\n7\n22\n17\n0\n0\n1\n1\n0\n0\n10\n10\n2.4\n3.1\n2.5\n2.30\n2.9\n2.5\nNA\nNA\nNA\n2.60\n3.25\n2.38\n2.40\n3.2\n2.5\n\n\nD1\n12/08/00\nHamburg\nMunich 1860\n2\n2\nD\n2\n2\nD\n35000\nHerbert Fandel\n18\n9\n5\n7\n1\n0\n5\n3\n0\n0\n0\n0\n2\n2\n0\n1\n20\n45\n1.8\n3.3\n3.8\n1.80\n3.0\n3.5\nNA\nNA\nNA\n1.75\n3.30\n4.00\n1.66\n3.3\n4.5\n\n\nD1\n12/08/00\nKaiserslautern\nBochum\n0\n1\nA\n0\n0\nD\n38000\nHelmut Fleischer\n11\n5\n2\n2\n0\n0\n5\n5\n9\n8\n0\n0\n1\n0\n0\n0\n10\n0\n1.5\n3.4\n4.6\n1.45\n3.5\n5.0\nNA\nNA\nNA\n1.44\n3.80\n6.00\n1.50\n3.6\n5.5\n\n\nD1\n12/08/00\nLeverkusen\nWolfsburg\n2\n0\nH\n2\n0\nH\n22500\nEdgar Steinborn\n18\n5\n5\n5\n0\n0\n6\n4\n25\n22\n0\n0\n0\n2\n0\n0\n0\n20\n1.4\n4.0\n5.5\n1.55\n3.3\n4.5\nNA\nNA\nNA\n1.44\n3.80\n6.00\n1.44\n3.6\n6.5"
-  },
-  {
-    "objectID": "Euro24/comp_bundes_liga_2000.html#model-comparisons",
-    "href": "Euro24/comp_bundes_liga_2000.html#model-comparisons",
-    "title": "Comparison of different models Bundesliga Dataset",
-    "section": "Model Comparisons",
-    "text": "Model Comparisons\nWe use the negative log likelihood (NLL) as a measure of the predictive performance of the models. The lower the NLL, the better the model. However, strictly speaking it is the negative log posterior predictive density (divided by \\(n\\)) evaluated at the \\(n\\) games after the training data.\n\\[\n\\text{NLL} = -\\frac{1}{n}\\sum_{i=1}^n \\log p(y_i | x_i, \\theta)\n\\]\n\n\nCode\n   # Assuming df is your dataframe\n  df %&gt;% filter(type == 'NLL_PRED') %&gt;% \n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line() + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2000 dataset', \n      x = 'Number of training data', \n      y = 'Negative Log Likelihood'\n    ) + \n    ylim(2.5, 4) +\n    theme(legend.position = \"bottom\") +\n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\nObservations\n\nEspecially for small training data, the hierarchical model performs better than the non-hierarchical model.\nThe Correlated Dataset model performs slightly better than non-correlated one\nThere is partically no difference in predictive performance when comparing the model with and without Cholesky decomposition.\nThe negative binomial model performs comparable to Poisson model."
-  },
-  {
-    "objectID": "Euro24/comp_bundes_liga_2000.html#comparison-of-predicted-vs-psis-loo",
-    "href": "Euro24/comp_bundes_liga_2000.html#comparison-of-predicted-vs-psis-loo",
-    "title": "Comparison of different models Bundesliga Dataset",
-    "section": "Comparison of predicted vs PSIS-LOO",
-    "text": "Comparison of predicted vs PSIS-LOO\n\n\nCode\n  df %&gt;% filter(type %in% c('NLL_PRED', 'NLL_PSIS', 'NLL_PRED_STAN')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = type)) + \n    geom_line(aes(linetype = type)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title =  'Comparison of different models for the Bundesliga 2000 dataset',\n      x = 'Number of training data', \n      y = 'Negative Log Likelihood'\n    ) + \n    ylim(2.5, 4) +\n    facet_wrap(~name) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\nObservations"
-  },
-  {
-    "objectID": "Euro24/comp_bundes_liga_2000.html#nnl-for-win-draws-and-losses",
-    "href": "Euro24/comp_bundes_liga_2000.html#nnl-for-win-draws-and-losses",
-    "title": "Comparison of different models Bundesliga Dataset",
-    "section": "NNL for win, draws and losses",
-    "text": "NNL for win, draws and losses\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('NLL_RESULTS', 'NLL_BOOKIE')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = type)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2000 dataset',\n      x = 'Number of training data', \n      y = 'Negative Log Likelihood'\n    ) + \n    ylim(0.75, 1.5) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\nObservations\n\nThe NLL for the bookie is always better than the NLL of the models, so we should not bet."
-  },
-  {
-    "objectID": "Euro24/comp_bundes_liga_2000.html#betting-returns",
-    "href": "Euro24/comp_bundes_liga_2000.html#betting-returns",
-    "title": "Comparison of different models Bundesliga Dataset",
-    "section": "Betting Returns",
-    "text": "Betting Returns\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('BET_RETURN')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line(aes(linetype = name)) +  \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2000 dataset',\n      x = 'Number of training data', \n      y = 'Betting Returns'\n    ) + \n    #ylim(0.75, 1.5) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\nObservations\nWe see quite some fluctuation in the betting return. Since the NLL shows that the odds from the booki are always better then the NLLs of the models we should not bet."
-  },
-  {
-    "objectID": "Euro24/comp_bundes_liga_2000.html#technical-details",
-    "href": "Euro24/comp_bundes_liga_2000.html#technical-details",
-    "title": "Comparison of different models Bundesliga Dataset",
-    "section": "Technical Details",
-    "text": "Technical Details\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('MIN_SUM_PROB')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2000 dataset',\n      x = 'Number of training data', \n      y = 'Sum of Probabilities from 0 to 10 goals (should be 1)'\n    ) + \n    ylim(0.75, 1.01) +\n    theme(legend.position = \"bottom\") + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\n\nCode\n  df %&gt;% \n    filter(type %in% c('num_divergent')) %&gt;%\n    ggplot(aes(x = ntrain, y = res, color = name)) + \n    geom_line(aes(linetype = name)) + \n    geom_point() + \n    theme_minimal() + \n    labs(\n      title = 'Comparison of different models for the Bundesliga 2000 dataset',\n      x = 'Number of training data', \n      y = 'Number of Divergent Transitions (sqrt scale)'\n    ) + \n    theme(legend.position = \"bottom\") + \n    scale_y_sqrt() + \n    coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area\n\n\n\n\n\n\n\n\n\n\n\nCode\ndf %&gt;% \n  filter(type %in% c('ebfmi')) %&gt;%\n  ggplot(aes(x = ntrain, y = res, color = name)) + \n  geom_line(aes(linetype = name)) + \n  geom_point() + \n  theme_minimal() + \n  labs(\n    title = 'Comparison of different models for the Bundesliga 2000 dataset',\n    x = 'Number of training data', \n    y = 'ebfmi' \n  ) + \n  theme(legend.position = \"bottom\") + \n  geom_hline(yintercept = 0.3, linetype = \"dashed\", color = \"red\") + \n  annotate(\"text\", x = Inf, y = 0.33, label = \"Acceptable\", hjust = 1.1, color = \"red\") + \n  annotate(\"text\", x = Inf, y = 0.27, label = \"Non-Acceptable\", hjust = 1.1, color = \"red\") +\n  coord_cartesian(clip = \"off\") # Allow lines to go outside the plot area"
+    "text": "Internal Notes for authoring the website\n\nHow to add a new page\n\nCreate a new quarto file in the root directory or subdirectory. Put the quarto-file in website directory (or subdirectory). Make sure that you do not have self-contained: true in the qmd file, otherwise file gets to large. An example is website/lecture_notes/MCMC/MCMC.qmd\n\n\n---\ntitle: \"Lecture Notes on MCMC\"\nauthor: \"Oliver Dürr\"\nformat: \n  html:\n    toc: true\n    toc-title: \"Table of Contents\"\n    toc-depth: 3\n    fig-width: 6\n    fig-height: 3\n    code-fold: true\n    code-tools: true\n    mathjax: true\n  #  self-contained: true &lt;------ NEEDS TO BE COMMENTED OUT (or not there at all)\n  # pdf:\n  #   toc: true\n  #   toc-title: \"Table of Contents\"\nfilters:\n  - webr\n---\n\n\n\nHow to render the website\n\nRender and move to docs folder\n\nquarto render \n\nCheck in the changes in the docs folder\n\n\n\nDevelopment (in da/website)\nquarto preview lecture_notes/MCMC/MCMC.qmd #For a single file\nquarto preview #For the complete website"
   }
 ]
