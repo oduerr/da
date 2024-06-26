@@ -197,7 +197,6 @@ window.Quarto = {
   <ul>
   <li><a href="#loading-the-data" id="toc-loading-the-data" class="nav-link active" data-scroll-target="#loading-the-data">Loading the data</a></li>
   <li><a href="#exploratory-analysis" id="toc-exploratory-analysis" class="nav-link" data-scroll-target="#exploratory-analysis">Exploratory Analysis</a></li>
-  <li><a href="#exploratory-analysis-1" id="toc-exploratory-analysis-1" class="nav-link" data-scroll-target="#exploratory-analysis-1">Exploratory Analysis</a></li>
   <li><a href="#model-comparisons" id="toc-model-comparisons" class="nav-link" data-scroll-target="#model-comparisons">Model Comparisons</a>
   <ul class="collapse">
   <li><a href="#observations" id="toc-observations" class="nav-link" data-scroll-target="#observations">Observations</a></li>
@@ -1067,134 +1066,6 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="exploratory-analysis-1" class="level2">
-<h2 class="anchored" data-anchor-id="exploratory-analysis-1">Exploratory Analysis</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#str(df_raw)</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load necessary libraries</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load your data</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># df_raw &lt;- read.csv('path_to_your_data.csv') # Replace with the actual data loading method</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Example data frame structure for reference</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># df_raw &lt;- data.frame(</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   B365H = c(7.5, 2.7, 2.3), B365D = c(6.5, 3.6, 3.6), B365A = c(1.3, 2.45, 2.9),</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   FTR = c("A", "D", "A")</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate implied probabilities</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>df_raw <span class="ot">&lt;-</span> df_raw <span class="sc">%&gt;%</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">ImpliedProb_H =</span> <span class="dv">1</span> <span class="sc">/</span> B365H,</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">ImpliedProb_D =</span> <span class="dv">1</span> <span class="sc">/</span> B365D,</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">ImpliedProb_A =</span> <span class="dv">1</span> <span class="sc">/</span> B365A</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">SumImpliedProbs =</span> ImpliedProb_H <span class="sc">+</span> ImpliedProb_D <span class="sc">+</span> ImpliedProb_A,</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">ImpliedProb_H =</span> ImpliedProb_H <span class="sc">/</span> SumImpliedProbs,</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">ImpliedProb_D =</span> ImpliedProb_D <span class="sc">/</span> SumImpliedProbs,</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">ImpliedProb_A =</span> ImpliedProb_A <span class="sc">/</span> SumImpliedProbs</span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert actual outcomes to binary indicators</span></span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>df_raw <span class="ot">&lt;-</span> df_raw <span class="sc">%&gt;%</span></span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">Outcome_H =</span> <span class="fu">ifelse</span>(FTR <span class="sc">==</span> <span class="st">"H"</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">Outcome_D =</span> <span class="fu">ifelse</span>(FTR <span class="sc">==</span> <span class="st">"D"</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">Outcome_A =</span> <span class="fu">ifelse</span>(FTR <span class="sc">==</span> <span class="st">"A"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate negative log-likelihood for the given strategy</span></span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>df_raw <span class="ot">&lt;-</span> df_raw <span class="sc">%&gt;%</span></span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">NLL_H =</span> Outcome_H <span class="sc">*</span> <span class="fu">log</span>(ImpliedProb_H),</span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">NLL_D =</span> Outcome_D <span class="sc">*</span> <span class="fu">log</span>(ImpliedProb_D),</span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">NLL_A =</span> Outcome_A <span class="sc">*</span> <span class="fu">log</span>(ImpliedProb_A),</span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">NLL =</span> <span class="sc">-</span>(NLL_H <span class="sc">+</span> NLL_D <span class="sc">+</span> NLL_A)</span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean negative log-likelihood for the given strategy</span></span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>mean_nll <span class="ot">&lt;-</span> <span class="fu">mean</span>(df_raw<span class="sc">$</span>NLL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mean Negative Log-Likelihood for given strategy:"</span>, mean_nll, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Mean Negative Log-Likelihood for given strategy: 0.9463587 </code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate negative log-likelihood for uniform betting (1/3 for each outcome)</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>baseline_prob <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> <span class="dv">3</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>df_raw <span class="ot">&lt;-</span> df_raw <span class="sc">%&gt;%</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">BaselineNLL_H =</span> Outcome_H <span class="sc">*</span> <span class="fu">log</span>(baseline_prob),</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">BaselineNLL_D =</span> Outcome_D <span class="sc">*</span> <span class="fu">log</span>(baseline_prob),</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">BaselineNLL_A =</span> Outcome_A <span class="sc">*</span> <span class="fu">log</span>(baseline_prob),</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">BaselineNLL =</span> <span class="sc">-</span>(BaselineNLL_H <span class="sc">+</span> BaselineNLL_D <span class="sc">+</span> BaselineNLL_A)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean negative log-likelihood for uniform betting</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>mean_baseline_nll <span class="ot">&lt;-</span> <span class="fu">mean</span>(df_raw<span class="sc">$</span>BaselineNLL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mean Negative Log-Likelihood for uniform betting:"</span>, mean_baseline_nll, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Mean Negative Log-Likelihood for uniform betting: 1.098612 </code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate negative log-likelihood for always betting on home win</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>df_raw <span class="ot">&lt;-</span> df_raw <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysHomeNLL_H =</span> <span class="sc">-</span><span class="fu">log</span>(baseline_prob) <span class="sc">*</span> Outcome_H,</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysHomeNLL_L =</span> <span class="sc">-</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> baseline_prob) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> Outcome_H),</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysHomeNLL =</span> AlwaysHomeNLL_H <span class="sc">+</span> AlwaysHomeNLL_L</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>mean_always_home_nll <span class="ot">&lt;-</span> <span class="fu">mean</span>(df_raw<span class="sc">$</span>AlwaysHomeNLL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mean Negative Log-Likelihood for always betting on home win:"</span>, mean_always_home_nll, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Mean Negative Log-Likelihood for always betting on home win: 0.7090001 </code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate negative log-likelihood for always betting on away win</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df_raw <span class="ot">&lt;-</span> df_raw <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysAwayNLL_A =</span> <span class="sc">-</span><span class="fu">log</span>(baseline_prob) <span class="sc">*</span> Outcome_A,</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysAwayNLL_L =</span> <span class="sc">-</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> baseline_prob) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> Outcome_A),</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysAwayNLL =</span> AlwaysAwayNLL_A <span class="sc">+</span> AlwaysAwayNLL_L</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>mean_always_away_nll <span class="ot">&lt;-</span> <span class="fu">mean</span>(df_raw<span class="sc">$</span>AlwaysAwayNLL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mean Negative Log-Likelihood for always betting on away win:"</span>, mean_always_away_nll, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Mean Negative Log-Likelihood for always betting on away win: 0.6115971 </code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate negative log-likelihood for always betting on draw</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df_raw <span class="ot">&lt;-</span> df_raw <span class="sc">%&gt;%</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysDrawNLL_D =</span> <span class="sc">-</span><span class="fu">log</span>(baseline_prob) <span class="sc">*</span> Outcome_D,</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysDrawNLL_L =</span> <span class="sc">-</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> baseline_prob) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> Outcome_D),</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysDrawNLL =</span> AlwaysDrawNLL_D <span class="sc">+</span> AlwaysDrawNLL_L</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>mean_always_draw_nll <span class="ot">&lt;-</span> <span class="fu">mean</span>(df_raw<span class="sc">$</span>AlwaysDrawNLL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mean Negative Log-Likelihood for always betting on draw:"</span>, mean_always_draw_nll, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Mean Negative Log-Likelihood for always betting on draw: 0.5889452 </code></pre>
-</div>
-</div>
-</section>
 <section id="model-comparisons" class="level2">
 <h2 class="anchored" data-anchor-id="model-comparisons">Model Comparisons</h2>
 <p>We use the negative log likelihood (NLL) as a measure of the predictive performance of the models. The lower the NLL, the better the model. However, strictly speaking it is the negative log posterior predictive density (divided by <span class="math inline">\(n\)</span>) evaluated at the <span class="math inline">\(n\)</span> games after the training data.</p>
@@ -1204,21 +1075,21 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Assuming df is your dataframe</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">'NLL_PRED'</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> name)) <span class="sc">+</span> </span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>, </span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Negative Log Likelihood'</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">#ylim(2.9, 3.5) +</span></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">#xlim(0,100) +</span></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>) <span class="sc">+</span></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Assuming df is your dataframe</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">'NLL_PRED'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> name)) <span class="sc">+</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>, </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Negative Log Likelihood'</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">#ylim(2.9, 3.5) +</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">#xlim(0,100) +</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>) <span class="sc">+</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1243,20 +1114,20 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'NLL_PRED'</span>, <span class="st">'NLL_PSIS'</span>, <span class="st">'NLL_PRED_STAN'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> type)) <span class="sc">+</span> </span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> type)) <span class="sc">+</span> </span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span>  <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Negative Log Likelihood'</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="fl">2.5</span>, <span class="dv">4</span>) <span class="sc">+</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>name) <span class="sc">+</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'NLL_PRED'</span>, <span class="st">'NLL_PSIS'</span>, <span class="st">'NLL_PRED_STAN'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> type)) <span class="sc">+</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> type)) <span class="sc">+</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span>  <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Negative Log Likelihood'</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="fl">2.5</span>, <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>name) <span class="sc">+</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1275,21 +1146,21 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'NLL_RESULTS'</span>, <span class="st">'NLL_BOOKIE'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> type)) <span class="sc">+</span> </span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span> </span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Negative Log Likelihood'</span></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="fl">0.75</span>, <span class="fl">1.5</span>) <span class="sc">+</span></span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> NLL_NAIVE, <span class="at">col =</span> <span class="st">"green"</span>, <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'NLL_RESULTS'</span>, <span class="st">'NLL_BOOKIE'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> type)) <span class="sc">+</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span> </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Negative Log Likelihood'</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="fl">0.75</span>, <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> NLL_NAIVE, <span class="at">col =</span> <span class="st">"green"</span>, <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1300,15 +1171,15 @@ window.Quarto = {
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="do">#### Booki mean</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  dfp <span class="ot">=</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'NLL_RESULTS'</span>, <span class="st">'NLL_BOOKIE'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(name, type) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">nll =</span> <span class="fu">mean</span>(res)) </span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  dfp <span class="ot">=</span> <span class="fu">rbind</span>(dfp, <span class="fu">data.frame</span>(<span class="at">name =</span> <span class="st">"NLL_NAIVE"</span>, <span class="at">type =</span> <span class="st">"NLL_NAIVE"</span>, <span class="at">nll =</span> NLL_NAIVE))</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove all but one NLL_BOOKIE</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">kable</span>(dfp, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="do">#### Booki mean</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  dfp <span class="ot">=</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'NLL_RESULTS'</span>, <span class="st">'NLL_BOOKIE'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(name, type) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">nll =</span> <span class="fu">mean</span>(res)) </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  dfp <span class="ot">=</span> <span class="fu">rbind</span>(dfp, <span class="fu">data.frame</span>(<span class="at">name =</span> <span class="st">"NLL_NAIVE"</span>, <span class="at">type =</span> <span class="st">"NLL_NAIVE"</span>, <span class="at">nll =</span> NLL_NAIVE))</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove all but one NLL_BOOKIE</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">kable</span>(dfp, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1404,20 +1275,20 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'RPS'</span>, <span class="st">'rps_booki'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> type)) <span class="sc">+</span> </span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span> </span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Ranked Probability Score'</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">#ylim(0.75, 1.5) +</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'RPS'</span>, <span class="st">'rps_booki'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> type)) <span class="sc">+</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span> </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Ranked Probability Score'</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">#ylim(0.75, 1.5) +</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1431,11 +1302,11 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(dplyr)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  dfres <span class="ot">=</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'RPS'</span>, <span class="st">'rps_booki'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(name, type) <span class="sc">%&gt;%</span> </span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">rps =</span> <span class="fu">mean</span>(res)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(dplyr)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  dfres <span class="ot">=</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'RPS'</span>, <span class="st">'rps_booki'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(name, type) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">rps =</span> <span class="fu">mean</span>(res)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>`summarise()` has grouped output by 'name'. You can override using the
@@ -1443,14 +1314,14 @@ window.Quarto = {
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>  rps_booki <span class="ot">=</span> dfres <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">'rps_booki'</span>) </span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  dfres2 <span class="ot">=</span> dfres <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">'RPS'</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(name, rps) </span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  dfres2 <span class="ot">=</span> <span class="fu">rbind</span>(dfres2, rps_booki[<span class="dv">1</span>,])</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sort by RPS</span></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  dfres2 <span class="ot">=</span> dfres2[<span class="fu">order</span>(dfres2<span class="sc">$</span>rps),]</span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(dfres2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>  rps_booki <span class="ot">=</span> dfres <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">'rps_booki'</span>) </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  dfres2 <span class="ot">=</span> dfres <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">'RPS'</span>) <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">select</span>(name, rps) </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  dfres2 <span class="ot">=</span> <span class="fu">rbind</span>(dfres2, rps_booki[<span class="dv">1</span>,])</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sort by RPS</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  dfres2 <span class="ot">=</span> dfres2[<span class="fu">order</span>(dfres2<span class="sc">$</span>rps),]</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(dfres2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1512,20 +1383,20 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'BET_RETURN'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> name)) <span class="sc">+</span> </span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span>  </span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Betting Returns'</span></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">#ylim(0.75, 1.5) +</span></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span>  </span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'BET_RETURN'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> name)) <span class="sc">+</span> </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span>  </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Betting Returns'</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">#ylim(0.75, 1.5) +</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span>  </span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1536,10 +1407,10 @@ window.Quarto = {
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'BET_RETURN'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(name) <span class="sc">%&gt;%</span> </span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="fu">mean</span>(res))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'BET_RETURN'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(name) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="fu">mean</span>(res))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 2
@@ -1563,20 +1434,20 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'MIN_SUM_PROB'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> name)) <span class="sc">+</span> </span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span> </span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Sum of Probabilities from 0 to 10 goals (should be 1)'</span></span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="fl">0.75</span>, <span class="fl">1.01</span>) <span class="sc">+</span></span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'MIN_SUM_PROB'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> name)) <span class="sc">+</span> </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span> </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Sum of Probabilities from 0 to 10 goals (should be 1)'</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylim</span>(<span class="fl">0.75</span>, <span class="fl">1.01</span>) <span class="sc">+</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1589,20 +1460,20 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'num_divergent'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> name)) <span class="sc">+</span> </span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span> </span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Number of Divergent Transitions (sqrt scale)'</span></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_sqrt</span>() <span class="sc">+</span> </span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'num_divergent'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> name)) <span class="sc">+</span> </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span> </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">'Number of Divergent Transitions (sqrt scale)'</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span> </span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_sqrt</span>() <span class="sc">+</span> </span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1615,27 +1486,27 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'ebfmi'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> name)) <span class="sc">+</span> </span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span> </span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">'ebfmi'</span></span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.3</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="cn">Inf</span>, <span class="at">y =</span> <span class="fl">0.33</span>, <span class="at">label =</span> <span class="st">"Acceptable"</span>, <span class="at">hjust =</span> <span class="fl">1.1</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="cn">Inf</span>, <span class="at">y =</span> <span class="fl">0.27</span>, <span class="at">label =</span> <span class="st">"Non-Acceptable"</span>, <span class="at">hjust =</span> <span class="fl">1.1</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'ebfmi'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ntrain, <span class="at">y =</span> res, <span class="at">color =</span> name)) <span class="sc">+</span> </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype =</span> name)) <span class="sc">+</span> </span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">'Comparison of different models for the Bundesliga 2023 dataset'</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">'Number of training data'</span>, </span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">'ebfmi'</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.3</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="cn">Inf</span>, <span class="at">y =</span> <span class="fl">0.33</span>, <span class="at">label =</span> <span class="st">"Acceptable"</span>, <span class="at">hjust =</span> <span class="fl">1.1</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="cn">Inf</span>, <span class="at">y =</span> <span class="fl">0.27</span>, <span class="at">label =</span> <span class="st">"Non-Acceptable"</span>, <span class="at">hjust =</span> <span class="fl">1.1</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">clip =</span> <span class="st">"off"</span>) <span class="co"># Allow lines to go outside the plot area</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="comp_bundes_liga_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="768"></p>
+<p><img src="comp_bundes_liga_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="768"></p>
 </figure>
 </div>
 </div>
@@ -2107,396 +1978,294 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb30" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Comparison of different models Bundesliga Dataset"</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Oliver Dürr"</span></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> </span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-title: "Table of Contents"</span></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-width: 6</span></span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-height: 3</span></span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="co">    mathjax: true</span></span>
-<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="co">  # pdf:</span></span>
-<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="co">  #   toc: true</span></span>
-<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="co">  #   toc-title: "Table of Contents"</span></span>
-<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="co">  # filters:</span></span>
-<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a><span class="co">  #- webr</span></span>
-<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}</span></span>
-<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a><span class="in">  library(tidyverse)</span></span>
-<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a><span class="in">  library(kableExtra)</span></span>
-<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a><span class="in">  set.seed(42)</span></span>
-<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>The experiments take some time to run, therefore we used the R-Script to producte the results <span class="ot">&lt;https://github.com/oduerr/da/blob/master/website/Euro24/eval_performance_runner.R&gt;</span>.</span>
-<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## Loading the data</span></span>
-<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, asis=TRUE}</span></span>
-<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a><span class="in">  df = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23.csv')</span></span>
-<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a><span class="in">  df &lt;- mutate(df, name = sub("^.*/", "", name))</span></span>
-<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
-<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a><span class="in">  #Add additional run with home advantage</span></span>
-<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a><span class="in">  df2 = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_home_adv.csv')</span></span>
-<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a><span class="in">  df2 &lt;- mutate(df2, name = sub("^.*/", "", name))</span></span>
-<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a><span class="in">  df &lt;- rbind(df, df2)</span></span>
-<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
-<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a><span class="in">  # Add additional run with 18 games ahead</span></span>
-<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a><span class="in">  df3 = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_18Ahead.csv')</span></span>
-<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a><span class="in">  df = df3</span></span>
-<span id="cb30-42"><a href="#cb30-42" aria-hidden="true" tabindex="-1"></a><span class="in">  print("Using 24_18Ahead that means all data is averaged 18 games ahead.")</span></span>
-<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
-<span id="cb30-44"><a href="#cb30-44" aria-hidden="true" tabindex="-1"></a><span class="in">  #df = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_bets05_18Ahead.csv')</span></span>
-<span id="cb30-45"><a href="#cb30-45" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
-<span id="cb30-46"><a href="#cb30-46" aria-hidden="true" tabindex="-1"></a><span class="in">  df_raw = read.csv('~/Documents/GitHub/da/website/Euro24/bundesliga2023.csv')</span></span>
-<span id="cb30-47"><a href="#cb30-47" aria-hidden="true" tabindex="-1"></a><span class="in">  head(df_raw) %&gt;% kable()</span></span>
-<span id="cb30-48"><a href="#cb30-48" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb30-49"><a href="#cb30-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-50"><a href="#cb30-50" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exploratory Analysis</span></span>
-<span id="cb30-53"><a href="#cb30-53" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb30-54"><a href="#cb30-54" aria-hidden="true" tabindex="-1"></a><span class="co">#str(df_raw)</span></span>
-<span id="cb30-55"><a href="#cb30-55" aria-hidden="true" tabindex="-1"></a><span class="co">#Full Time Home Goals, Full Time Away Goals</span></span>
-<span id="cb30-56"><a href="#cb30-56" aria-hidden="true" tabindex="-1"></a>home_wins <span class="ot">=</span> df_raw<span class="sc">$</span>FTHG <span class="sc">&gt;</span> df_raw<span class="sc">$</span>FTAG</span>
-<span id="cb30-57"><a href="#cb30-57" aria-hidden="true" tabindex="-1"></a>away_wins <span class="ot">=</span> df_raw<span class="sc">$</span>FTHG <span class="sc">&lt;</span> df_raw<span class="sc">$</span>FTAG</span>
-<span id="cb30-58"><a href="#cb30-58" aria-hidden="true" tabindex="-1"></a>draws <span class="ot">=</span> df_raw<span class="sc">$</span>FTHG <span class="sc">==</span> df_raw<span class="sc">$</span>FTAG</span>
-<span id="cb30-59"><a href="#cb30-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-60"><a href="#cb30-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Betting on home wins would have some log(0) --&gt; -Inf</span></span>
-<span id="cb30-61"><a href="#cb30-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-62"><a href="#cb30-62" aria-hidden="true" tabindex="-1"></a><span class="co"># Betting according frequency</span></span>
-<span id="cb30-63"><a href="#cb30-63" aria-hidden="true" tabindex="-1"></a><span class="co"># This is a bit cheating, since we use the future data to calculate</span></span>
-<span id="cb30-64"><a href="#cb30-64" aria-hidden="true" tabindex="-1"></a>ps_naive <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">sum</span>(home_wins), <span class="fu">sum</span>(draws), <span class="fu">sum</span>(away_wins))<span class="sc">/</span><span class="fu">nrow</span>(df_raw)</span>
-<span id="cb30-65"><a href="#cb30-65" aria-hidden="true" tabindex="-1"></a>NLL_NAIVE <span class="ot">=</span> <span class="fu">sum</span>(</span>
-<span id="cb30-66"><a href="#cb30-66" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>home_wins<span class="sc">*</span><span class="fu">log</span>(ps_naive[<span class="dv">1</span>])</span>
-<span id="cb30-67"><a href="#cb30-67" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>draws<span class="sc">*</span><span class="fu">log</span>(ps_naive[<span class="dv">2</span>])</span>
-<span id="cb30-68"><a href="#cb30-68" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>away_wins<span class="sc">*</span><span class="fu">log</span>(ps_naive[<span class="dv">3</span>])</span>
-<span id="cb30-69"><a href="#cb30-69" aria-hidden="true" tabindex="-1"></a>)<span class="sc">/</span><span class="fu">nrow</span>(df_raw)</span>
-<span id="cb30-70"><a href="#cb30-70" aria-hidden="true" tabindex="-1"></a>NLL_NAIVE</span>
-<span id="cb30-71"><a href="#cb30-71" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb30-72"><a href="#cb30-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-73"><a href="#cb30-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-74"><a href="#cb30-74" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exploratory Analysis</span></span>
-<span id="cb30-77"><a href="#cb30-77" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb30-78"><a href="#cb30-78" aria-hidden="true" tabindex="-1"></a><span class="co">#str(df_raw)</span></span>
-<span id="cb30-79"><a href="#cb30-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-80"><a href="#cb30-80" aria-hidden="true" tabindex="-1"></a><span class="co"># Load necessary libraries</span></span>
-<span id="cb30-81"><a href="#cb30-81" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb30-82"><a href="#cb30-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-83"><a href="#cb30-83" aria-hidden="true" tabindex="-1"></a><span class="co"># Load your data</span></span>
-<span id="cb30-84"><a href="#cb30-84" aria-hidden="true" tabindex="-1"></a><span class="co"># df_raw &lt;- read.csv('path_to_your_data.csv') # Replace with the actual data loading method</span></span>
-<span id="cb30-85"><a href="#cb30-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-86"><a href="#cb30-86" aria-hidden="true" tabindex="-1"></a><span class="co"># Example data frame structure for reference</span></span>
-<span id="cb30-87"><a href="#cb30-87" aria-hidden="true" tabindex="-1"></a><span class="co"># df_raw &lt;- data.frame(</span></span>
-<span id="cb30-88"><a href="#cb30-88" aria-hidden="true" tabindex="-1"></a><span class="co">#   B365H = c(7.5, 2.7, 2.3), B365D = c(6.5, 3.6, 3.6), B365A = c(1.3, 2.45, 2.9),</span></span>
-<span id="cb30-89"><a href="#cb30-89" aria-hidden="true" tabindex="-1"></a><span class="co">#   FTR = c("A", "D", "A")</span></span>
-<span id="cb30-90"><a href="#cb30-90" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span>
-<span id="cb30-91"><a href="#cb30-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-92"><a href="#cb30-92" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate implied probabilities</span></span>
-<span id="cb30-93"><a href="#cb30-93" aria-hidden="true" tabindex="-1"></a>df_raw <span class="ot">&lt;-</span> df_raw <span class="sc">%&gt;%</span></span>
-<span id="cb30-94"><a href="#cb30-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb30-95"><a href="#cb30-95" aria-hidden="true" tabindex="-1"></a>    <span class="at">ImpliedProb_H =</span> <span class="dv">1</span> <span class="sc">/</span> B365H,</span>
-<span id="cb30-96"><a href="#cb30-96" aria-hidden="true" tabindex="-1"></a>    <span class="at">ImpliedProb_D =</span> <span class="dv">1</span> <span class="sc">/</span> B365D,</span>
-<span id="cb30-97"><a href="#cb30-97" aria-hidden="true" tabindex="-1"></a>    <span class="at">ImpliedProb_A =</span> <span class="dv">1</span> <span class="sc">/</span> B365A</span>
-<span id="cb30-98"><a href="#cb30-98" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb30-99"><a href="#cb30-99" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb30-100"><a href="#cb30-100" aria-hidden="true" tabindex="-1"></a>    <span class="at">SumImpliedProbs =</span> ImpliedProb_H <span class="sc">+</span> ImpliedProb_D <span class="sc">+</span> ImpliedProb_A,</span>
-<span id="cb30-101"><a href="#cb30-101" aria-hidden="true" tabindex="-1"></a>    <span class="at">ImpliedProb_H =</span> ImpliedProb_H <span class="sc">/</span> SumImpliedProbs,</span>
-<span id="cb30-102"><a href="#cb30-102" aria-hidden="true" tabindex="-1"></a>    <span class="at">ImpliedProb_D =</span> ImpliedProb_D <span class="sc">/</span> SumImpliedProbs,</span>
-<span id="cb30-103"><a href="#cb30-103" aria-hidden="true" tabindex="-1"></a>    <span class="at">ImpliedProb_A =</span> ImpliedProb_A <span class="sc">/</span> SumImpliedProbs</span>
-<span id="cb30-104"><a href="#cb30-104" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb30-105"><a href="#cb30-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-106"><a href="#cb30-106" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert actual outcomes to binary indicators</span></span>
-<span id="cb30-107"><a href="#cb30-107" aria-hidden="true" tabindex="-1"></a>df_raw <span class="ot">&lt;-</span> df_raw <span class="sc">%&gt;%</span></span>
-<span id="cb30-108"><a href="#cb30-108" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb30-109"><a href="#cb30-109" aria-hidden="true" tabindex="-1"></a>    <span class="at">Outcome_H =</span> <span class="fu">ifelse</span>(FTR <span class="sc">==</span> <span class="st">"H"</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
-<span id="cb30-110"><a href="#cb30-110" aria-hidden="true" tabindex="-1"></a>    <span class="at">Outcome_D =</span> <span class="fu">ifelse</span>(FTR <span class="sc">==</span> <span class="st">"D"</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
-<span id="cb30-111"><a href="#cb30-111" aria-hidden="true" tabindex="-1"></a>    <span class="at">Outcome_A =</span> <span class="fu">ifelse</span>(FTR <span class="sc">==</span> <span class="st">"A"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb30-112"><a href="#cb30-112" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb30-113"><a href="#cb30-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-114"><a href="#cb30-114" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate negative log-likelihood for the given strategy</span></span>
-<span id="cb30-115"><a href="#cb30-115" aria-hidden="true" tabindex="-1"></a>df_raw <span class="ot">&lt;-</span> df_raw <span class="sc">%&gt;%</span></span>
-<span id="cb30-116"><a href="#cb30-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb30-117"><a href="#cb30-117" aria-hidden="true" tabindex="-1"></a>    <span class="at">NLL_H =</span> Outcome_H <span class="sc">*</span> <span class="fu">log</span>(ImpliedProb_H),</span>
-<span id="cb30-118"><a href="#cb30-118" aria-hidden="true" tabindex="-1"></a>    <span class="at">NLL_D =</span> Outcome_D <span class="sc">*</span> <span class="fu">log</span>(ImpliedProb_D),</span>
-<span id="cb30-119"><a href="#cb30-119" aria-hidden="true" tabindex="-1"></a>    <span class="at">NLL_A =</span> Outcome_A <span class="sc">*</span> <span class="fu">log</span>(ImpliedProb_A),</span>
-<span id="cb30-120"><a href="#cb30-120" aria-hidden="true" tabindex="-1"></a>    <span class="at">NLL =</span> <span class="sc">-</span>(NLL_H <span class="sc">+</span> NLL_D <span class="sc">+</span> NLL_A)</span>
-<span id="cb30-121"><a href="#cb30-121" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb30-122"><a href="#cb30-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-123"><a href="#cb30-123" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean negative log-likelihood for the given strategy</span></span>
-<span id="cb30-124"><a href="#cb30-124" aria-hidden="true" tabindex="-1"></a>mean_nll <span class="ot">&lt;-</span> <span class="fu">mean</span>(df_raw<span class="sc">$</span>NLL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb30-125"><a href="#cb30-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-126"><a href="#cb30-126" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mean Negative Log-Likelihood for given strategy:"</span>, mean_nll, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb30-127"><a href="#cb30-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-128"><a href="#cb30-128" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate negative log-likelihood for uniform betting (1/3 for each outcome)</span></span>
-<span id="cb30-129"><a href="#cb30-129" aria-hidden="true" tabindex="-1"></a>baseline_prob <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> <span class="dv">3</span></span>
-<span id="cb30-130"><a href="#cb30-130" aria-hidden="true" tabindex="-1"></a>df_raw <span class="ot">&lt;-</span> df_raw <span class="sc">%&gt;%</span></span>
-<span id="cb30-131"><a href="#cb30-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb30-132"><a href="#cb30-132" aria-hidden="true" tabindex="-1"></a>    <span class="at">BaselineNLL_H =</span> Outcome_H <span class="sc">*</span> <span class="fu">log</span>(baseline_prob),</span>
-<span id="cb30-133"><a href="#cb30-133" aria-hidden="true" tabindex="-1"></a>    <span class="at">BaselineNLL_D =</span> Outcome_D <span class="sc">*</span> <span class="fu">log</span>(baseline_prob),</span>
-<span id="cb30-134"><a href="#cb30-134" aria-hidden="true" tabindex="-1"></a>    <span class="at">BaselineNLL_A =</span> Outcome_A <span class="sc">*</span> <span class="fu">log</span>(baseline_prob),</span>
-<span id="cb30-135"><a href="#cb30-135" aria-hidden="true" tabindex="-1"></a>    <span class="at">BaselineNLL =</span> <span class="sc">-</span>(BaselineNLL_H <span class="sc">+</span> BaselineNLL_D <span class="sc">+</span> BaselineNLL_A)</span>
-<span id="cb30-136"><a href="#cb30-136" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb30-137"><a href="#cb30-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-138"><a href="#cb30-138" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean negative log-likelihood for uniform betting</span></span>
-<span id="cb30-139"><a href="#cb30-139" aria-hidden="true" tabindex="-1"></a>mean_baseline_nll <span class="ot">&lt;-</span> <span class="fu">mean</span>(df_raw<span class="sc">$</span>BaselineNLL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb30-140"><a href="#cb30-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-141"><a href="#cb30-141" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mean Negative Log-Likelihood for uniform betting:"</span>, mean_baseline_nll, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb30-142"><a href="#cb30-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-143"><a href="#cb30-143" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate negative log-likelihood for always betting on home win</span></span>
-<span id="cb30-144"><a href="#cb30-144" aria-hidden="true" tabindex="-1"></a>df_raw <span class="ot">&lt;-</span> df_raw <span class="sc">%&gt;%</span></span>
-<span id="cb30-145"><a href="#cb30-145" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb30-146"><a href="#cb30-146" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysHomeNLL_H =</span> <span class="sc">-</span><span class="fu">log</span>(baseline_prob) <span class="sc">*</span> Outcome_H,</span>
-<span id="cb30-147"><a href="#cb30-147" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysHomeNLL_L =</span> <span class="sc">-</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> baseline_prob) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> Outcome_H),</span>
-<span id="cb30-148"><a href="#cb30-148" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysHomeNLL =</span> AlwaysHomeNLL_H <span class="sc">+</span> AlwaysHomeNLL_L</span>
-<span id="cb30-149"><a href="#cb30-149" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb30-150"><a href="#cb30-150" aria-hidden="true" tabindex="-1"></a>mean_always_home_nll <span class="ot">&lt;-</span> <span class="fu">mean</span>(df_raw<span class="sc">$</span>AlwaysHomeNLL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb30-151"><a href="#cb30-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-152"><a href="#cb30-152" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mean Negative Log-Likelihood for always betting on home win:"</span>, mean_always_home_nll, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb30-153"><a href="#cb30-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-154"><a href="#cb30-154" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate negative log-likelihood for always betting on away win</span></span>
-<span id="cb30-155"><a href="#cb30-155" aria-hidden="true" tabindex="-1"></a>df_raw <span class="ot">&lt;-</span> df_raw <span class="sc">%&gt;%</span></span>
-<span id="cb30-156"><a href="#cb30-156" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb30-157"><a href="#cb30-157" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysAwayNLL_A =</span> <span class="sc">-</span><span class="fu">log</span>(baseline_prob) <span class="sc">*</span> Outcome_A,</span>
-<span id="cb30-158"><a href="#cb30-158" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysAwayNLL_L =</span> <span class="sc">-</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> baseline_prob) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> Outcome_A),</span>
-<span id="cb30-159"><a href="#cb30-159" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysAwayNLL =</span> AlwaysAwayNLL_A <span class="sc">+</span> AlwaysAwayNLL_L</span>
-<span id="cb30-160"><a href="#cb30-160" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb30-161"><a href="#cb30-161" aria-hidden="true" tabindex="-1"></a>mean_always_away_nll <span class="ot">&lt;-</span> <span class="fu">mean</span>(df_raw<span class="sc">$</span>AlwaysAwayNLL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb30-162"><a href="#cb30-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-163"><a href="#cb30-163" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mean Negative Log-Likelihood for always betting on away win:"</span>, mean_always_away_nll, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb30-164"><a href="#cb30-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-165"><a href="#cb30-165" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate negative log-likelihood for always betting on draw</span></span>
-<span id="cb30-166"><a href="#cb30-166" aria-hidden="true" tabindex="-1"></a>df_raw <span class="ot">&lt;-</span> df_raw <span class="sc">%&gt;%</span></span>
-<span id="cb30-167"><a href="#cb30-167" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb30-168"><a href="#cb30-168" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysDrawNLL_D =</span> <span class="sc">-</span><span class="fu">log</span>(baseline_prob) <span class="sc">*</span> Outcome_D,</span>
-<span id="cb30-169"><a href="#cb30-169" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysDrawNLL_L =</span> <span class="sc">-</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> baseline_prob) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> Outcome_D),</span>
-<span id="cb30-170"><a href="#cb30-170" aria-hidden="true" tabindex="-1"></a>    <span class="at">AlwaysDrawNLL =</span> AlwaysDrawNLL_D <span class="sc">+</span> AlwaysDrawNLL_L</span>
-<span id="cb30-171"><a href="#cb30-171" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb30-172"><a href="#cb30-172" aria-hidden="true" tabindex="-1"></a>mean_always_draw_nll <span class="ot">&lt;-</span> <span class="fu">mean</span>(df_raw<span class="sc">$</span>AlwaysDrawNLL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb30-173"><a href="#cb30-173" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-174"><a href="#cb30-174" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mean Negative Log-Likelihood for always betting on draw:"</span>, mean_always_draw_nll, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb30-175"><a href="#cb30-175" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb30-176"><a href="#cb30-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-177"><a href="#cb30-177" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model Comparisons</span></span>
-<span id="cb30-178"><a href="#cb30-178" aria-hidden="true" tabindex="-1"></a>We use the negative log likelihood (NLL) as a measure of the predictive performance of the models. The lower the NLL, the better the model. However, strictly speaking it is the negative log posterior predictive density (divided by $n$) evaluated at the $n$ games after the training data.</span>
-<span id="cb30-179"><a href="#cb30-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-180"><a href="#cb30-180" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb30-181"><a href="#cb30-181" aria-hidden="true" tabindex="-1"></a>\text{NLL} = -\frac{1}{n}\sum_{i=1}^n \log p(y_i | x_i, \theta)</span>
-<span id="cb30-182"><a href="#cb30-182" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb30-183"><a href="#cb30-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-184"><a href="#cb30-184" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-185"><a href="#cb30-185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-186"><a href="#cb30-186" aria-hidden="true" tabindex="-1"></a><span class="in">```{r hier-vs-non, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
-<span id="cb30-187"><a href="#cb30-187" aria-hidden="true" tabindex="-1"></a><span class="in">   # Assuming df is your dataframe</span></span>
-<span id="cb30-188"><a href="#cb30-188" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% filter(type == 'NLL_PRED') %&gt;% </span></span>
-<span id="cb30-189"><a href="#cb30-189" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = name)) + </span></span>
-<span id="cb30-190"><a href="#cb30-190" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line() + </span></span>
-<span id="cb30-191"><a href="#cb30-191" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
-<span id="cb30-192"><a href="#cb30-192" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
-<span id="cb30-193"><a href="#cb30-193" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
-<span id="cb30-194"><a href="#cb30-194" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset', </span></span>
-<span id="cb30-195"><a href="#cb30-195" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
-<span id="cb30-196"><a href="#cb30-196" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Negative Log Likelihood'</span></span>
-<span id="cb30-197"><a href="#cb30-197" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
-<span id="cb30-198"><a href="#cb30-198" aria-hidden="true" tabindex="-1"></a><span class="in">    #ylim(2.9, 3.5) +</span></span>
-<span id="cb30-199"><a href="#cb30-199" aria-hidden="true" tabindex="-1"></a><span class="in">    #xlim(0,100) +</span></span>
-<span id="cb30-200"><a href="#cb30-200" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "top") +</span></span>
-<span id="cb30-201"><a href="#cb30-201" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
-<span id="cb30-202"><a href="#cb30-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-203"><a href="#cb30-203" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb30-204"><a href="#cb30-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-205"><a href="#cb30-205" aria-hidden="true" tabindex="-1"></a><span class="fu">### Observations</span></span>
-<span id="cb30-206"><a href="#cb30-206" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Especially for small training data, the hierarchical model performs better than the non-hierarchical model. </span>
-<span id="cb30-207"><a href="#cb30-207" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The Correlated Dataset model performs slightly better than non-correlated one</span>
-<span id="cb30-208"><a href="#cb30-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-209"><a href="#cb30-209" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>There is partically no difference in predictive performance when comparing the model with and without Cholesky decomposition. </span>
-<span id="cb30-210"><a href="#cb30-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-211"><a href="#cb30-211" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The negative binomial model performs comparable to Poisson model.</span>
-<span id="cb30-212"><a href="#cb30-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-213"><a href="#cb30-213" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-214"><a href="#cb30-214" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparison of predicted vs PSIS-LOO</span></span>
-<span id="cb30-215"><a href="#cb30-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-216"><a href="#cb30-216" aria-hidden="true" tabindex="-1"></a><span class="in">```{r pred-vs-loo, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
-<span id="cb30-217"><a href="#cb30-217" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% filter(type %in% c('NLL_PRED', 'NLL_PSIS', 'NLL_PRED_STAN')) %&gt;%</span></span>
-<span id="cb30-218"><a href="#cb30-218" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = type)) + </span></span>
-<span id="cb30-219"><a href="#cb30-219" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = type)) + </span></span>
-<span id="cb30-220"><a href="#cb30-220" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
-<span id="cb30-221"><a href="#cb30-221" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
-<span id="cb30-222"><a href="#cb30-222" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
-<span id="cb30-223"><a href="#cb30-223" aria-hidden="true" tabindex="-1"></a><span class="in">      title =  'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
-<span id="cb30-224"><a href="#cb30-224" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
-<span id="cb30-225"><a href="#cb30-225" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Negative Log Likelihood'</span></span>
-<span id="cb30-226"><a href="#cb30-226" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
-<span id="cb30-227"><a href="#cb30-227" aria-hidden="true" tabindex="-1"></a><span class="in">    ylim(2.5, 4) +</span></span>
-<span id="cb30-228"><a href="#cb30-228" aria-hidden="true" tabindex="-1"></a><span class="in">    facet_wrap(~name) +</span></span>
-<span id="cb30-229"><a href="#cb30-229" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") + </span></span>
-<span id="cb30-230"><a href="#cb30-230" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
-<span id="cb30-231"><a href="#cb30-231" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb30-232"><a href="#cb30-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-233"><a href="#cb30-233" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb30-234"><a href="#cb30-234" aria-hidden="true" tabindex="-1"></a><span class="fu">### Observations</span></span>
-<span id="cb30-235"><a href="#cb30-235" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-236"><a href="#cb30-236" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-237"><a href="#cb30-237" aria-hidden="true" tabindex="-1"></a><span class="fu">## NNL for win, draws and losses </span></span>
-<span id="cb30-238"><a href="#cb30-238" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-239"><a href="#cb30-239" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-240"><a href="#cb30-240" aria-hidden="true" tabindex="-1"></a><span class="in">```{r resultbases, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
-<span id="cb30-241"><a href="#cb30-241" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
-<span id="cb30-242"><a href="#cb30-242" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('NLL_RESULTS', 'NLL_BOOKIE')) %&gt;%</span></span>
-<span id="cb30-243"><a href="#cb30-243" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = type)) + </span></span>
-<span id="cb30-244"><a href="#cb30-244" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = name)) + </span></span>
-<span id="cb30-245"><a href="#cb30-245" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
-<span id="cb30-246"><a href="#cb30-246" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
-<span id="cb30-247"><a href="#cb30-247" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
-<span id="cb30-248"><a href="#cb30-248" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
-<span id="cb30-249"><a href="#cb30-249" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
-<span id="cb30-250"><a href="#cb30-250" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Negative Log Likelihood'</span></span>
-<span id="cb30-251"><a href="#cb30-251" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
-<span id="cb30-252"><a href="#cb30-252" aria-hidden="true" tabindex="-1"></a><span class="in">    ylim(0.75, 1.5) +</span></span>
-<span id="cb30-253"><a href="#cb30-253" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_hline(yintercept = NLL_NAIVE, col = "green", alpha=0.5) +</span></span>
-<span id="cb30-254"><a href="#cb30-254" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") + </span></span>
-<span id="cb30-255"><a href="#cb30-255" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
-<span id="cb30-256"><a href="#cb30-256" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-257"><a href="#cb30-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-258"><a href="#cb30-258" aria-hidden="true" tabindex="-1"></a><span class="in">#### Booki mean</span></span>
-<span id="cb30-259"><a href="#cb30-259" aria-hidden="true" tabindex="-1"></a><span class="in">  dfp = df %&gt;% </span></span>
-<span id="cb30-260"><a href="#cb30-260" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('NLL_RESULTS', 'NLL_BOOKIE')) %&gt;%</span></span>
-<span id="cb30-261"><a href="#cb30-261" aria-hidden="true" tabindex="-1"></a><span class="in">    group_by(name, type) %&gt;% </span></span>
-<span id="cb30-262"><a href="#cb30-262" aria-hidden="true" tabindex="-1"></a><span class="in">    summarise(nll = mean(res)) </span></span>
-<span id="cb30-263"><a href="#cb30-263" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
-<span id="cb30-264"><a href="#cb30-264" aria-hidden="true" tabindex="-1"></a><span class="in">  dfp = rbind(dfp, data.frame(name = "NLL_NAIVE", type = "NLL_NAIVE", nll = NLL_NAIVE))</span></span>
-<span id="cb30-265"><a href="#cb30-265" aria-hidden="true" tabindex="-1"></a><span class="in">  # Remove all but one NLL_BOOKIE</span></span>
-<span id="cb30-266"><a href="#cb30-266" aria-hidden="true" tabindex="-1"></a><span class="in">  kableExtra::kable(dfp, digits = 3)</span></span>
-<span id="cb30-267"><a href="#cb30-267" aria-hidden="true" tabindex="-1"></a><span class="in">```</span> </span>
-<span id="cb30-268"><a href="#cb30-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-269"><a href="#cb30-269" aria-hidden="true" tabindex="-1"></a><span class="fu">### Observations</span></span>
-<span id="cb30-270"><a href="#cb30-270" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The NLL for the bookie is always better than the NLL of the models, so we should not bet.</span>
-<span id="cb30-271"><a href="#cb30-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-272"><a href="#cb30-272" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ranked probability score</span></span>
-<span id="cb30-273"><a href="#cb30-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-274"><a href="#cb30-274" aria-hidden="true" tabindex="-1"></a><span class="in">```{r result rps, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
-<span id="cb30-275"><a href="#cb30-275" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
-<span id="cb30-276"><a href="#cb30-276" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('RPS', 'rps_booki')) %&gt;%</span></span>
-<span id="cb30-277"><a href="#cb30-277" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = type)) + </span></span>
-<span id="cb30-278"><a href="#cb30-278" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = name)) + </span></span>
-<span id="cb30-279"><a href="#cb30-279" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
-<span id="cb30-280"><a href="#cb30-280" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
-<span id="cb30-281"><a href="#cb30-281" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
-<span id="cb30-282"><a href="#cb30-282" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
-<span id="cb30-283"><a href="#cb30-283" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
-<span id="cb30-284"><a href="#cb30-284" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Ranked Probability Score'</span></span>
-<span id="cb30-285"><a href="#cb30-285" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
-<span id="cb30-286"><a href="#cb30-286" aria-hidden="true" tabindex="-1"></a><span class="in">    #ylim(0.75, 1.5) +</span></span>
-<span id="cb30-287"><a href="#cb30-287" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") + </span></span>
-<span id="cb30-288"><a href="#cb30-288" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
-<span id="cb30-289"><a href="#cb30-289" aria-hidden="true" tabindex="-1"></a><span class="in">```</span> </span>
-<span id="cb30-290"><a href="#cb30-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-291"><a href="#cb30-291" aria-hidden="true" tabindex="-1"></a>Averaged for the complete season:</span>
-<span id="cb30-292"><a href="#cb30-292" aria-hidden="true" tabindex="-1"></a><span class="in">```{r rps_season}</span></span>
-<span id="cb30-293"><a href="#cb30-293" aria-hidden="true" tabindex="-1"></a><span class="in">  library(dplyr)</span></span>
-<span id="cb30-294"><a href="#cb30-294" aria-hidden="true" tabindex="-1"></a><span class="in">  dfres = df %&gt;% </span></span>
-<span id="cb30-295"><a href="#cb30-295" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('RPS', 'rps_booki')) %&gt;%</span></span>
-<span id="cb30-296"><a href="#cb30-296" aria-hidden="true" tabindex="-1"></a><span class="in">    group_by(name, type) %&gt;% </span></span>
-<span id="cb30-297"><a href="#cb30-297" aria-hidden="true" tabindex="-1"></a><span class="in">    summarise(rps = mean(res)) </span></span>
-<span id="cb30-298"><a href="#cb30-298" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
-<span id="cb30-299"><a href="#cb30-299" aria-hidden="true" tabindex="-1"></a><span class="in">  rps_booki = dfres %&gt;% filter(type == 'rps_booki') </span></span>
-<span id="cb30-300"><a href="#cb30-300" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
-<span id="cb30-301"><a href="#cb30-301" aria-hidden="true" tabindex="-1"></a><span class="in">  dfres2 = dfres %&gt;% filter(type == 'RPS') %&gt;% dplyr::select(name, rps) </span></span>
-<span id="cb30-302"><a href="#cb30-302" aria-hidden="true" tabindex="-1"></a><span class="in">  dfres2 = rbind(dfres2, rps_booki[1,])</span></span>
-<span id="cb30-303"><a href="#cb30-303" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-304"><a href="#cb30-304" aria-hidden="true" tabindex="-1"></a><span class="in">  # Sort by RPS</span></span>
-<span id="cb30-305"><a href="#cb30-305" aria-hidden="true" tabindex="-1"></a><span class="in">  dfres2 = dfres2[order(dfres2$rps),]</span></span>
-<span id="cb30-306"><a href="#cb30-306" aria-hidden="true" tabindex="-1"></a><span class="in">  kable(dfres2)</span></span>
-<span id="cb30-307"><a href="#cb30-307" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb30-308"><a href="#cb30-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-309"><a href="#cb30-309" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-310"><a href="#cb30-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-311"><a href="#cb30-311" aria-hidden="true" tabindex="-1"></a><span class="fu">## Betting Returns</span></span>
-<span id="cb30-312"><a href="#cb30-312" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb30-313"><a href="#cb30-313" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-314"><a href="#cb30-314" aria-hidden="true" tabindex="-1"></a><span class="in">```{r betting, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
-<span id="cb30-315"><a href="#cb30-315" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
-<span id="cb30-316"><a href="#cb30-316" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('BET_RETURN')) %&gt;%</span></span>
-<span id="cb30-317"><a href="#cb30-317" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = name)) + </span></span>
-<span id="cb30-318"><a href="#cb30-318" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = name)) +  </span></span>
-<span id="cb30-319"><a href="#cb30-319" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
-<span id="cb30-320"><a href="#cb30-320" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
-<span id="cb30-321"><a href="#cb30-321" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
-<span id="cb30-322"><a href="#cb30-322" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
-<span id="cb30-323"><a href="#cb30-323" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
-<span id="cb30-324"><a href="#cb30-324" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Betting Returns'</span></span>
-<span id="cb30-325"><a href="#cb30-325" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
-<span id="cb30-326"><a href="#cb30-326" aria-hidden="true" tabindex="-1"></a><span class="in">    #ylim(0.75, 1.5) +</span></span>
-<span id="cb30-327"><a href="#cb30-327" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") +  </span></span>
-<span id="cb30-328"><a href="#cb30-328" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
-<span id="cb30-329"><a href="#cb30-329" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
-<span id="cb30-330"><a href="#cb30-330" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('BET_RETURN')) %&gt;%</span></span>
-<span id="cb30-331"><a href="#cb30-331" aria-hidden="true" tabindex="-1"></a><span class="in">    group_by(name) %&gt;% </span></span>
-<span id="cb30-332"><a href="#cb30-332" aria-hidden="true" tabindex="-1"></a><span class="in">    summarise(mean(res))</span></span>
-<span id="cb30-333"><a href="#cb30-333" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb30-334"><a href="#cb30-334" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-335"><a href="#cb30-335" aria-hidden="true" tabindex="-1"></a><span class="fu">### Observations</span></span>
-<span id="cb30-336"><a href="#cb30-336" aria-hidden="true" tabindex="-1"></a>We see quite some fluctuation in the betting return. Since the NLL shows that the odds from the booki are always better then the NLLs of the models we should not bet.  </span>
-<span id="cb30-337"><a href="#cb30-337" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-338"><a href="#cb30-338" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-339"><a href="#cb30-339" aria-hidden="true" tabindex="-1"></a><span class="fu">## Technical Details</span></span>
-<span id="cb30-340"><a href="#cb30-340" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb30-341"><a href="#cb30-341" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-342"><a href="#cb30-342" aria-hidden="true" tabindex="-1"></a><span class="in">```{r min_sum, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
-<span id="cb30-343"><a href="#cb30-343" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
-<span id="cb30-344"><a href="#cb30-344" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('MIN_SUM_PROB')) %&gt;%</span></span>
-<span id="cb30-345"><a href="#cb30-345" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = name)) + </span></span>
-<span id="cb30-346"><a href="#cb30-346" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = name)) + </span></span>
-<span id="cb30-347"><a href="#cb30-347" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
-<span id="cb30-348"><a href="#cb30-348" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
-<span id="cb30-349"><a href="#cb30-349" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
-<span id="cb30-350"><a href="#cb30-350" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
-<span id="cb30-351"><a href="#cb30-351" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
-<span id="cb30-352"><a href="#cb30-352" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Sum of Probabilities from 0 to 10 goals (should be 1)'</span></span>
-<span id="cb30-353"><a href="#cb30-353" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
-<span id="cb30-354"><a href="#cb30-354" aria-hidden="true" tabindex="-1"></a><span class="in">    ylim(0.75, 1.01) +</span></span>
-<span id="cb30-355"><a href="#cb30-355" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") + </span></span>
-<span id="cb30-356"><a href="#cb30-356" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
-<span id="cb30-357"><a href="#cb30-357" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb30-358"><a href="#cb30-358" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-359"><a href="#cb30-359" aria-hidden="true" tabindex="-1"></a><span class="in">```{r num_divergent, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
-<span id="cb30-360"><a href="#cb30-360" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
-<span id="cb30-361"><a href="#cb30-361" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('num_divergent')) %&gt;%</span></span>
-<span id="cb30-362"><a href="#cb30-362" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = name)) + </span></span>
-<span id="cb30-363"><a href="#cb30-363" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = name)) + </span></span>
-<span id="cb30-364"><a href="#cb30-364" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
-<span id="cb30-365"><a href="#cb30-365" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
-<span id="cb30-366"><a href="#cb30-366" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
-<span id="cb30-367"><a href="#cb30-367" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
-<span id="cb30-368"><a href="#cb30-368" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
-<span id="cb30-369"><a href="#cb30-369" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Number of Divergent Transitions (sqrt scale)'</span></span>
-<span id="cb30-370"><a href="#cb30-370" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
-<span id="cb30-371"><a href="#cb30-371" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") + </span></span>
-<span id="cb30-372"><a href="#cb30-372" aria-hidden="true" tabindex="-1"></a><span class="in">    scale_y_sqrt() + </span></span>
-<span id="cb30-373"><a href="#cb30-373" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area </span></span>
-<span id="cb30-374"><a href="#cb30-374" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb30-375"><a href="#cb30-375" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-376"><a href="#cb30-376" aria-hidden="true" tabindex="-1"></a><span class="in">```{r , fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
-<span id="cb30-377"><a href="#cb30-377" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-378"><a href="#cb30-378" aria-hidden="true" tabindex="-1"></a><span class="in">df %&gt;% </span></span>
-<span id="cb30-379"><a href="#cb30-379" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(type %in% c('ebfmi')) %&gt;%</span></span>
-<span id="cb30-380"><a href="#cb30-380" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot(aes(x = ntrain, y = res, color = name)) + </span></span>
-<span id="cb30-381"><a href="#cb30-381" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_line(aes(linetype = name)) + </span></span>
-<span id="cb30-382"><a href="#cb30-382" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_point() + </span></span>
-<span id="cb30-383"><a href="#cb30-383" aria-hidden="true" tabindex="-1"></a><span class="in">  theme_minimal() + </span></span>
-<span id="cb30-384"><a href="#cb30-384" aria-hidden="true" tabindex="-1"></a><span class="in">  labs(</span></span>
-<span id="cb30-385"><a href="#cb30-385" aria-hidden="true" tabindex="-1"></a><span class="in">    title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
-<span id="cb30-386"><a href="#cb30-386" aria-hidden="true" tabindex="-1"></a><span class="in">    x = 'Number of training data', </span></span>
-<span id="cb30-387"><a href="#cb30-387" aria-hidden="true" tabindex="-1"></a><span class="in">    y = 'ebfmi'</span></span>
-<span id="cb30-388"><a href="#cb30-388" aria-hidden="true" tabindex="-1"></a><span class="in">  ) + </span></span>
-<span id="cb30-389"><a href="#cb30-389" aria-hidden="true" tabindex="-1"></a><span class="in">  theme(legend.position = "bottom") + </span></span>
-<span id="cb30-390"><a href="#cb30-390" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_hline(yintercept = 0.3, linetype = "dashed", color = "red") +</span></span>
-<span id="cb30-391"><a href="#cb30-391" aria-hidden="true" tabindex="-1"></a><span class="in">  annotate("text", x = Inf, y = 0.33, label = "Acceptable", hjust = 1.1, color = "red") +</span></span>
-<span id="cb30-392"><a href="#cb30-392" aria-hidden="true" tabindex="-1"></a><span class="in">  annotate("text", x = Inf, y = 0.27, label = "Non-Acceptable", hjust = 1.1, color = "red") +</span></span>
-<span id="cb30-393"><a href="#cb30-393" aria-hidden="true" tabindex="-1"></a><span class="in">  coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
-<span id="cb30-394"><a href="#cb30-394" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb20" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Comparison of different models Bundesliga Dataset"</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Oliver Dürr"</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> </span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-title: "Table of Contents"</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-width: 6</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-height: 3</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co">    mathjax: true</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="co">  # pdf:</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="co">  #   toc: true</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="co">  #   toc-title: "Table of Contents"</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="co">  # filters:</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="co">  #- webr</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="in">  library(tidyverse)</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a><span class="in">  library(kableExtra)</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a><span class="in">  set.seed(42)</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>The experiments take some time to run, therefore we used the R-Script to producte the results <span class="ot">&lt;https://github.com/oduerr/da/blob/master/website/Euro24/eval_performance_runner.R&gt;</span>.</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## Loading the data</span></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a><span class="in">```{r, asis=TRUE}</span></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a><span class="in">  df = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23.csv')</span></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a><span class="in">  df &lt;- mutate(df, name = sub("^.*/", "", name))</span></span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a><span class="in">  #Add additional run with home advantage</span></span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a><span class="in">  df2 = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_home_adv.csv')</span></span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a><span class="in">  df2 &lt;- mutate(df2, name = sub("^.*/", "", name))</span></span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a><span class="in">  df &lt;- rbind(df, df2)</span></span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a><span class="in">  # Add additional run with 18 games ahead</span></span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a><span class="in">  df3 = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_18Ahead.csv')</span></span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a><span class="in">  df = df3</span></span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a><span class="in">  print("Using 24_18Ahead that means all data is averaged 18 games ahead.")</span></span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a><span class="in">  #df = read.csv('~/Documents/GitHub/da/website/Euro24/eval_performance_bundesliga_23_bets05_18Ahead.csv')</span></span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a><span class="in">  df_raw = read.csv('~/Documents/GitHub/da/website/Euro24/bundesliga2023.csv')</span></span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a><span class="in">  head(df_raw) %&gt;% kable()</span></span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exploratory Analysis</span></span>
+<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a><span class="co">#str(df_raw)</span></span>
+<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a><span class="co">#Full Time Home Goals, Full Time Away Goals</span></span>
+<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a>home_wins <span class="ot">=</span> df_raw<span class="sc">$</span>FTHG <span class="sc">&gt;</span> df_raw<span class="sc">$</span>FTAG</span>
+<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a>away_wins <span class="ot">=</span> df_raw<span class="sc">$</span>FTHG <span class="sc">&lt;</span> df_raw<span class="sc">$</span>FTAG</span>
+<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a>draws <span class="ot">=</span> df_raw<span class="sc">$</span>FTHG <span class="sc">==</span> df_raw<span class="sc">$</span>FTAG</span>
+<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Betting on home wins would have some log(0) --&gt; -Inf</span></span>
+<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a><span class="co"># Betting according frequency</span></span>
+<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a><span class="co"># This is a bit cheating, since we use the future data to calculate</span></span>
+<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a>ps_naive <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">sum</span>(home_wins), <span class="fu">sum</span>(draws), <span class="fu">sum</span>(away_wins))<span class="sc">/</span><span class="fu">nrow</span>(df_raw)</span>
+<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a>NLL_NAIVE <span class="ot">=</span> <span class="fu">sum</span>(</span>
+<span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>home_wins<span class="sc">*</span><span class="fu">log</span>(ps_naive[<span class="dv">1</span>])</span>
+<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>draws<span class="sc">*</span><span class="fu">log</span>(ps_naive[<span class="dv">2</span>])</span>
+<span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>away_wins<span class="sc">*</span><span class="fu">log</span>(ps_naive[<span class="dv">3</span>])</span>
+<span id="cb20-69"><a href="#cb20-69" aria-hidden="true" tabindex="-1"></a>)<span class="sc">/</span><span class="fu">nrow</span>(df_raw)</span>
+<span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a>NLL_NAIVE</span>
+<span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model Comparisons</span></span>
+<span id="cb20-74"><a href="#cb20-74" aria-hidden="true" tabindex="-1"></a>We use the negative log likelihood (NLL) as a measure of the predictive performance of the models. The lower the NLL, the better the model. However, strictly speaking it is the negative log posterior predictive density (divided by $n$) evaluated at the $n$ games after the training data.</span>
+<span id="cb20-75"><a href="#cb20-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-76"><a href="#cb20-76" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb20-77"><a href="#cb20-77" aria-hidden="true" tabindex="-1"></a>\text{NLL} = -\frac{1}{n}\sum_{i=1}^n \log p(y_i | x_i, \theta)</span>
+<span id="cb20-78"><a href="#cb20-78" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb20-79"><a href="#cb20-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-80"><a href="#cb20-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-81"><a href="#cb20-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-82"><a href="#cb20-82" aria-hidden="true" tabindex="-1"></a><span class="in">```{r hier-vs-non, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
+<span id="cb20-83"><a href="#cb20-83" aria-hidden="true" tabindex="-1"></a><span class="in">   # Assuming df is your dataframe</span></span>
+<span id="cb20-84"><a href="#cb20-84" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% filter(type == 'NLL_PRED') %&gt;% </span></span>
+<span id="cb20-85"><a href="#cb20-85" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = name)) + </span></span>
+<span id="cb20-86"><a href="#cb20-86" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line() + </span></span>
+<span id="cb20-87"><a href="#cb20-87" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
+<span id="cb20-88"><a href="#cb20-88" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
+<span id="cb20-89"><a href="#cb20-89" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
+<span id="cb20-90"><a href="#cb20-90" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset', </span></span>
+<span id="cb20-91"><a href="#cb20-91" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
+<span id="cb20-92"><a href="#cb20-92" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Negative Log Likelihood'</span></span>
+<span id="cb20-93"><a href="#cb20-93" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
+<span id="cb20-94"><a href="#cb20-94" aria-hidden="true" tabindex="-1"></a><span class="in">    #ylim(2.9, 3.5) +</span></span>
+<span id="cb20-95"><a href="#cb20-95" aria-hidden="true" tabindex="-1"></a><span class="in">    #xlim(0,100) +</span></span>
+<span id="cb20-96"><a href="#cb20-96" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "top") +</span></span>
+<span id="cb20-97"><a href="#cb20-97" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
+<span id="cb20-98"><a href="#cb20-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-99"><a href="#cb20-99" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-100"><a href="#cb20-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-101"><a href="#cb20-101" aria-hidden="true" tabindex="-1"></a><span class="fu">### Observations</span></span>
+<span id="cb20-102"><a href="#cb20-102" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Especially for small training data, the hierarchical model performs better than the non-hierarchical model. </span>
+<span id="cb20-103"><a href="#cb20-103" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The Correlated Dataset model performs slightly better than non-correlated one</span>
+<span id="cb20-104"><a href="#cb20-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-105"><a href="#cb20-105" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>There is partically no difference in predictive performance when comparing the model with and without Cholesky decomposition. </span>
+<span id="cb20-106"><a href="#cb20-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-107"><a href="#cb20-107" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The negative binomial model performs comparable to Poisson model.</span>
+<span id="cb20-108"><a href="#cb20-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-109"><a href="#cb20-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-110"><a href="#cb20-110" aria-hidden="true" tabindex="-1"></a><span class="fu">## Comparison of predicted vs PSIS-LOO</span></span>
+<span id="cb20-111"><a href="#cb20-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-112"><a href="#cb20-112" aria-hidden="true" tabindex="-1"></a><span class="in">```{r pred-vs-loo, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
+<span id="cb20-113"><a href="#cb20-113" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% filter(type %in% c('NLL_PRED', 'NLL_PSIS', 'NLL_PRED_STAN')) %&gt;%</span></span>
+<span id="cb20-114"><a href="#cb20-114" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = type)) + </span></span>
+<span id="cb20-115"><a href="#cb20-115" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = type)) + </span></span>
+<span id="cb20-116"><a href="#cb20-116" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
+<span id="cb20-117"><a href="#cb20-117" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
+<span id="cb20-118"><a href="#cb20-118" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
+<span id="cb20-119"><a href="#cb20-119" aria-hidden="true" tabindex="-1"></a><span class="in">      title =  'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
+<span id="cb20-120"><a href="#cb20-120" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
+<span id="cb20-121"><a href="#cb20-121" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Negative Log Likelihood'</span></span>
+<span id="cb20-122"><a href="#cb20-122" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
+<span id="cb20-123"><a href="#cb20-123" aria-hidden="true" tabindex="-1"></a><span class="in">    ylim(2.5, 4) +</span></span>
+<span id="cb20-124"><a href="#cb20-124" aria-hidden="true" tabindex="-1"></a><span class="in">    facet_wrap(~name) +</span></span>
+<span id="cb20-125"><a href="#cb20-125" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") + </span></span>
+<span id="cb20-126"><a href="#cb20-126" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
+<span id="cb20-127"><a href="#cb20-127" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-128"><a href="#cb20-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-129"><a href="#cb20-129" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb20-130"><a href="#cb20-130" aria-hidden="true" tabindex="-1"></a><span class="fu">### Observations</span></span>
+<span id="cb20-131"><a href="#cb20-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-132"><a href="#cb20-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-133"><a href="#cb20-133" aria-hidden="true" tabindex="-1"></a><span class="fu">## NNL for win, draws and losses </span></span>
+<span id="cb20-134"><a href="#cb20-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-135"><a href="#cb20-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-136"><a href="#cb20-136" aria-hidden="true" tabindex="-1"></a><span class="in">```{r resultbases, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
+<span id="cb20-137"><a href="#cb20-137" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
+<span id="cb20-138"><a href="#cb20-138" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('NLL_RESULTS', 'NLL_BOOKIE')) %&gt;%</span></span>
+<span id="cb20-139"><a href="#cb20-139" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = type)) + </span></span>
+<span id="cb20-140"><a href="#cb20-140" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = name)) + </span></span>
+<span id="cb20-141"><a href="#cb20-141" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
+<span id="cb20-142"><a href="#cb20-142" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
+<span id="cb20-143"><a href="#cb20-143" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
+<span id="cb20-144"><a href="#cb20-144" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
+<span id="cb20-145"><a href="#cb20-145" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
+<span id="cb20-146"><a href="#cb20-146" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Negative Log Likelihood'</span></span>
+<span id="cb20-147"><a href="#cb20-147" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
+<span id="cb20-148"><a href="#cb20-148" aria-hidden="true" tabindex="-1"></a><span class="in">    ylim(0.75, 1.5) +</span></span>
+<span id="cb20-149"><a href="#cb20-149" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_hline(yintercept = NLL_NAIVE, col = "green", alpha=0.5) +</span></span>
+<span id="cb20-150"><a href="#cb20-150" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") + </span></span>
+<span id="cb20-151"><a href="#cb20-151" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
+<span id="cb20-152"><a href="#cb20-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-153"><a href="#cb20-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-154"><a href="#cb20-154" aria-hidden="true" tabindex="-1"></a><span class="in">#### Booki mean</span></span>
+<span id="cb20-155"><a href="#cb20-155" aria-hidden="true" tabindex="-1"></a><span class="in">  dfp = df %&gt;% </span></span>
+<span id="cb20-156"><a href="#cb20-156" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('NLL_RESULTS', 'NLL_BOOKIE')) %&gt;%</span></span>
+<span id="cb20-157"><a href="#cb20-157" aria-hidden="true" tabindex="-1"></a><span class="in">    group_by(name, type) %&gt;% </span></span>
+<span id="cb20-158"><a href="#cb20-158" aria-hidden="true" tabindex="-1"></a><span class="in">    summarise(nll = mean(res)) </span></span>
+<span id="cb20-159"><a href="#cb20-159" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb20-160"><a href="#cb20-160" aria-hidden="true" tabindex="-1"></a><span class="in">  dfp = rbind(dfp, data.frame(name = "NLL_NAIVE", type = "NLL_NAIVE", nll = NLL_NAIVE))</span></span>
+<span id="cb20-161"><a href="#cb20-161" aria-hidden="true" tabindex="-1"></a><span class="in">  # Remove all but one NLL_BOOKIE</span></span>
+<span id="cb20-162"><a href="#cb20-162" aria-hidden="true" tabindex="-1"></a><span class="in">  kableExtra::kable(dfp, digits = 3)</span></span>
+<span id="cb20-163"><a href="#cb20-163" aria-hidden="true" tabindex="-1"></a><span class="in">```</span> </span>
+<span id="cb20-164"><a href="#cb20-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-165"><a href="#cb20-165" aria-hidden="true" tabindex="-1"></a><span class="fu">### Observations</span></span>
+<span id="cb20-166"><a href="#cb20-166" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The NLL for the bookie is always better than the NLL of the models, so we should not bet.</span>
+<span id="cb20-167"><a href="#cb20-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-168"><a href="#cb20-168" aria-hidden="true" tabindex="-1"></a><span class="fu">### Ranked probability score</span></span>
+<span id="cb20-169"><a href="#cb20-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-170"><a href="#cb20-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{r result rps, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
+<span id="cb20-171"><a href="#cb20-171" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
+<span id="cb20-172"><a href="#cb20-172" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('RPS', 'rps_booki')) %&gt;%</span></span>
+<span id="cb20-173"><a href="#cb20-173" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = type)) + </span></span>
+<span id="cb20-174"><a href="#cb20-174" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = name)) + </span></span>
+<span id="cb20-175"><a href="#cb20-175" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
+<span id="cb20-176"><a href="#cb20-176" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
+<span id="cb20-177"><a href="#cb20-177" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
+<span id="cb20-178"><a href="#cb20-178" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
+<span id="cb20-179"><a href="#cb20-179" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
+<span id="cb20-180"><a href="#cb20-180" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Ranked Probability Score'</span></span>
+<span id="cb20-181"><a href="#cb20-181" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
+<span id="cb20-182"><a href="#cb20-182" aria-hidden="true" tabindex="-1"></a><span class="in">    #ylim(0.75, 1.5) +</span></span>
+<span id="cb20-183"><a href="#cb20-183" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") + </span></span>
+<span id="cb20-184"><a href="#cb20-184" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
+<span id="cb20-185"><a href="#cb20-185" aria-hidden="true" tabindex="-1"></a><span class="in">```</span> </span>
+<span id="cb20-186"><a href="#cb20-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-187"><a href="#cb20-187" aria-hidden="true" tabindex="-1"></a>Averaged for the complete season:</span>
+<span id="cb20-188"><a href="#cb20-188" aria-hidden="true" tabindex="-1"></a><span class="in">```{r rps_season}</span></span>
+<span id="cb20-189"><a href="#cb20-189" aria-hidden="true" tabindex="-1"></a><span class="in">  library(dplyr)</span></span>
+<span id="cb20-190"><a href="#cb20-190" aria-hidden="true" tabindex="-1"></a><span class="in">  dfres = df %&gt;% </span></span>
+<span id="cb20-191"><a href="#cb20-191" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('RPS', 'rps_booki')) %&gt;%</span></span>
+<span id="cb20-192"><a href="#cb20-192" aria-hidden="true" tabindex="-1"></a><span class="in">    group_by(name, type) %&gt;% </span></span>
+<span id="cb20-193"><a href="#cb20-193" aria-hidden="true" tabindex="-1"></a><span class="in">    summarise(rps = mean(res)) </span></span>
+<span id="cb20-194"><a href="#cb20-194" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb20-195"><a href="#cb20-195" aria-hidden="true" tabindex="-1"></a><span class="in">  rps_booki = dfres %&gt;% filter(type == 'rps_booki') </span></span>
+<span id="cb20-196"><a href="#cb20-196" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb20-197"><a href="#cb20-197" aria-hidden="true" tabindex="-1"></a><span class="in">  dfres2 = dfres %&gt;% filter(type == 'RPS') %&gt;% dplyr::select(name, rps) </span></span>
+<span id="cb20-198"><a href="#cb20-198" aria-hidden="true" tabindex="-1"></a><span class="in">  dfres2 = rbind(dfres2, rps_booki[1,])</span></span>
+<span id="cb20-199"><a href="#cb20-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-200"><a href="#cb20-200" aria-hidden="true" tabindex="-1"></a><span class="in">  # Sort by RPS</span></span>
+<span id="cb20-201"><a href="#cb20-201" aria-hidden="true" tabindex="-1"></a><span class="in">  dfres2 = dfres2[order(dfres2$rps),]</span></span>
+<span id="cb20-202"><a href="#cb20-202" aria-hidden="true" tabindex="-1"></a><span class="in">  kable(dfres2)</span></span>
+<span id="cb20-203"><a href="#cb20-203" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-204"><a href="#cb20-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-205"><a href="#cb20-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-206"><a href="#cb20-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-207"><a href="#cb20-207" aria-hidden="true" tabindex="-1"></a><span class="fu">## Betting Returns</span></span>
+<span id="cb20-208"><a href="#cb20-208" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb20-209"><a href="#cb20-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-210"><a href="#cb20-210" aria-hidden="true" tabindex="-1"></a><span class="in">```{r betting, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
+<span id="cb20-211"><a href="#cb20-211" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
+<span id="cb20-212"><a href="#cb20-212" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('BET_RETURN')) %&gt;%</span></span>
+<span id="cb20-213"><a href="#cb20-213" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = name)) + </span></span>
+<span id="cb20-214"><a href="#cb20-214" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = name)) +  </span></span>
+<span id="cb20-215"><a href="#cb20-215" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
+<span id="cb20-216"><a href="#cb20-216" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
+<span id="cb20-217"><a href="#cb20-217" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
+<span id="cb20-218"><a href="#cb20-218" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
+<span id="cb20-219"><a href="#cb20-219" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
+<span id="cb20-220"><a href="#cb20-220" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Betting Returns'</span></span>
+<span id="cb20-221"><a href="#cb20-221" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
+<span id="cb20-222"><a href="#cb20-222" aria-hidden="true" tabindex="-1"></a><span class="in">    #ylim(0.75, 1.5) +</span></span>
+<span id="cb20-223"><a href="#cb20-223" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") +  </span></span>
+<span id="cb20-224"><a href="#cb20-224" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
+<span id="cb20-225"><a href="#cb20-225" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
+<span id="cb20-226"><a href="#cb20-226" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('BET_RETURN')) %&gt;%</span></span>
+<span id="cb20-227"><a href="#cb20-227" aria-hidden="true" tabindex="-1"></a><span class="in">    group_by(name) %&gt;% </span></span>
+<span id="cb20-228"><a href="#cb20-228" aria-hidden="true" tabindex="-1"></a><span class="in">    summarise(mean(res))</span></span>
+<span id="cb20-229"><a href="#cb20-229" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-230"><a href="#cb20-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-231"><a href="#cb20-231" aria-hidden="true" tabindex="-1"></a><span class="fu">### Observations</span></span>
+<span id="cb20-232"><a href="#cb20-232" aria-hidden="true" tabindex="-1"></a>We see quite some fluctuation in the betting return. Since the NLL shows that the odds from the booki are always better then the NLLs of the models we should not bet.  </span>
+<span id="cb20-233"><a href="#cb20-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-234"><a href="#cb20-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-235"><a href="#cb20-235" aria-hidden="true" tabindex="-1"></a><span class="fu">## Technical Details</span></span>
+<span id="cb20-236"><a href="#cb20-236" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb20-237"><a href="#cb20-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-238"><a href="#cb20-238" aria-hidden="true" tabindex="-1"></a><span class="in">```{r min_sum, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
+<span id="cb20-239"><a href="#cb20-239" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
+<span id="cb20-240"><a href="#cb20-240" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('MIN_SUM_PROB')) %&gt;%</span></span>
+<span id="cb20-241"><a href="#cb20-241" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = name)) + </span></span>
+<span id="cb20-242"><a href="#cb20-242" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = name)) + </span></span>
+<span id="cb20-243"><a href="#cb20-243" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
+<span id="cb20-244"><a href="#cb20-244" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
+<span id="cb20-245"><a href="#cb20-245" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
+<span id="cb20-246"><a href="#cb20-246" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
+<span id="cb20-247"><a href="#cb20-247" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
+<span id="cb20-248"><a href="#cb20-248" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Sum of Probabilities from 0 to 10 goals (should be 1)'</span></span>
+<span id="cb20-249"><a href="#cb20-249" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
+<span id="cb20-250"><a href="#cb20-250" aria-hidden="true" tabindex="-1"></a><span class="in">    ylim(0.75, 1.01) +</span></span>
+<span id="cb20-251"><a href="#cb20-251" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") + </span></span>
+<span id="cb20-252"><a href="#cb20-252" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
+<span id="cb20-253"><a href="#cb20-253" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-254"><a href="#cb20-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-255"><a href="#cb20-255" aria-hidden="true" tabindex="-1"></a><span class="in">```{r num_divergent, fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
+<span id="cb20-256"><a href="#cb20-256" aria-hidden="true" tabindex="-1"></a><span class="in">  df %&gt;% </span></span>
+<span id="cb20-257"><a href="#cb20-257" aria-hidden="true" tabindex="-1"></a><span class="in">    filter(type %in% c('num_divergent')) %&gt;%</span></span>
+<span id="cb20-258"><a href="#cb20-258" aria-hidden="true" tabindex="-1"></a><span class="in">    ggplot(aes(x = ntrain, y = res, color = name)) + </span></span>
+<span id="cb20-259"><a href="#cb20-259" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_line(aes(linetype = name)) + </span></span>
+<span id="cb20-260"><a href="#cb20-260" aria-hidden="true" tabindex="-1"></a><span class="in">    geom_point() + </span></span>
+<span id="cb20-261"><a href="#cb20-261" aria-hidden="true" tabindex="-1"></a><span class="in">    theme_minimal() + </span></span>
+<span id="cb20-262"><a href="#cb20-262" aria-hidden="true" tabindex="-1"></a><span class="in">    labs(</span></span>
+<span id="cb20-263"><a href="#cb20-263" aria-hidden="true" tabindex="-1"></a><span class="in">      title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
+<span id="cb20-264"><a href="#cb20-264" aria-hidden="true" tabindex="-1"></a><span class="in">      x = 'Number of training data', </span></span>
+<span id="cb20-265"><a href="#cb20-265" aria-hidden="true" tabindex="-1"></a><span class="in">      y = 'Number of Divergent Transitions (sqrt scale)'</span></span>
+<span id="cb20-266"><a href="#cb20-266" aria-hidden="true" tabindex="-1"></a><span class="in">    ) + </span></span>
+<span id="cb20-267"><a href="#cb20-267" aria-hidden="true" tabindex="-1"></a><span class="in">    theme(legend.position = "bottom") + </span></span>
+<span id="cb20-268"><a href="#cb20-268" aria-hidden="true" tabindex="-1"></a><span class="in">    scale_y_sqrt() + </span></span>
+<span id="cb20-269"><a href="#cb20-269" aria-hidden="true" tabindex="-1"></a><span class="in">    coord_cartesian(clip = "off") # Allow lines to go outside the plot area </span></span>
+<span id="cb20-270"><a href="#cb20-270" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-271"><a href="#cb20-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-272"><a href="#cb20-272" aria-hidden="true" tabindex="-1"></a><span class="in">```{r , fig.width=8, fig.height=6, warning=FALSE, message=FALSE}</span></span>
+<span id="cb20-273"><a href="#cb20-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-274"><a href="#cb20-274" aria-hidden="true" tabindex="-1"></a><span class="in">df %&gt;% </span></span>
+<span id="cb20-275"><a href="#cb20-275" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(type %in% c('ebfmi')) %&gt;%</span></span>
+<span id="cb20-276"><a href="#cb20-276" aria-hidden="true" tabindex="-1"></a><span class="in">  ggplot(aes(x = ntrain, y = res, color = name)) + </span></span>
+<span id="cb20-277"><a href="#cb20-277" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_line(aes(linetype = name)) + </span></span>
+<span id="cb20-278"><a href="#cb20-278" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_point() + </span></span>
+<span id="cb20-279"><a href="#cb20-279" aria-hidden="true" tabindex="-1"></a><span class="in">  theme_minimal() + </span></span>
+<span id="cb20-280"><a href="#cb20-280" aria-hidden="true" tabindex="-1"></a><span class="in">  labs(</span></span>
+<span id="cb20-281"><a href="#cb20-281" aria-hidden="true" tabindex="-1"></a><span class="in">    title = 'Comparison of different models for the Bundesliga 2023 dataset',</span></span>
+<span id="cb20-282"><a href="#cb20-282" aria-hidden="true" tabindex="-1"></a><span class="in">    x = 'Number of training data', </span></span>
+<span id="cb20-283"><a href="#cb20-283" aria-hidden="true" tabindex="-1"></a><span class="in">    y = 'ebfmi'</span></span>
+<span id="cb20-284"><a href="#cb20-284" aria-hidden="true" tabindex="-1"></a><span class="in">  ) + </span></span>
+<span id="cb20-285"><a href="#cb20-285" aria-hidden="true" tabindex="-1"></a><span class="in">  theme(legend.position = "bottom") + </span></span>
+<span id="cb20-286"><a href="#cb20-286" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_hline(yintercept = 0.3, linetype = "dashed", color = "red") +</span></span>
+<span id="cb20-287"><a href="#cb20-287" aria-hidden="true" tabindex="-1"></a><span class="in">  annotate("text", x = Inf, y = 0.33, label = "Acceptable", hjust = 1.1, color = "red") +</span></span>
+<span id="cb20-288"><a href="#cb20-288" aria-hidden="true" tabindex="-1"></a><span class="in">  annotate("text", x = Inf, y = 0.27, label = "Non-Acceptable", hjust = 1.1, color = "red") +</span></span>
+<span id="cb20-289"><a href="#cb20-289" aria-hidden="true" tabindex="-1"></a><span class="in">  coord_cartesian(clip = "off") # Allow lines to go outside the plot area</span></span>
+<span id="cb20-290"><a href="#cb20-290" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
