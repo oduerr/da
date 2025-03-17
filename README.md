@@ -5,19 +5,19 @@ Moodle Course Site: https://moodle.htwg-konstanz.de/moodle/course/view.php?id=15
 
 Website (under construction): https://oduerr.github.io/da/Stan_Primer_Full.html
 
-# Installation for SomSem 2024 at HTWG
+# Installation for SomSem 2025 at HTWG
 
 ## Ideal Case: Installing cmdstanr on your Laptop
 Please install [cmdrstan](https://mc-stan.org/cmdstanr/) on your laptop. 
 
-## Docker installation for HTWG machines
-If that is not working for you. You might use the docker installation. First, start the `Docker Desktop` application.
-Then start the docker container in the command line using:
+## Using HTWG machines
+You can install the cmdstanr with
 ```
-docker run --rm -ti -e PASSWORD=yourpassword -p 8787:8787 ghcr.io/jbris/stan-cmdstanr-docker
+install.packages("cmdstanr", repos = c('https://stan-dev.r-universe.dev', getOption("repos")))
+library(cmdstanr)
+check_cmdstan_toolchain(fix=TRUE) #fix=TRUE important for PATH
+install_cmdstan(cores = 8,  overwrite=TRUE)
 ```
-You can then access a running RStudio with instance cmdstanr via
-[localhost:8787](http://localhost:8787) the username is `rstudio` and the password `yourpassword`.
 
 
 ## Fallback when not using HTWG machines (rstan instead of cmdstamr)
