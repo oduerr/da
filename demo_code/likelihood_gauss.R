@@ -17,9 +17,10 @@ manipulate (
   {
     yvals <- seq(-5,5,0.05);
     lik <- l(ys, mu, sigma);
+    print(lik)
     plot(yvals, dnorm(yvals, mean=mu, sd=sigma),
          type="l",xlab="Daten", ylab="", main=paste0("Likelihood = ",
-                                                     lik,digits=3), xlim=c(-2,2)); points(ys, rep(0,length(ys)),cex=2)
+                                                     lik), xlim=c(-2,2)); points(ys, rep(0,length(ys)),cex=2)
   },
   mu = slider (-5 ,5, initial=0.1, step=0.01), sigma = slider (0,5, initial=0.1, step=0.01)
 )
@@ -27,4 +28,5 @@ manipulate (
 
 mean(ys)
 sd(ys)
-### TODO Chance to lok-likelihood
+l(ys, mean(ys), sd(ys))
+### TODO Chance to log-likelihood
