@@ -21,6 +21,8 @@ setwd('/Users/oli/Documents/GitHub/da')
 "/Users/oli/Documents/GitHub/da/demo_code/likelihood_gauss.R" #Demo Code 
 "/Users/oli/Dropbox/__HTWG/DataAnalytics/_Current/lab/02_regression/compilearbeitsblaetter_lin_regression_1.r"
 
+#### Woche 3 ###
+"/Users/oli/Dropbox/__HTWG/DataAnalytics/_Current/lab/03_lin_reg/03_compilearbeitsblaetter_lr.r"
 
 "/Users/oli/Library/CloudStorage/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_03_Bayes_3/bayes_3_compile.R"
 
