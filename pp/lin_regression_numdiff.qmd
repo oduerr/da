@@ -6,9 +6,10 @@ md_document:
     variant: markdown_github
 ---
 
-This notebook shows how to do a simple linear regression using stochastic gradient descent. You will see that you just need to define the likelihood of the model and the rest is done automatically. We will first use the `numDeriv` package to calculate the gradient and use the high level probabilistic programming language Stan. 
+This notebook shows how to do a simple linear regression using stochastic gradient descent. You will see that you just need to define the likelihood of the model and the rest is done automatically. We will first use the `numDeriv` package to calculate the gradient and use the high level probabilistic programming language Stan.
 
 ## Data Generation
+
 ```{r, name='data'}
 # Generating data from a linear regression model
 set.seed(1)
@@ -21,23 +22,27 @@ lines(x, 2 * x + 1, xlab = "x", ylab = "y")
 ## Definition of the likelihood
 
 The negative log-likelihood of the linear regression model given the data, can be calculated as follows:
+
 ```{r, name='nll'}
 nll <- function(params, x, y) {
   beta_0 <- params[1]
   beta_1 <- params[2]
   sigma <- params[3]
-  y_hat <- beta_0 + beta_1 * x 
-  nll <- -mean(dnorm(y, mean = y_hat, sd = sigma, log = TRUE))
+  mu <- beta_0 + beta_1 * x 
+  nll <- -mean(dnorm(y, mean = mu, sd = sigma, log = TRUE))
   return(nll)
 }
 nll(c(0,1,1), x, y) #beta_0 = 0, beta_1 = 1, sigma = 1 ==> ~8.81
 ```
 
 ## Introduction to Automatic Differentiation
+
 Integration is hard, but differentiation became easy with computers. In the following we show how to calculate the gradient of a function using the `numDeriv` package. The `numDeriv` package uses numerical differentiation to calculate the gradient. Basically all you have to do is to define a function returning a single float value and then call the `grad` function to get the gradient (the vector of partial derivatives) at a certain point.
 
 ```{r, name='autograd'}
 library(numDeriv)
+
+# Simple Function x^2
 x2 = function(x) x^2
 grad(x2, 2) #derivative of x^2 w.r.t x at x=2
 
@@ -61,6 +66,7 @@ grad(f, c(-2,5,-4)) #30 25  1
 ```
 
 ## Calculation of the gradient of the NLL
+
 Note that it is possible to calculate the gradient of the negative log-likelihood using the `numDeriv` package. The gradient is calculated as follows:
 
 ```{r}
@@ -70,7 +76,8 @@ grad_est
 ```
 
 ## Performing Gradient Descent
-Let's now execute a simple gradient descent. We begin with some initial parameter values and then iteratively update these parameters in the direction of the negative gradient. 
+
+Let's now execute a simple gradient descent. We begin with some initial parameter values and then iteratively update these parameters in the direction of the negative gradient.
 
 ```{r}
 p = c(1,1,1) # Initial values for the parameters
@@ -87,9 +94,10 @@ print(p)
 After about 1000 iterations, the parameters are close to their optimal values. It's important to note that there are much more advanced optimization algorithms available that typically use the second derivative (Hessian) and require far fewer iterations. While it is technically possible to compute the Hessian using the `numDeriv` package, doing so can become complex. In this tutorial, our focus is more on understanding the principles of gradient descent rather than on achieving rapid optimization.
 
 ## Comparison with R lm function
+
 We can employ the highly optimized `lm` function in R to find the maximum likelihood estimates efficiently. This method is not only fast but also provides robust estimates for linear models.
 
-```{r} 
+```{r}
 # Obtain the coefficients of the linear model
 lm(y ~ x)$coefficients
 
@@ -99,6 +107,7 @@ logLik(lm(y ~ x))
 ```
 
 ## Utilizing Stan for Optimization
+
 We can also employ the cmdrstan package to perform the optimization. Below, you can view the Stan code used for this purpose:
 
 ```{r, warning=FALSE, message=FALSE, eval=TRUE}
@@ -117,12 +126,14 @@ mod$optimize(data = stan_data)
 ```
 
 ### The target += syntax
-The `target +=` is used to add the log-likelihood to the target. In Bayesian context the `target` is the log-posterior that is the log-likelihood plus the log-prior. Here it is just the log-likelihood. The `target` is a global variable that is used to store the quantity to minimize. The `target` is then used to calculate the gradients and the Hessian. 
+
+The `target +=` is used to add the log-likelihood to the target. In Bayesian context the `target` is the log-posterior that is the log-likelihood plus the log-prior. Here it is just the log-likelihood. The `target` is a global variable that is used to store the quantity to minimize. The `target` is then used to calculate the gradients and the Hessian.
 
 ### Alternative model syntax
+
 Instead of employing a loop, which can be computationally slower, a vectorized approach offers a more efficient alternative. Additionally, the `~` syntax can be used as an alternative to `target +=`. The `~` syntax is generally more readable and often preferred for its clarity. All three model definitions provided below yield the same results for the coefficients:
 
-```{eval=FALSE}
+``` {eval="FALSE"}
 // Loop (slowest method)
 model {
     for (i in 1:N) {
@@ -139,11 +150,6 @@ model {
 model {
     y ~ normal(beta_1 * x + beta_0, sigma);
 }
-
 ```
 
-A subtle point about using the ~ syntax is that constants in the density function, such as $\sqrt(2 \pi)$, are not included. This exclusion does not affect optimization, but it results in different `lp__` values. Therefore, do not be surprised if the `lp__ values` differ.
-
-
-
-
+A subtle point about using the \~ syntax is that constants in the density function, such as $\sqrt(2 \pi)$, are not included. This exclusion does not affect optimization, but it results in different `lp__` values. Therefore, do not be surprised if the `lp__ values` differ.

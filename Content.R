@@ -24,6 +24,12 @@ setwd('/Users/oli/Documents/GitHub/da')
 #### Woche 3 ###
 "/Users/oli/Dropbox/__HTWG/DataAnalytics/_Current/lab/03_lin_reg/03_compilearbeitsblaetter_lr.r"
 
+#### Woche 4 ###
+"/Users/oli/Dropbox/__HTWG/DataAnalytics/_Current/lab/03_causality/compilearbeitsblaetter_causality_I.r"
+
+#### Woche 5 ###
+
+
 "/Users/oli/Library/CloudStorage/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_03_Bayes_3/bayes_3_compile.R"
 
 #### Bayes Woche 4 ###

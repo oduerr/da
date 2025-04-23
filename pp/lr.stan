@@ -1,19 +1,21 @@
 data {
-  int<lower=0> N;           // Number of data points
-  vector[N] x;              // Predictor variable
-  vector[N] y;              // Outcome variable
+  int<lower=0> N;          // number of observations
+  vector[N] x;             // predictor
+  vector[N] y;             // response
 }
 
 parameters {
-  real beta_0;              // Intercept
-  real beta_1;              // Slope
-  real<lower=0> sigma;      // Standard deviation of the residuals
+  real beta_0;             // intercept
+  real beta_1;             // slope
+  real<lower=0> sigma;     // standard deviation
 }
 
 model {
-    y ~ normal(beta_1 * x + beta_0, sigma);
+  vector[N] y_hat;
+
+  // linear predictor
+  y_hat = beta_0 + beta_1 * x;
+
+  // likelihood
+  y ~ normal(y_hat, sigma);
 }
-
-
-
-
