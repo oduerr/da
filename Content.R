@@ -29,6 +29,12 @@ setwd('/Users/oli/Documents/GitHub/da')
 
 #### Woche 5 ###
 
+#### Woche 7 ###
+"/Users/oli/Documents/GitHub/da/lab/"
+
+#### Woche 8 ###
+"/Users/oli/Documents/GitHub/da/lab/lr_1/bayes2_LR.qmd" ##<--- Diese Aufgabe muß abgegeben werden
+
 
 "/Users/oli/Library/CloudStorage/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_03_Bayes_3/bayes_3_compile.R"
 

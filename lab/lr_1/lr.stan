@@ -15,7 +15,7 @@ model{
     y ~ normal(a * x + b, sigma);
     a ~ uniform(-100,100);
     b ~ uniform(-100,100);
-    sigma ~ uniform(0, 100);
+    sigma ~ uniform(0, 100); 
 }
 
 

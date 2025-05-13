@@ -2,31 +2,28 @@
 output:
   pdf_document:
     highlight: pygments
-    includes:
-      in_header: header_lsg.tex
+  html_document: 
+    default
+params:
+  lsg: TRUE
 ---
 
 ```{r, echo=FALSE, eval=TRUE, message=FALSE}
-  if (exists("lsg") == FALSE){ #Nur falls von RStudio aufgerufen
-    lsg <- TRUE   #Wenn man die lsg ausgeben will dann lsg <- TRUE sonst 
-  }
-  if (exists("baseDir") == FALSE){ #Nur falls von RStudio aufgerufen
-    baseDir = getwd()
-  }
-  ig <- function(name, scale = 1) {
-     return (paste0("\\includegraphics[ scale =", scale,"]{", baseDir,"/", name, "}"))
+  #The variable lsg is used to control the visibility of the solutions and needs to be set
+  if (exists("lsg") == FALSE){  
+    lsg <- params$lsg
   }
 ```
 
 ## Linear Regression
 
-In this exercise, we will compare the Maximum Likelihood (ML) solution with a Bayesian solution for linear regression. We will generate synthetic data, fit models using both methods, and analyze the results to understand the differences in their approaches and outcomes.
+In this exercise, we will compare the Maximum Likelihood (ML) solution with a Bayesian solution for linear regression. We will generate synthetic data, fit models using both methods, and analyze the results to understand the differences in their approaches and outcomes.  
 
-a)  Use the same data generating process as in `Maximum Likelihood Principle (linear regression)`. Simulate 50 data points $(x,y)$ under the assumptions from linear regression $y \sim Norm(\mu=2.0 \cdot x + 1.0, \sigma=1)$. Let $x$ be in the range from -2 to 2. Hint: use the function $rnorm$.
+a)  **Data Generation** Use the same data generating process as in `Maximum Likelihood Principle (linear regression)` but with only 5 datapoints at $x=-2,-1,0,1,2$. Simulate 5 data points $(x,y)$ under the assumptions from linear regression $y \sim Norm(\mu=2.0 \cdot x + 1.0, \sigma=1)$. Let $x$ be in the range from -2 to 2. Hint: use the function $rnorm$.
 
 ```{r, echo=lsg, eval=lsg}
   set.seed(1)
-  N = 50
+  N = 5
   x = seq(-2,2, length.out = N)
   y = rnorm(N, mean = 2 * x + 1, sd = 1)
 ```
@@ -44,10 +41,10 @@ b)  Fit the maximum likelihood solution with the R command `lm`. Plot the Data a
   b
 ```
 
-c)  Do a Bayesian analysis with a extremely flat prio, e.g. $a,b \sim unif(-100,100)$ and $\sigma \sim uniform(0,100)$. Extract samples of $a,b$ from the posterior and plot them. Compare the mean of the Bayesian Analysis with the Maximum Likelihood Solution.
+c)  Do a Bayesian analysis with a extremely flat prio, e.g. $a,b \sim unif(-100,100)$ and $\sigma \sim uniform(0,100)$. Extract samples of $a,b$ from the posterior and plot them. Compare the mean of the Bayesian Analysis for $a$ and $b$ with the Maximum Likelihood Solution.
 
-#### Hints:
-Stan: In case you are stuck, the stan-file can be found at <https://github.com/oduerr/da/blob/master/lab/lr_1/lr.stan>
+<!-- #### Hints: -->
+<!-- Stan: In case you are stuck, the stan-file can be found at <https://github.com/oduerr/da/blob/master/lab/lr_1/lr.stan> -->
 
 Creating samples from posterior:
 ```{r, echo=TRUE, eval=FALSE}
@@ -85,7 +82,7 @@ mean(samples$b)
 lm(y ~ x)
 ```
 
-d)  At $x=1$ calculate $\mu_|x = a+bx$ from the posterior samples and plot it. Extract the mean and the $0.05$ and $0.95$ quantiles
+d)  **x-dependance** of $\mu$: At $x=1$ calculate $\mu_|x = a+bx$ from the posterior samples and plot it. Extract the mean and the $0.05$ and $0.95$ quantiles
 
 ```{r, echo=lsg, eval=lsg, results="hide", warning=FALSE}
   x1 = 100
@@ -98,7 +95,7 @@ d)  At $x=1$ calculate $\mu_|x = a+bx$ from the posterior samples and plot it. E
 e)  As in d) calculate $\mu_|x = a+bx$ at 40 positions from $x=-10$ to $x=10$. Extract the mean and the 0.05 and 0.95 quantiles. Plot the mean and the quantiles against $x$. Also add the data together with the maximum likelihood solution to the plot.
 
 ```{r, echo=lsg, eval=lsg, results="hide", warning=FALSE}
-  xs = seq(-10,10,length.out = 40)
+  xs = seq(-5,5,length.out = 40)
   draw_lines = function(xs, samples){
    df = NULL
     for (x1 in xs){
@@ -114,32 +111,14 @@ e)  As in d) calculate $\mu_|x = a+bx$ at 40 positions from $x=-10$ to $x=10$. E
     lines(xs, df$q5, col='green', lty=2)
     lines(xs, df$q95, col='green', lty=2)
   }
-  curve(a*x+b, from = -10, to=10, main=paste0('Number of Datapoints ', N)) #ML
+  curve(a*x+b, from = -5, to=5, main=paste0('Number of Datapoints ', N)) #ML
   points(x,y) #Data
   draw_lines(xs, samples)
 ```
 
-f)  Repeat the Bayesian analysis but now only choose 5 data points. What happens with the uncertainty.
 
-```{r, echo=lsg, eval=lsg,results="hide", warning=FALSE}
-  set.seed(6)
-  N = 5 ## <-- The only change, rest is copy and paste
-  x = seq(-2,2, length.out = N)
-  y = rnorm(N, mean = 2 * x + 1, sd = 1)
-  d = data.frame(x=x,y=y) 
-  
-  #post = sampling(model, data=list(N=N,x=x, y=y))
-  #samples = extract(post)
-  #samples = as.data.frame(post)
-  
-  post = m_rcmdstan$sample(data=list(N=N,x=x, y=y))
-  draws = post$draws(format = 'df')
-  curve(a*x+b, from = -10, to=10, main=paste0('Number of Datapoints ', N)) #ML
-  points(x,y) #Data
-  draw_lines(xs, draws)
-```
 
-<!-- g) Posterior Predictive Distribution: The solutions in e-f only describe how the distribution of the mean value $\mu|x$ changes, when you change $x$, they do not describe how the posterior predictive distribution $p(y|D)$ looks like. To simulate from that distribution sample $y_i$ from many posterior samples from $a_i$, $b_i$ which create $\mu_i|x$  (as above) and then sample from $y ~ Normal(\mu_i, \sigma_i)$. We restrict ourself to the point $x=1$ As in plot d) the density of $\mu$ and $y$ at $x=1$. -->
+f) **Posterior Predictive Distribution**: The solutions in d-e only describe how the distribution of the mean value $\mu|x$ changes, when you change $x$, they do not describe how the posterior predictive distribution $p(y|D)$ looks like. To simulate from that distribution sample $y_i$ from many posterior samples from $a_i$, $b_i$ which create $\mu_i|x$  (as above) and then sample from $y ~ Normal(\mu_i, \sigma_i)$. We restrict ourself to the point $x=1$ As in plot d) the density of $\mu$ and $y$ at $x=1$.
 
 ```{r, echo=FALSE, eval=FALSE}
   x1 = 1
@@ -149,9 +128,9 @@ f)  Repeat the Bayesian analysis but now only choose 5 data points. What happens
   lines(density(mu))
 ```
 
-<!-- h) [Optional] Posterior Predictive for all x. This is not needed, in exercise of week 3 you will do this. -->
+g) [Optional] Posterior Predictive for all x. 
 
-```{r, echo=FALSE, eval=FALSE}
+```{r, echo=lsg, eval=lsg}
   draw_lines_ppd = function(xs, samples){
    df = NULL
     for (x1 in xs){
@@ -170,8 +149,8 @@ f)  Repeat the Bayesian analysis but now only choose 5 data points. What happens
     lines(xs, df$q95, col='red', lty=2)
   }
   #samples = as.data.frame(post)
-  curve(a*x+b, from = -10, to=10, main=paste0('Number of Datapoints ', N)) #ML
+  curve(a*x+b, from = -5, to=5, main=paste0('Number of Datapoints ', N)) #ML
   points(x,y) #Data
-  draw_lines(xs,  draws)
-  draw_lines_ppd(xs, draws)
+  draw_lines(xs,  samples)
+  draw_lines_ppd(xs, samples)
 ```

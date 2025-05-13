@@ -2,18 +2,16 @@
 output:
   pdf_document:
     highlight: pygments
-    includes:
-      in_header: header_lsg.tex
+  html_document: 
+    default
+params:
+  lsg: TRUE
 ---
+
 ```{r, echo=FALSE, eval=TRUE, message=FALSE}
-  if (exists("lsg") == FALSE){ #Nur falls von RStudio aufgerufen
-    lsg <- TRUE   #Wenn man die lsg ausgeben will dann lsg <- TRUE sonst 
-  }
-  if (exists("baseDir") == FALSE){ #Nur falls von RStudio aufgerufen
-    baseDir = getwd()
-  }
-  ig <- function(name, scale = 1) {
-     return (paste0("\\includegraphics[ scale =", scale,"]{", baseDir,"/", name, "}"))
+  #The variable lsg is used to control the visibility of the solutions and needs to be set
+  if (exists("lsg") == FALSE){  
+    lsg <- params$lsg
   }
 ```
 

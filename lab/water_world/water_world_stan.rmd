@@ -32,7 +32,7 @@ library(cmdstanr)
 model = cmdstan_model('~/Documents/GitHub/da/lab/water_world/world.stan')
 W = 6
 N = 9
-samples_cmd = model$sample(data = list(N=N, W=W), seed=123, show_messages = FALSE)
+samples_cmd = model$sample(data = list(N=N, W=W), show_messages = FALSE)
 samples_cmd = samples_cmd$draws('p', format = 'data.frame') #Extract parameter 'p'
 
 #Comparison with the grid approximation
