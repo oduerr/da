@@ -11,7 +11,7 @@ parameters{
 }
 
 model{
-  //y ~ normal(mu, sigma);
+  //y ~ normal(mu, sigma); 
   y ~ normal(a * x + b, sigma);
   a ~ normal(0, 10); 
   b ~ normal(0, 10); 

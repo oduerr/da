@@ -1,16 +1,11 @@
 #https://mc-stan.org/docs/2_21/stan-users-guide/logistic-probit-regression-section.html
-#setwd("~/Documents/workspace/da/stan/logreg_challenger/")
+#setwd("~/Documents/GitHub/da/stan/logreg_challenger/")
 library(ggplot2)
 library(edudat)
 challenger = load_data('challenger.csv')
 #challenger$Temp = scale(challenger$Temp)
 ## Scaling the data
 challenger$Temp = scale(challenger$Temp)
-#Creating an empty plot
-plot(1,xlim=c(-5,5), xlab='Temp', ylab='Failure', main='Challenger')
-#rug(unscale(challenger$Temp), col='red', las=2)
-rug(challenger$Temp, col='blue', las=2)
-
 
 ######### Max Likelihood #######
 Temp = challenger$Temp
@@ -28,7 +23,8 @@ fit = data.frame(x = x, y = exp(a+b*x)/(1+exp(a+b*x)))
 df = data.frame(x=Temp, y=Failure)
 ggplot(df) + 
   geom_point(aes(x=x,y=Failure),alpha=0.6) + 
-  geom_line(data = fit, aes(x = x, y = y), col='blue')
+  geom_line(data = fit, aes(x = x, y = y), col='blue') + 
+  labs(x='Temp', y='Failure', title='Challenger (Maximum Likelihood Solution)') 
 
 
 #### Prior Analysis #####
@@ -38,7 +34,7 @@ ggplot(df) +
 
 sig = function(x) 1/(1+exp(-x))
 alpha = rnorm(1e4,0.0,10)
-png('stan/logreg_challenger/prior_10.png', width=500, height=1000)
+#png('stan/logreg_challenger/prior_10.png', width=500, height=1000)
 #pdf('stan/logreg_challenger/prior_10.pdf', width=300, height=1000)
 par(mfrow=c(3,1))
 #Store png
@@ -46,7 +42,7 @@ hist(alpha, breaks = 100, freq = FALSE, col='red', xlab='alpha', main='alpha ~ N
 curve(sig, from=-30, to=30, col='blue', lwd=2, xlim=c(-30,30))
 hist(sig(alpha), breaks = 100, freq = FALSE, col='lightblue', xlab='p', cex.lab=3, cex.main=3)
 #Store in pdf
-dev.off()
+#dev.off()
 par(mfrow=c(1,1))
 
 alpha = rnorm(1e4,0.0,1.5)
@@ -84,9 +80,10 @@ x<-seq(-5,5,0.1)
 prior_sd=1.5
 
 library(cmdstanr)
+#setwd("~/Documents/GitHub/da/stan/logreg_challenger")
 options(mc.cores = parallel::detectCores())
 # First Prior Predictive Check
-m_rcmdstan <- cmdstan_model('stan/logreg_challenger/log_reg.stan')
+m_rcmdstan <- cmdstan_model('log_reg.stan')
 data_prior = list(N=0,x=numeric(0),y=integer(0), N2=length(x), x2=x, prior_sd=prior_sd)
 samples_N0 = m_rcmdstan$sample(iter_sampling = 1000,data=data_prior)
 #View(head(samples_N0$draws(format = 'df')))

@@ -32,14 +32,20 @@ setwd('/Users/oli/Documents/GitHub/da')
 #### Woche 7 ###
 "/Users/oli/Documents/GitHub/da/lab/"
 
-#### Woche 8 ###
+#### Woche 8 / Bayes Woche 3 ###
 "/Users/oli/Documents/GitHub/da/lab/lr_1/bayes2_LR.qmd" ##<--- Diese Aufgabe muß abgegeben werden
-
-
 "/Users/oli/Library/CloudStorage/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_03_Bayes_3/bayes_3_compile.R"
 
-#### Bayes Woche 4 ###
+#### Woche 9
+### Arbeitsblätter
+"/Users/oli/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_03_Bayes_3/bayes_3_compile.R"
+"/Users/oli/Documents/GitHub/da/lab/king_markov/MCMC_simple.qmd" # King Metropolis
+"/Users/oli/Documents/GitHub/da/lab/lr_1_MH_vs_Stan/MH_Stan.qmd" # Vergleich MH (von Hand) und Stan 
 
+
+#### Woche 10  ###
+
+#### Demo Logistic Regression auch mit Prior Predictive
 "/Users/oli/Documents/GitHub/da/stan/logreg_challenger/logistic_regression.R" # Logistic Regression for slides
 "/Users/oli/Library/CloudStorage/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_04_Bayes_4/bayes_4_compile.R"
 "/Users/oli/Dropbox/__HTWG/DataAnalytics/_Current/lab/06_04_Bayes_4/bayes_corona_adapted.qmd"
