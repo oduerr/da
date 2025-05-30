@@ -1,7 +1,7 @@
 data {
   int<lower=1> N;
   vector[N] W;
-  int sex[N];
+  array int sex[N];
 }
 parameters {
   real sigma;

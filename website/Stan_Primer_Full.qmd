@@ -25,6 +25,15 @@ df = s_rcmdstan$draws(format = "df") #Extracting Samples as data.frame
 #shinystan::launch_shinystan(s_rcmdstan) #Shiny Stan 
 ```
 
+## Posterior
+
+Works with rstan and cmdstanr
+
+```{r posterior, eval=FALSE}
+library(posterior)
+as_draws_df(s_rcmdstan) #Extracts draws from posterior in db
+```
+
 ## Tidy Bayes
 
 Works with rstan and cmdstanr

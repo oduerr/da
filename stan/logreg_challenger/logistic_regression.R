@@ -1,5 +1,6 @@
 #https://mc-stan.org/docs/2_21/stan-users-guide/logistic-probit-regression-section.html
 #setwd("~/Documents/GitHub/da/stan/logreg_challenger/")
+library(here)
 library(ggplot2)
 library(edudat)
 challenger = load_data('challenger.csv')
@@ -83,7 +84,8 @@ library(cmdstanr)
 #setwd("~/Documents/GitHub/da/stan/logreg_challenger")
 options(mc.cores = parallel::detectCores())
 # First Prior Predictive Check
-m_rcmdstan <- cmdstan_model('log_reg.stan')
+# First Prior Predictive Check
+m_rcmdstan <- cmdstanr::cmdstan_model(here("stan", "logreg_challenger", "log_reg.stan"))
 data_prior = list(N=0,x=numeric(0),y=integer(0), N2=length(x), x2=x, prior_sd=prior_sd)
 samples_N0 = m_rcmdstan$sample(iter_sampling = 1000,data=data_prior)
 #View(head(samples_N0$draws(format = 'df')))
@@ -173,7 +175,7 @@ challenger = load_data('challenger.csv')
 x_launch = (31. - mean(challenger$Temp))/sd(challenger$Temp)
 challenger$Temp = as.vector(scale(challenger$Temp))
 for (N in 1:nrow(challenger)){
-  #N = 23
+  #N = 10
   m_rcmdstan <- cmdstan_model('stan/logreg_challenger/log_reg.stan')
   dat = challenger[1:N,,drop=FALSE]
   dat = rename(dat, c('x'='Temp', 'y'='Failure'))

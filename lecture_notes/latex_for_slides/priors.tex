@@ -1,0 +1,60 @@
+\documentclass{beamer}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{bayesnet}
+
+\title{Bernstein--von Mises Theorem}
+\author{Prof. Dr. Oliver Dürr}
+\institute{HTWG Konstanz -- Bayesian Data Analysis (VI)}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{Bernstein --von Mises Theorem}
+
+Let \( y_1, \dots, y_n \sim p(y \mid \theta) \) i.i.d. from a statistical model with true parameter \( \theta_0 \), and suppose:
+\begin{itemize}
+  \item The prior \( p(\theta) \) is continuous and \alert{positive} near \( \theta_0 \), and the model satisfies mild regularity conditions.
+\end{itemize}
+
+\vspace{.25em}
+
+Then, as \( n \to \infty \), the posterior
+\[
+p(\theta \mid y_{1:n}) \propto p(\theta) \cdot \underbrace{\prod_{i=1}^n p(y_i \mid \theta)}_{\text{likelihood}}
+\]
+converges \textcolor{blue}{(CLT-like, at rate \(1/\sqrt{n}\))} to
+\[
+\mathcal{N}\left(\hat{\theta}_{\text{MLE}}, \frac{1}{n \cdot I(\theta_0)} \right),
+\]
+where \( \hat{\theta}_{\text{MLE}} \) is the value that maximizes the likelihood, and
+\[
+I(\theta_0) = - \mathbb{E}\left[ \frac{\partial^2}{\partial \theta^2} \log p(y \mid \theta) \right] \Bigg|_{\theta = \theta_0}
+\;\; \text{(Fisher Information)}
+\]
+
+
+\end{frame}
+
+
+\begin{frame}{Intuition and Implications}
+\vspace{-0.5em}
+\begin{itemize}
+  \item As \( n \to \infty \), the data dominate the prior.
+  \item The posterior becomes approximately normal.
+  \item CLT like behavior $\propto 1/\sqrt{n}$. 
+  \item Be careful to allow for the prior to be positive near \( \theta_0 \)
+  \item Bayesian inference $\approx$ Frequentist inference in large samples.
+\end{itemize}
+\vspace{1em}
+For small \( n \), you can only do better (or worse) than the frequentist approach. 
+\end{frame}
+
+%------------------------------------------------
+
+\end{document}
