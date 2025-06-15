@@ -1,7 +1,9 @@
 # Inspired by https://raw.githubusercontent.com/rmcelreath/stat_rethinking_2022/main/scripts_animation/12_intro_multilevel_models.r
 
 #library(ellipse)
-
+library(here)
+library(tidybayes)
+library(tidyverse)
 ########################################
 # coffee golem
 # visit cafes, record waiting time, update posterior
@@ -19,27 +21,7 @@ cafe <- sample(1:n_cafes,size=n_visits,replace=TRUE)
 #w[cafe] = 4
 y <- rpois(n_visits,w[cafe])
 
-m1_code = "
-data{
-    int N;
-    vector[N] y;
-}
-parameters{
-    real<lower=0> mu;        
-    real<lower=0> sigma;
-}
-model{
-    sigma ~ cauchy(3, 2); 
-    mu ~ uniform(1, 25);
-    y ~ normal(mu, sigma);
-}
-generated quantities {
- real y_ppd;
- y_ppd = normal_rng(mu, sigma); 
-}
-"
-file <- cmdstanr_model_write(m1_code)
-m1 <- cmdstan_model(file, compile = TRUE )
+m1 <- cmdstan_model("stan/mixed_cafes/Single_Cafe.stan", compile = TRUE )
 #m1 = rstan::stan_model(model_code=m1_code) #
 
 par(mfrow=c(2,3))
@@ -87,10 +69,12 @@ n_visits <- 20
 #cafe <- sample(1:n_cafes,size=n_visits,replace=TRUE)
 #y <- rpois(n_visits,w[cafe])
 #blank(bty="n",w=1.7)
-ma <- cmdstan_model('Cafes_of_Konstanz.stan', compile = TRUE )
+ma <- cmdstan_model(here('stan','mixed_cafes','Cafes_of_Konstanz_non_centered.stan'), compile = TRUE )
+ma <- cmdstan_model(here('stan','mixed_cafes','Cafes_of_Konstanz.stan'), compile = TRUE )
 multi = TRUE
 #Independend Model
-ma <- cmdstan_model('Cafes_of_Konstanz_indep.stan', compile = TRUE )
+ma <- cmdstan_model(here('stan','mixed_cafes','Cafes_of_Konstanz_indep.stan'), compile = TRUE )
+
 multi = FALSE
 ma$code()
 
@@ -109,6 +93,7 @@ par(mfrow=c(2,3))
 xlims <- c(0,15)
 ylims <- c(0,0.4)
 for (f in 0:19){ #n_visits ) {
+    #f = 1
     post = NULL
     if ( f > 0 ) {
         m <- f
@@ -117,8 +102,19 @@ for (f in 0:19){ #n_visits ) {
                     parallel_chains = 1, iter_sampling = 1000, iter_warmup = 5000, 
                     adapt_delta = 0.9, max_treedepth = 15, 
                     save_warmup = FALSE )
-        maxx <- rstan::read_stan_csv(max$output_files())
-        post <- extract.samples(maxx)
+        # Extract samples as df
+        post$sigma = spread_draws(max, c(sigma))  %>% select(sigma)
+        post$mu = spread_draws(max, c(mu[cafe])) %>%
+          select(.draw, cafe, mu) %>%
+          pivot_wider(
+            id_cols = .draw,
+            names_from = cafe,
+            values_from = mu,
+            names_prefix = "mu["
+          ) %>%
+          rename_with(~ paste0(., "]"), starts_with("mu[")) %>% 
+          select(starts_with("mu[")) %>% as.matrix()
+        
         if (FALSE){
           bayesplot::mcmc_trace(max$draws())
         }
@@ -151,15 +147,16 @@ for (f in 0:19){ #n_visits ) {
     mtext(paste0("mu_bar total visits ", f))
 
     for ( j in 1:n_cafes ) {
+        #j = 1
         xlwd <- 4
-        sig = sqrt(mean(post$sigma^2))
+        sig = sqrt(mean(post$sigma$sigma^2))
         mu = mean(post$mu[,j])
         if ( f==0 )
             curve( dnorm(x,mu,sig) , from=0, to=20 , lwd=4, col=2 , xlab="waiting time" , ylab="" , ylim=ylims )
         else {
             if ( j==cafe[f] ) xlwd <- 8
             curve( dnorm(x,mu,sig) , from=0, to=20 , lwd=4, col="white" , xlab="waiting time" , ylab="" , ylim=ylims )
-            curve( dnorm(x,mean(post_old$mu[,j]),sig) , from=0, to=20 , lwd=4, col=grau() , add=TRUE )
+            curve( dnorm(x,mean(post_old$mu[j]),sig) , from=0, to=20 , lwd=4, col='gray' , add=TRUE )
             curve( dnorm(x,mu,sig) , from=0, to=20 , lwd=8, col="white" , add=TRUE )
             curve( dnorm(x,mu,sig) , from=0, to=20 , lwd=4, col=2 , add=TRUE )
             if ( j==cafe[f] ) lines( c(y[f],y[f]) , c(0,10) , lwd=4 , col=1 )
