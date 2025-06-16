@@ -8,9 +8,9 @@ data{
     array [N] int<lower=1> cafe;  //Number of the cafe for the different visits
 }
 parameters{
-    vector<lower=0>[n_cafes] mu_delta;  //Derivation of the mean time from the cafe
     real<lower=0> mu_bar;        //The mean time in the cafe (Population)
-    real<lower=0> sigma;         //The parameter sigma 
+    vector<lower=0>[n_cafes] mu_delta;  //Derivation of the mean time from the cafe
+    real<lower=0> sigma;         //The parameter sigma (same for all cafes)
 }
 model{
     vector[N] mu_i;   

@@ -73,7 +73,7 @@ ma <- cmdstan_model(here('stan','mixed_cafes','Cafes_of_Konstanz_non_centered.st
 ma <- cmdstan_model(here('stan','mixed_cafes','Cafes_of_Konstanz.stan'), compile = TRUE )
 multi = TRUE
 #Independend Model
-ma <- cmdstan_model(here('stan','mixed_cafes','Cafes_of_Konstanz_indep.stan'), compile = TRUE )
+#ma <- cmdstan_model(here('stan','mixed_cafes','Cafes_of_Konstanz_indep.stan'), compile = TRUE )
 
 multi = FALSE
 ma$code()
@@ -85,6 +85,13 @@ n_visits <- 20
 cafe <- c( rep(1,1) , rep(2,1) , 1 , rep(c(1,3,4,5),times=4) , 2 )
 y <- rpois(n_visits,w[cafe]) + 1
 y[2] <- 12
+
+# Create a data frame to track divergent transitions
+divergence_df <- data.frame(
+  iteration = integer(),
+  n_divergent = integer(),
+  stringsAsFactors = FALSE
+)
 
 # loop
 library(animation)
@@ -102,8 +109,18 @@ for (f in 0:19){ #n_visits ) {
                     parallel_chains = 1, iter_sampling = 1000, iter_warmup = 5000, 
                     adapt_delta = 0.9, max_treedepth = 15, 
                     save_warmup = FALSE )
+        
+        # Track divergences
+        sampler_params <- max$sampler_diagnostics()
+        # Access the divergent__ variable from the 3D array
+        divergent_array <- sampler_params[,,"divergent__"]
+        n_divergent <- sum(divergent_array)
+        divergence_df <- rbind(divergence_df, data.frame(iteration = f, n_divergent = n_divergent))
+        cat(sprintf("Iteration %d: %d divergent transitions\n", f, n_divergent))
+        
         # Extract samples as df
         post$sigma = spread_draws(max, c(sigma))  %>% select(sigma)
+        post$sigma = post$sigma$sigma
         post$mu = spread_draws(max, c(mu[cafe])) %>%
           select(.draw, cafe, mu) %>%
           pivot_wider(
@@ -149,7 +166,7 @@ for (f in 0:19){ #n_visits ) {
     for ( j in 1:n_cafes ) {
         #j = 1
         xlwd <- 4
-        sig = sqrt(mean(post$sigma$sigma^2))
+        sig = sqrt(mean(post$sigma^2))
         mu = mean(post$mu[,j])
         if ( f==0 )
             curve( dnorm(x,mu,sig) , from=0, to=20 , lwd=4, col=2 , xlab="waiting time" , ylab="" , ylim=ylims )
@@ -175,3 +192,19 @@ saveVideo(ani.replay(), movie.name = 'cafes_pooling.mp4', dpi=150)
 # convert -alpha remove -background white -delay 8 -loop 0 frame*.png a_out.gif
 # convert -delay 10 a_out.gif a_out.gif
 
+# Plot divergent transitons
+par(mfrow=c(1,1))
+#Need to run the code twice
+#divergence_df_normal = divergence_df
+#divergence_df_non_central = divergence_df
+
+plot(divergence_df_normal$iteration, divergence_df_normal$n_divergent/4000, type = "b", 
+     xlab = "Number of Data Points", ylab = "Fraction of Divergent Transitions",
+     main = "Divergent Transitions Over Iterations", ylim=c(0,0.5))
+lines(divergence_df_non_central$iteration, 
+      divergence_df_non_central$n_divergent/4000, col="red", type="b")
+legend("topright", legend = c("Normal Model", "Non-Central Model"), 
+       col = c("black", "red"), lty = 1, pch = 1)
+
+mean(divergence_df_normal$n_divergent/4000)
+mean(divergence_df_non_central$n_divergent/4000)
