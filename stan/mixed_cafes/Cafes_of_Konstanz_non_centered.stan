@@ -22,7 +22,12 @@ model {
     mu_bar ~ normal(10, 5);       
     tau ~ normal(0, 5);           
     z ~ normal(0, 1);             
-
+    //mu_bar ~ uniform(1, 25);
+    //mu_delta ~ normal( 0 , 5 );
+    //for ( i in 1:N ) {
+    //    mu_i[i] = mu_delta[cafe[i]] + mu_bar;
+    //}
+    
     for (i in 1:N) {
         mu_i[i] = mu_bar + tau * z[cafe[i]];  // Non-centered mean for each observation
     }

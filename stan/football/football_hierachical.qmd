@@ -21,6 +21,7 @@ format:
 
 ```{r, echo=FALSE, eval=TRUE, message=FALSE, warning=FALSE}
   library(tidyverse)
+  library(tidybayes)
   library(kableExtra)
   set.seed(42)
 ```
